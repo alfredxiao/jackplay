@@ -1,7 +1,6 @@
 package jackplay;
 
 import java.lang.instrument.*;
-import java.util.*;
 
 public class AgentJack {
     public static void premain(String agentArgs, Instrumentation inst) {
@@ -10,7 +9,9 @@ public class AgentJack {
         JackOptions options = JackOptions.initialise(agentArgs);
         JackLogger.initialise(options);
 
-        DaemonJack daemonJack = new DaemonJack(options, inst);
+        Player player = new Player(options, inst);
+
+        DaemonJack daemonJack = new DaemonJack(options, inst, player);
         daemonJack.start();
     }
 }

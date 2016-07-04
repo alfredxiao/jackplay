@@ -10,6 +10,10 @@ public class JackLogger {
         }
     }
 
+    public static void error(Throwable t) {
+        System.out.println("jackplay[error]: " + ((null == t) ? "NULL Throwable" : t.getMessage()));
+    }
+
     public static void debug(Object msg) {
         if (debug) {
             System.out.println("jackplay[debug]: " + ((null == msg) ? "" : msg.toString()));

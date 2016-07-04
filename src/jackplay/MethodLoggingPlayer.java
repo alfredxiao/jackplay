@@ -1,18 +1,18 @@
 package jackplay;
 
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
-import java.security.ProtectionDomain;
-
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 
-public class PlayBook implements ClassFileTransformer {
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.IllegalClassFormatException;
+import java.security.ProtectionDomain;
+
+public class MethodLoggingPlayer implements ClassFileTransformer {
+
     String targetClassName;
     String[] targetMethodNames;
-
-    public PlayBook(String className, String[] methodNames) {
+    public MethodLoggingPlayer(String className, String[] methodNames) {
         System.out.println("transformer created!!!!");
         this.targetClassName = className;
         this.targetMethodNames = methodNames;
@@ -45,4 +45,6 @@ public class PlayBook implements ClassFileTransformer {
 
         return byteCode;
     }
+
+
 }

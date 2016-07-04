@@ -1,16 +1,17 @@
 var Tracing = React.createClass({
   handler1: function() {
     $.ajax({
-          url: '/jackplay/play',
-          cache: false,
-          success: function(data) {
-            console.log("success:", data);
-            this.props.setWhatJacksays([data]);
-          }.bind(this),
-          error: function(xhr, status, err) {
-            console.error(err);
-          }.bind(this)
-        });
+      type: 'post',
+      url: '/jackplay/play',
+      cache: false,
+      success: function(data) {
+        console.log("success:", data);
+        this.props.setWhatJacksays([data]);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(err);
+      }.bind(this)
+    });
   },
   render: function() {
     return (
