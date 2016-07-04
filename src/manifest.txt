@@ -1,0 +1,4 @@
+Premain-Class: jackplay.AgentJack
+Agent-Class: jackplay.AgentJack
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
