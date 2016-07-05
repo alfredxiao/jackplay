@@ -1,34 +1,35 @@
 package jackplay.web;
 
+import jackplay.play.Composer;
 import jackplay.JackLogger;
-import jackplay.Player;
-import static jackplay.PlayCategory.*;
+
+import static jackplay.play.PlayCategory.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
+import java.util.Map;
 
 public class PlayHandler implements HttpHandler {
     Instrumentation inst;
-    Player player;
+    Composer composer;
 
-    public PlayHandler(Instrumentation inst, Player player) {
+    public PlayHandler(Instrumentation inst, Composer composer) {
         this.inst = inst;
-        this.player = player;
+        this.composer = composer;
     }
 
     @Override
     public void handle(HttpExchange t) throws IOException {
-        if (!"post".equalsIgnoreCase(t.getRequestMethod())) {
-            CommonHandling.error_404(t);
-            return;
-        }
+        Map<String, String> params = WebUtils.parseParams(t.getRequestURI());
+        JackLogger.debug("params:" + params);
+        JackLogger.debug("className:" + params.get("className"));
+        JackLogger.debug("methodName:" + params.get("methodName"));
 
-        String className = "Greeter";
-        String[] methodNames = new String[] {"beautify"};
         try {
-            player.play(MethodLogging, className, methodNames);
+            //composer.play(MethodLogging, "Greeter", new String[]{"greet", "beautify"});
+            composer.play(MethodLogging, params.get("className"), params.get("methodName"));
             CommonHandling.serveStringBody(t, 200, "OK");
         } catch (Exception e) {
             JackLogger.error(e);

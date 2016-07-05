@@ -3,18 +3,18 @@ package jackplay.web;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import jackplay.JackLogger;
-import jackplay.Player;
+import jackplay.play.Composer;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
 public class RootHandler implements HttpHandler {
     private final Instrumentation inst;
-    private final Player player;
+    private final Composer composer;
 
-    public RootHandler(Instrumentation inst, Player player) {
+    public RootHandler(Instrumentation inst, Composer composer) {
         this.inst = inst;
-        this.player = player;
+        this.composer = composer;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class RootHandler implements HttpHandler {
         JackLogger.debug("URI:" + uri);
 
         if (uri.startsWith("/play")) {
-            new PlayHandler(inst, player).handle(exchange);
+            new PlayHandler(inst, composer).handle(exchange);
         } else {
             if ("get".equalsIgnoreCase(exchange.getRequestMethod())) {
                 CommonHandling.serveStaticResource(exchange, 200, uri);

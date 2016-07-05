@@ -1,17 +1,19 @@
 package jackplay;
 
+import jackplay.play.Composer;
+
 import java.lang.instrument.*;
 
 public class AgentJack {
     public static void premain(String agentArgs, Instrumentation inst) {
         JackLogger.log("running AgentJack with arguments:" + agentArgs);
 
-        JackOptions options = JackOptions.initialise(agentArgs);
+        JackOptions options = JackOptions.optionsMergedWithDefaults(agentArgs);
         JackLogger.initialise(options);
 
-        Player player = new Player(options, inst);
+        Composer composer = new Composer(options, inst);
 
-        DaemonJack daemonJack = new DaemonJack(options, inst, player);
+        DaemonJack daemonJack = new DaemonJack(options, inst, composer);
         daemonJack.start();
     }
 }

@@ -1,4 +1,4 @@
-package jackplay;
+package jackplay.play;
 
 public enum PlayCategory {
     MethodLogging,

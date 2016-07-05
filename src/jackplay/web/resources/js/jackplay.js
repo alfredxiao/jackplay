@@ -1,8 +1,8 @@
 var Tracing = React.createClass({
-  handler1: function() {
+  submitMethodLogging: function() {
     $.ajax({
-      type: 'post',
       url: '/jackplay/play',
+      data: 'className=' + this.props.className + '&methodName=' + this.props.methodName,
       cache: false,
       success: function(data) {
         console.log("success:", data);
@@ -13,11 +13,18 @@ var Tracing = React.createClass({
       }.bind(this)
     });
   },
+  handleClassNameChange: function(e) {
+    this.props.className = e.target.value;
+  },
+  handleMethodNameChange: function(e) {
+    this.props.methodName = e.target.value;
+  },
   render: function() {
     return (
       <div>
-        Tracing...
-        <button onClick={this.handler1}>Play</button>
+        ClassName: <input name='className' onChange={this.handleClassNameChange}/>,
+        methodName: <input name='methodName' onChange={this.handleMethodNameChange}/>
+        <button onClick={this.submitMethodLogging}>Play</button>
       </div>
     );
   }

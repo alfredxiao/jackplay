@@ -5,7 +5,7 @@ import java.util.*;
 public class JackOptions {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';
-    final static Map<String, String> DEFAULTS = new HashMap<>();
+    final static Map<String, String> DEFAULTS = new HashMap<String, String>();
 
     static {
         DEFAULTS.put("port", "8080");
@@ -23,12 +23,12 @@ public class JackOptions {
         this.options = options;
     }
 
-    public static JackOptions initialise(String args) {
-        return new JackOptions(addDefaults(parseOptions(args)));
+    public static JackOptions optionsMergedWithDefaults(String args) {
+        return new JackOptions(addDefaults(parseArguments(args)));
     }
 
-    private static Map<String, String> parseOptions(String args) {
-        Map<String, String> options = new HashMap<>();
+    private static Map<String, String> parseArguments(String args) {
+        Map<String, String> options = new HashMap<String, String>();
         if (!isEmpty(args)) {
             String[] parts = args.split(OPTION_SPLIT);
             for (String part : parts) {
@@ -44,7 +44,7 @@ public class JackOptions {
     }
 
     private static Map<String, String> addDefaults(Map<String, String> options) {
-        Map<String, String> merged = new HashMap<>();
+        Map<String, String> merged = new HashMap<String, String>();
         merged.putAll(DEFAULTS);
         merged.putAll(options);
 

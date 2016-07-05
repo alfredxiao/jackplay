@@ -12,6 +12,7 @@ public class JackLogger {
 
     public static void error(Throwable t) {
         System.out.println("jackplay[error]: " + ((null == t) ? "NULL Throwable" : t.getMessage()));
+        if (null != t) t.printStackTrace();
     }
 
     public static void debug(Object msg) {

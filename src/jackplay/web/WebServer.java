@@ -5,22 +5,22 @@ import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpServer;
 import jackplay.JackOptions;
-import jackplay.Player;
+import jackplay.play.Composer;
 
 public class WebServer {
     JackOptions options;
     Instrumentation inst;
-    Player player;
+    Composer composer;
 
-    public WebServer(JackOptions options, Instrumentation inst, Player player) {
+    public WebServer(JackOptions options, Instrumentation inst, Composer composer) {
         this.options = options;
         this.inst = inst;
-        this.player = player;
+        this.composer = composer;
     }
 
     public void start() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(options.port()), 0);
-        server.createContext("/jackplay", new RootHandler(inst, player));
+        server.createContext("/jackplay", new RootHandler(inst, composer));
         server.start();
     }
 }
