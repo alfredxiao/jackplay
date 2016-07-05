@@ -34,17 +34,17 @@ public class CommonHandling {
     }
 
     private static InputStream loadResource(String resourcePath) throws IOException {
-        //InputStream resourceStream = this.getClass().getResourceAsStream("/jackplay/web/resources" + resourcePath);
+        //InputStream resourceStream = this.getClass().getResourceAsStream("/web/resources" + resourcePath);
         InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/src/jackplay/web/resources" + resourcePath);
 
         if (null == resourceStream) {
-            resourceStream = CommonHandling.class.getResourceAsStream("/jackplay/web/resources/404.html");
+            resourceStream = CommonHandling.class.getResourceAsStream("/web/resources/404.html");
         }
 
         return resourceStream;
     }
 
     static void error_404(HttpExchange exchange) throws IOException {
-        serveStaticResource(exchange, 404, "/jackplay/web/resources/404.html");
+        serveStaticResource(exchange, 404, "/web/resources/404.html");
     }
 }

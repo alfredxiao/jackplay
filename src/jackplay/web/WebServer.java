@@ -20,7 +20,7 @@ public class WebServer {
 
     public void start() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(options.port()), 0);
-        server.createContext("/jackplay", new RootHandler(inst, composer));
+        server.createContext("/", new RootHandler(inst, composer));
         server.start();
     }
 }

@@ -19,8 +19,8 @@ public class RootHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String uri = exchange.getRequestURI().toString().substring("/jackplay".length());
-        if (uri.isEmpty()) uri = "/index.html";
+        String uri = exchange.getRequestURI().toString();
+        if (uri.isEmpty() || "/".equals(uri)) uri = "/index.html";
         JackLogger.debug("URI:" + uri);
 
         if (uri.startsWith("/play")) {

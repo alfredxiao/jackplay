@@ -1,7 +1,7 @@
 var Tracing = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
-      url: '/jackplay/play',
+      url: '/play',
       data: 'className=' + this.props.className + '&methodName=' + this.props.methodName,
       cache: false,
       success: function(data) {
