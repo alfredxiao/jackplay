@@ -3,7 +3,7 @@ package jackplay.web;
 import jackplay.play.Composer;
 import jackplay.JackLogger;
 
-import static jackplay.play.PlayCategory.*;
+import jackplay.play.PlayGround;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -23,13 +23,16 @@ public class PlayHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange t) throws IOException {
         Map<String, String> params = WebUtils.parseParams(t.getRequestURI());
+        String className = params.get("className");
+        String methodName = params.get("methodName");
+
         JackLogger.debug("params:" + params);
-        JackLogger.debug("className:" + params.get("className"));
-        JackLogger.debug("methodName:" + params.get("methodName"));
+        JackLogger.debug("className:" + className);
+        JackLogger.debug("methodName:" + methodName);
 
         try {
-            //composer.play(MethodLogging, "Greeter", new String[]{"greet", "beautify"});
-            composer.play(MethodLogging, params.get("className"), params.get("methodName"));
+            PlayGround playGround = new PlayGround(className, methodName);
+            composer.logMethod(playGround);
             CommonHandling.serveStringBody(t, 200, "OK");
         } catch (Exception e) {
             JackLogger.error(e);

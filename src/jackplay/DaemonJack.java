@@ -5,6 +5,7 @@ import jackplay.web.WebServer;
 
 import java.lang.instrument.*;
 
+// singleton
 class DaemonJack extends Thread {
 
     JackOptions options;

@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpServer;
 import jackplay.JackOptions;
 import jackplay.play.Composer;
 
+// singleton
 public class WebServer {
     JackOptions options;
     Instrumentation inst;

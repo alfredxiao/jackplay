@@ -1,95 +1,91 @@
 package jackplay.play;
 
+import jackplay.JackLogger;
 import jackplay.JackOptions;
 
-import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+// singleton
 public class Composer {
     JackOptions options;
     Instrumentation inst;
-
-    Map<PlayUnit, PlayBook> playScripts;
+    Map<String, Map<String, Map<Genre, Performer>>> program;
 
     public Composer(JackOptions options, Instrumentation inst) {
         this.options = options;
         this.inst =  inst;
-        this.playScripts = new HashMap<PlayUnit, PlayBook>();
+        LeadPerformer leadPerformer = new LeadPerformer(this);
+        this.inst.addTransformer(leadPerformer, true);
+        this.program = new HashMap<String, Map<String, Map<Genre, Performer>>>();
     }
 
-    public void play(PlayCategory category, String className, String methodName) throws Exception {
-        PlayUnit unit = new PlayUnit(className, methodName);
-        PlayBook book = new PlayBook(category);
-
-        if (!playScripts.containsKey(unit)) {
-            performPlay(className, unit, book);
-
+    public void logMethod(PlayGround playGround) throws Exception {
+        if (isNewPlay(playGround, Genre.METHOD_LOGGING)) {
+            JackLogger.debug("isNewPlay for " + playGround);
+            addPlayToProgram(playGround, Genre.METHOD_LOGGING, null);
+            JackLogger.debug("program:" + program);
+            this.performPlay(playGround.className);
         }
     }
 
-    private void performPlay(String className, PlayUnit unit, PlayBook book) throws Exception {
-        inst.addTransformer(book.createPlayer(unit), true);
+    public void redefineMethod(PlayGround playGround, String methodSource) throws Exception {
+        if (isNewPlay(playGround, Genre.METHOD_REDEFINE)) {
+            addPlayToProgram(playGround, Genre.METHOD_REDEFINE, methodSource);
+            this.performPlay(playGround.className);
+        }
+    }
 
+    private boolean isNewPlay(PlayGround playGround, Genre genre) {
+        boolean playExists =
+                program.containsKey(playGround.className)
+                && program.get(playGround.className).containsKey(playGround.methodName)
+                && program.get(playGround.className).get(playGround.methodName).containsKey(genre);
+        return !playExists || (genre == Genre.METHOD_REDEFINE);
+    }
+
+    private void addPlayToProgram(PlayGround playGround, Genre genre, String methodSource) {
+        prepareProgram(playGround.className, playGround.methodName);
+        Performer performer = createPerformer(playGround.methodName, genre, methodSource);
+        program.get(playGround.className).get(playGround.methodName).put(genre, performer);
+    }
+
+    private Performer createPerformer(String methodName, Genre genre, String methodSource) {
+        if (genre == Genre.METHOD_LOGGING) {
+            return new LoggingPerformer(methodName);
+        } else {
+            return null;
+        }
+    }
+
+    private void prepareProgram(String className, String methodName) {
+        if (!program.containsKey(className)) {
+            program.put(className, new HashMap<String, Map<Genre, Performer>>());
+        }
+
+        if (!program.get(className).containsKey(methodName)) {
+            program.get(className).put(methodName, new HashMap<Genre, Performer>());
+        }
+    }
+
+    private void performPlay(String className) throws Exception {
         Class c = Class.forName(className);
-        if  (inst.isModifiableClass(c)) {
+        if  (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
+            JackLogger.debug("class is modifiable, let's do it");
             inst.retransformClasses(c);
         } else {
             throw new Exception("class not modifiable:" + className);
         }
     }
 
-}
-
-class PlayUnit {
-    final String className;
-    final String methodName;
-
-    public PlayUnit(String className, String methodName) {
-        this.className = className;
-        this.methodName = methodName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PlayUnit playUnit = (PlayUnit) o;
-
-        if (!className.equals(playUnit.className)) return false;
-        return methodName.equals(playUnit.methodName);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = className.hashCode();
-        result = 31 * result + methodName.hashCode();
-        return result;
-    }
-}
-
-class PlayBook {
-    final PlayCategory category;
-    final String newSource;
-
-    public PlayBook(PlayCategory category) {
-        this.category = category;
-        this.newSource = null;
-    }
-
-    public PlayBook(PlayCategory category, String newSource) {
-        this.category = category;
-        this.newSource = newSource;
-    }
-
-    public ClassFileTransformer createPlayer(PlayUnit unit) {
-        if (category == PlayCategory.MethodLogging) {
-            return new MethodLoggingPlayer(unit);
-        } else {
-            return null;
+    public List<Performer> findPerformers(String className) {
+        List<Performer> performers = new ArrayList<Performer>();
+        Map<String, Map<Genre, Performer>> methodMap = program.get(className);
+        for (Map<Genre, Performer> genrePerformerMap : methodMap.values()) {
+            performers.addAll(genrePerformerMap.values());
         }
+
+        return performers;
     }
 }
+

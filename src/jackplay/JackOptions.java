@@ -2,6 +2,7 @@ package jackplay;
 
 import java.util.*;
 
+// singleton
 public class JackOptions {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';

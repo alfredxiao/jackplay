@@ -2,7 +2,8 @@ var Tracing = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
       url: '/play',
-      data: 'className=' + this.props.className + '&methodName=' + this.props.methodName,
+      data: 'className=' + document.getElementById('className').value
+          + '&methodName=' + document.getElementById('methodName').value,
       cache: false,
       success: function(data) {
         console.log("success:", data);
@@ -13,17 +14,11 @@ var Tracing = React.createClass({
       }.bind(this)
     });
   },
-  handleClassNameChange: function(e) {
-    this.props.className = e.target.value;
-  },
-  handleMethodNameChange: function(e) {
-    this.props.methodName = e.target.value;
-  },
   render: function() {
     return (
       <div>
-        ClassName: <input name='className' onChange={this.handleClassNameChange}/>,
-        methodName: <input name='methodName' onChange={this.handleMethodNameChange}/>
+        ClassName: <input name='className' id='className'/>,
+        methodName: <input name='methodName' id='methodName'/>
         <button onClick={this.submitMethodLogging}>Play</button>
       </div>
     );
