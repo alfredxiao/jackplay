@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
 
-public class PlayHandler implements HttpHandler {
+public class LogMethodHandler implements HttpHandler {
     Instrumentation inst;
     Composer composer;
 
-    public PlayHandler(Instrumentation inst, Composer composer) {
+    public LogMethodHandler(Instrumentation inst, Composer composer) {
         this.inst = inst;
         this.composer = composer;
     }

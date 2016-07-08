@@ -23,8 +23,10 @@ public class RootHandler implements HttpHandler {
         if (uri.isEmpty() || "/".equals(uri)) uri = "/index.html";
         JackLogger.debug("URI:" + uri);
 
-        if (uri.startsWith("/play")) {
-            new PlayHandler(inst, composer).handle(exchange);
+        if (uri.startsWith("/logMethod")) {
+            new LogMethodHandler(inst, composer).handle(exchange);
+        } else if (uri.startsWith("/logHistory")) {
+            new LogHistoryHandler().handle(exchange);
         } else {
             if ("get".equalsIgnoreCase(exchange.getRequestMethod())) {
                 CommonHandling.serveStaticResource(exchange, 200, uri);

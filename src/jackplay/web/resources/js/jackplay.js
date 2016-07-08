@@ -1,13 +1,20 @@
 var Tracing = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
-      url: '/play',
+      url: '/logMethod',
       data: 'className=' + document.getElementById('className').value
           + '&methodName=' + document.getElementById('methodName').value,
       cache: false,
       success: function(data) {
         console.log("success:", data);
-        this.props.setWhatJacksays([data]);
+        var h1 = this.props.setWhatJacksays;
+        $.ajax({
+          url: '/logHistory',
+          cache: false,
+          success: function(history) {
+            h1(history);
+          }
+        });
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(err);
