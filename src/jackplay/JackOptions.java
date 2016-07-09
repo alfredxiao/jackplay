@@ -12,6 +12,7 @@ public class JackOptions {
         DEFAULTS.put("port", "8080");
         DEFAULTS.put("log", "true");
         DEFAULTS.put("debug", "false");
+        DEFAULTS.put("logLimit", "200");
     }
 
     public static boolean isEmpty(String s) {
@@ -62,5 +63,9 @@ public class JackOptions {
 
     public boolean debug() {
         return Boolean.parseBoolean(options.get("debug"));
+    }
+
+    public int logLimit() {
+        return Integer.parseInt(options.get("logLimit"));
     }
 }

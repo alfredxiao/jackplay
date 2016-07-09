@@ -21,3 +21,5 @@
    - show only exception
    - show only return value
    - show only execution elapsed time
+17. Display current scripts, allow disable/remove one/multiple of them
+18. auto refresh, and load only updated log history

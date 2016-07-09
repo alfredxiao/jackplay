@@ -12,6 +12,7 @@ public class LogHistoryHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange t) throws IOException {
         try {
+            t.getResponseHeaders().add("Content-Type", "application/json");
             CommonHandling.serveStringBody(t, 200, PlayLogger.getLogHistoryAsJson());
         } catch (Exception e) {
             JackLogger.error(e);

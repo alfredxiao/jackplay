@@ -18,6 +18,7 @@ public class Composer {
         LeadPerformer leadPerformer = new LeadPerformer(this);
         this.inst.addTransformer(leadPerformer, true);
         this.program = new HashMap<String, Map<String, Map<Genre, Performer>>>();
+        PlayLogger.initialise(options);
     }
 
     public void logMethod(PlayGround playGround) throws Exception {

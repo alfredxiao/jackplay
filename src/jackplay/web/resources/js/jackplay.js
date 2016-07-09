@@ -1,4 +1,4 @@
-var Tracing = React.createClass({
+var PlayPanel = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
       url: '/logMethod',
@@ -7,14 +7,7 @@ var Tracing = React.createClass({
       cache: false,
       success: function(data) {
         console.log("success:", data);
-        var h1 = this.props.setWhatJacksays;
-        $.ajax({
-          url: '/logHistory',
-          cache: false,
-          success: function(history) {
-            h1(history);
-          }
-        });
+        this.props.historyLoader();
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(err);
@@ -32,31 +25,46 @@ var Tracing = React.createClass({
   }
 });
 
-var JackSays = React.createClass({
+var LogHistory = React.createClass({
   render: function() {
+    var logList = this.props.logHistory.map(function(entry) {
+      return (
+       <div>
+         <span>{entry.when}</span> <span>{entry.log}</span>
+       </div>
+      );
+    });
     return (
       <div>
-        {this.props.jacksays}
+        {logList}
       </div>
     );
   }
 });
 
+
 var JackPlay = React.createClass({
   getInitialState: function() {
-    return {data: {jacksays: ['initial data']}};
+    return {data: {logHistory: []}};
   },
-  setWhatJacksays: function(jacksays) {
-    console.log("jacksays is set with ", jacksays);
-    //this.state.data.jacksays = jacksays;
-    this.setState({data: {jacksays: jacksays}});
-    console.log(this.state);
+  componentDidMount: function() {
+    this.loadLogHistoryFromServer();
+    setInterval(this.loadLogHistoryFromServer, this.props.pollInterval);
+  },
+  loadLogHistoryFromServer: function() {
+    $.ajax({
+      url: '/logHistory',
+      cache: false,
+      success: function(history) {
+        this.setState({data: {logHistory: history}});
+      }.bind(this)
+    });
   },
   render: function() {
     return (
     <div>
-      <Tracing setWhatJacksays={this.setWhatJacksays} />
-      <JackSays jacksays={this.state.data.jacksays} />
+      <PlayPanel historyLoader={this.loadLogHistoryFromServer} />
+      <LogHistory logHistory={this.state.data.logHistory} pollInterval="618" historyLoader={this.loadLogHistoryFromServer}/>
     </div>
     );
     }
