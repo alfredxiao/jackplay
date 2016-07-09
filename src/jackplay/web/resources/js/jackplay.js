@@ -24,7 +24,11 @@ var PlayPanel = React.createClass({
         Class Name: <input name='className' id='className' size="45" placeholder="Please input a class name"/>,
         Method Name: <input name='methodName' id='methodName' size="33" placeholder="Please give a method name"/>
         <button onClick={this.submitMethodLogging}>Play</button>
-        <button onClick={this.requestToClearLogHistory}>Clear Log History</button>
+        <button onClick={this.requestToClearLogHistory}>Clear</button>
+        <label className="switch">
+          <input type="checkbox"/>
+          <div className="slider round"></div>
+        </label>
       </div>
     );
   }
