@@ -25,8 +25,8 @@ var PlayPanel = React.createClass({
         Method Name: <input name='methodName' id='methodName' size="33" placeholder="Please give a method name"/>
         <button onClick={this.submitMethodLogging}>Play</button>
         <button onClick={this.requestToClearLogHistory}>Clear</button>
-        <label className="switch">
-          <input type="checkbox" />
+        <label className="switch" title='Auto Refresh'>
+          <input type="checkbox" defaultChecked='true' onChange={this.props.toggleAutoRefresh}/>
           <div className="slider round"></div>
         </label>
       </div>
@@ -55,11 +55,12 @@ var LogHistory = React.createClass({
 
 var JackPlay = React.createClass({
   getInitialState: function() {
-    return {data: {logHistory: []}};
+    return {data: {logHistory: []},
+            autoRefresh: true};
   },
   componentDidMount: function() {
     this.loadLogHistoryFromServer();
-    setInterval(this.loadLogHistoryFromServer, 1218);
+    setInterval(this.refreshLogHistory, 1218);
   },
   loadLogHistoryFromServer: function() {
     $.ajax({
@@ -69,13 +70,20 @@ var JackPlay = React.createClass({
       }.bind(this)
     });
   },
+  refreshLogHistory: function() {
+    if (this.state.autoRefresh) this.loadLogHistoryFromServer();
+  },
   clearLogHistory: function() {
     this.setState({data: {logHistory: []}});
+  },
+  toggleAutoRefresh: function() {
+    this.setState({data: this.state.data,
+                   autoRefresh: !this.state.autoRefresh})
   },
   render: function() {
     return (
     <div>
-      <PlayPanel historyLoader={this.loadLogHistoryFromServer} clearLogHistory={this.clearLogHistory}/>
+      <PlayPanel historyLoader={this.loadLogHistoryFromServer} clearLogHistory={this.clearLogHistory} toggleAutoRefresh={this.toggleAutoRefresh}/>
       <LogHistory logHistory={this.state.data.logHistory} historyLoader={this.loadLogHistoryFromServer}/>
     </div>
     );

@@ -3,7 +3,7 @@
   position: fixed;
   display: inline-block;
   width: 40px;
-  height: 24px;
+  height: 22px;
 }
 
 /* Hide default HTML checkbox */
@@ -26,9 +26,9 @@
   position: absolute;
   content: "";
   height: 16px;
-  width: 16px;
+  width: 17px;
   left: 4px;
-  bottom: 4px;
+  bottom: 3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
