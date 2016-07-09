@@ -6,9 +6,11 @@ public class PlayGround {
     final String className;
     final String methodName;
 
-    public PlayGround(String className, String methodName) {
-        this.className = className;
-        this.methodName = methodName;
+    public PlayGround(String playGround) {
+        int lastDot = playGround.lastIndexOf('.');
+        if (lastDot <= 1 || playGround.endsWith(".")) throw new RuntimeException(playGround + " : Invalid format which should conform to className.methodName");
+        this.className = playGround.substring(0, lastDot);
+        this.methodName = playGround.substring(lastDot + 1);
     }
 
     @Override

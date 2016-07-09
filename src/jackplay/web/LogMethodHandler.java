@@ -23,15 +23,12 @@ public class LogMethodHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange t) throws IOException {
         Map<String, String> params = WebUtils.parseParams(t.getRequestURI());
-        String className = params.get("className");
-        String methodName = params.get("methodName");
+        String playGroundParam = params.get("playGround");
 
-        JackLogger.debug("params:" + params);
-        JackLogger.debug("className:" + className);
-        JackLogger.debug("methodName:" + methodName);
+        JackLogger.debug("playGround:" + playGroundParam);
 
         try {
-            PlayGround playGround = new PlayGround(className, methodName);
+            PlayGround playGround = new PlayGround(playGroundParam);
             composer.logMethod(playGround);
             CommonHandling.serveStringBody(t, 200, "OK");
         } catch (Exception e) {

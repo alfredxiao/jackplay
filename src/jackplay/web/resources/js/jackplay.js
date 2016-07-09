@@ -2,8 +2,7 @@ var PlayPanel = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
       url: '/logMethod',
-      data: 'className=' + document.getElementById('className').value
-          + '&methodName=' + document.getElementById('methodName').value,
+      data: 'playGround=' + document.getElementById('playGround').value,
       success: function(data) {
         this.props.historyLoader();
       }.bind(this),
@@ -21,8 +20,8 @@ var PlayPanel = React.createClass({
   render: function() {
     return (
       <div>
-        Class Name: <input name='className' id='className' size="45" placeholder="Please input a class name"/>,
-        Method Name: <input name='methodName' id='methodName' size="33" placeholder="Please give a method name"/>
+        <label htmlFor="playGround">Target to trace: </label>
+        <input id='playGround' name='playGround' id='playGround' size="60" placeholder="E.g. com.example.RegistrationService" title='Format: className.methodName'/>
         <button onClick={this.submitMethodLogging}>Play</button>
         <button onClick={this.requestToClearLogHistory}>Clear</button>
         <label className="switch" title='Auto Refresh'>
