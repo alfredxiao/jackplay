@@ -30,6 +30,7 @@ button {
     text-align: left;
     padding: 3px 0;
     border-radius: 6px;
+    opacity: 0.76;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
