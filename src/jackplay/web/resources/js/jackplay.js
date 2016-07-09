@@ -21,8 +21,8 @@ var PlayPanel = React.createClass({
   render: function() {
     return (
       <div>
-        Class Name: <input name='className' id='className' size="38" />,
-        Method Name: <input name='methodName' id='methodName'/>
+        Class Name: <input name='className' id='className' size="45" />,
+        Method Name: <input name='methodName' id='methodName' size="33" />
         <button onClick={this.submitMethodLogging}>Play</button>
         <button onClick={this.requestToClearLogHistory}>Clear Log History</button>
       </div>

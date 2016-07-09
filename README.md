@@ -24,3 +24,6 @@
 17. Display current scripts, allow disable/remove one/multiple of them
 18. **DONE** auto refresh, and load only updated log history
 19. in UI,Filter log messages
+20. merge javassist lib with agent lib
+21. change javassist package name such that we don't fight with app code that references javassist
+22. stop refresh log history
