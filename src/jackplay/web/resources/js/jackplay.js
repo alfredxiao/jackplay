@@ -1,3 +1,4 @@
+//<!--input id='playGround' name='playGround' id='playGround' size="60" placeholder="E.g. com.example.RegistrationService" title='Format: className.methodName'/-->
 var PlayPanel = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
@@ -19,16 +20,20 @@ var PlayPanel = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <label htmlFor="playGround">Target to trace: </label>
-        <input id='playGround' name='playGround' id='playGround' size="60" placeholder="E.g. com.example.RegistrationService" title='Format: className.methodName'/>
-        <button onClick={this.submitMethodLogging}>Play</button>
-        <button onClick={this.requestToClearLogHistory}>Clear</button>
-        <label className="switch" title='Auto Refresh'>
-          <input type="checkbox" defaultChecked='true' onChange={this.props.toggleAutoRefresh}/>
-          <div className="slider round"></div>
-        </label>
-      </div>
+      <table>
+        <tr>
+          <td>
+            <label htmlFor="playGround">Target to trace: </label>
+            <Select name="playGround" autofocus='true' options={this.props.loadedTargets} placeholder="E.g. com.example.RegistrationService" />
+          </td>
+          <td><button onClick={this.submitMethodLogging}>Play</button></td>
+          <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
+          <td><label className="switch" title='Auto Refresh'>
+              <input type="checkbox" defaultChecked='true' onChange={this.props.toggleAutoRefresh}/>
+              <div className="slider round"></div>
+            </label></td>
+        </tr>
+      </table>
     );
   }
 });
@@ -54,7 +59,8 @@ var LogHistory = React.createClass({
 
 var JackPlay = React.createClass({
   getInitialState: function() {
-    return {data: {logHistory: []},
+    return {logHistory: [],
+            loadedTargets: [ {value: 'one', label: 'One' }],
             autoRefresh: true};
   },
   componentDidMount: function() {
@@ -65,7 +71,7 @@ var JackPlay = React.createClass({
     $.ajax({
       url: '/logHistory',
       success: function(history) {
-        this.setState({data: {logHistory: history}});
+        this.setState(Object.assign(this.state, {logHistory: history}));
       }.bind(this)
     });
   },
@@ -73,17 +79,20 @@ var JackPlay = React.createClass({
     if (this.state.autoRefresh) this.loadLogHistoryFromServer();
   },
   clearLogHistory: function() {
-    this.setState({data: {logHistory: []}});
+    this.setState(Object.assign(this.state, {logHistory: []}));
   },
   toggleAutoRefresh: function() {
-    this.setState({data: this.state.data,
-                   autoRefresh: !this.state.autoRefresh})
+    this.setState(Object.assign(this.state, {autoRefresh: !this.state.autoRefresh}));
   },
   render: function() {
     return (
     <div>
-      <PlayPanel historyLoader={this.loadLogHistoryFromServer} clearLogHistory={this.clearLogHistory} toggleAutoRefresh={this.toggleAutoRefresh}/>
-      <LogHistory logHistory={this.state.data.logHistory} historyLoader={this.loadLogHistoryFromServer}/>
+      <PlayPanel historyLoader={this.loadLogHistoryFromServer}
+                 clearLogHistory={this.clearLogHistory}
+                 toggleAutoRefresh={this.toggleAutoRefresh}
+                 loadedTargets={this.state.loadedTargets}/>
+      <LogHistory logHistory={this.state.logHistory}
+                  historyLoader={this.loadLogHistoryFromServer}/>
     </div>
     );
     }

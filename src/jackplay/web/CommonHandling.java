@@ -19,6 +19,7 @@ public class CommonHandling {
 
     public static void serveStaticResource(HttpExchange exchange, int status, String resourcePath) throws IOException {
         InputStream resource = loadResource(resourcePath);
+        if (resourcePath.endsWith("css")) exchange.getResponseHeaders().add("Content-Type", "text/css");
         exchange.sendResponseHeaders(status, resource.available());
         OutputStream os = exchange.getResponseBody();
         copy(resource, os);
