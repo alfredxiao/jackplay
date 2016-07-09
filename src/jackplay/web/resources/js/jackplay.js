@@ -49,7 +49,7 @@ var JackPlay = React.createClass({
   },
   componentDidMount: function() {
     this.loadLogHistoryFromServer();
-    setInterval(this.loadLogHistoryFromServer, this.props.pollInterval);
+    setInterval(this.loadLogHistoryFromServer, 618);
   },
   loadLogHistoryFromServer: function() {
     $.ajax({
@@ -64,7 +64,7 @@ var JackPlay = React.createClass({
     return (
     <div>
       <PlayPanel historyLoader={this.loadLogHistoryFromServer} />
-      <LogHistory logHistory={this.state.data.logHistory} pollInterval="618" historyLoader={this.loadLogHistoryFromServer}/>
+      <LogHistory logHistory={this.state.data.logHistory} historyLoader={this.loadLogHistoryFromServer}/>
     </div>
     );
     }

@@ -78,7 +78,7 @@ public class PlayLogger {
         return builder.toString();
     }
 
-    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static String formatDate(Date when) {
         return formatter.format(when);
     }
