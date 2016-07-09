@@ -17,20 +17,29 @@ button {
 .tooltip {
     position: relative;
     display: inline-block;
-    cursor: help;
+    cursor: default;
     border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    margin: 6px;
+    padding: 3px;
+}
+
+.tooltip:hover{
+    background-color: #E3BA6F;
+    border-radius: 2px;
 }
 
 /* Tooltip text */
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: #555;
+    background-color: #6F3801;
     color: #fff;
     text-align: left;
     padding: 3px 0;
     border-radius: 6px;
-    opacity: 0.76;
+    opacity: 0.9;
+    margin-top: 3px;
+    margin-left: -3px;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
