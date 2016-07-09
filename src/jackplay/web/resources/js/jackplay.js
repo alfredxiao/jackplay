@@ -26,7 +26,7 @@ var PlayPanel = React.createClass({
         <button onClick={this.submitMethodLogging}>Play</button>
         <button onClick={this.requestToClearLogHistory}>Clear</button>
         <label className="switch">
-          <input type="checkbox"/>
+          <input type="checkbox" />
           <div className="slider round"></div>
         </label>
       </div>
