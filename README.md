@@ -1,6 +1,6 @@
 1. **DONE** serve static html/js
 2. global log appender/viewer
-3. reset global log
+3. clear global log
 4. reset all changed code
 5. Tracing
  - **DONE** method logging
@@ -22,4 +22,5 @@
    - show only return value
    - show only execution elapsed time
 17. Display current scripts, allow disable/remove one/multiple of them
-18. auto refresh, and load only updated log history
+18. **DONE** auto refresh, and load only updated log history
+19. in UI,Filter log messages

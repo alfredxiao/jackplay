@@ -86,6 +86,10 @@ public class PlayLogger {
     public static void initialise(JackOptions options) {
         logLimit = options.logLimit();
     }
+
+    public static void clearLogHistory() {
+        logHistory.clear();
+    }
 }
 
 class LogEntry{

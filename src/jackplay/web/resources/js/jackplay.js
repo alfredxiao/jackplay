@@ -4,9 +4,7 @@ var PlayPanel = React.createClass({
       url: '/logMethod',
       data: 'className=' + document.getElementById('className').value
           + '&methodName=' + document.getElementById('methodName').value,
-      cache: false,
       success: function(data) {
-        console.log("success:", data);
         this.props.historyLoader();
       }.bind(this),
       error: function(xhr, status, err) {
@@ -14,12 +12,19 @@ var PlayPanel = React.createClass({
       }.bind(this)
     });
   },
+  requestToClearLogHistory: function() {
+    $.ajax({
+          url: '/clearLogHistory',
+    });
+    this.props.clearLogHistory();
+  },
   render: function() {
     return (
       <div>
-        ClassName: <input name='className' id='className'/>,
-        methodName: <input name='methodName' id='methodName'/>
+        Class Name: <input name='className' id='className' size="38" />,
+        Method Name: <input name='methodName' id='methodName'/>
         <button onClick={this.submitMethodLogging}>Play</button>
+        <button onClick={this.requestToClearLogHistory}>Clear Log History</button>
       </div>
     );
   }
@@ -30,7 +35,9 @@ var LogHistory = React.createClass({
     var logList = this.props.logHistory.map(function(entry) {
       return (
        <div>
-         <span>{entry.when}</span> <span>{entry.log}</span>
+         <span title={entry.type}>{entry.when}</span>
+         <span> | </span>
+         <span title={entry.type} className={entry.type}>{entry.log}</span>
        </div>
       );
     });
@@ -42,28 +49,29 @@ var LogHistory = React.createClass({
   }
 });
 
-
 var JackPlay = React.createClass({
   getInitialState: function() {
     return {data: {logHistory: []}};
   },
   componentDidMount: function() {
     this.loadLogHistoryFromServer();
-    setInterval(this.loadLogHistoryFromServer, 618);
+    setInterval(this.loadLogHistoryFromServer, 1218);
   },
   loadLogHistoryFromServer: function() {
     $.ajax({
       url: '/logHistory',
-      cache: false,
       success: function(history) {
         this.setState({data: {logHistory: history}});
       }.bind(this)
     });
   },
+  clearLogHistory: function() {
+    this.setState({data: {logHistory: []}});
+  },
   render: function() {
     return (
     <div>
-      <PlayPanel historyLoader={this.loadLogHistoryFromServer} />
+      <PlayPanel historyLoader={this.loadLogHistoryFromServer} clearLogHistory={this.clearLogHistory}/>
       <LogHistory logHistory={this.state.data.logHistory} historyLoader={this.loadLogHistoryFromServer}/>
     </div>
     );

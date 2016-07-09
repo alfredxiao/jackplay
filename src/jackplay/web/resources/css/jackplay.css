@@ -1,0 +1,14 @@
+.MethodEntry {
+}
+
+.MethodThrowsException {
+  color: red
+}
+
+.MethodReturns {
+  color: green
+}
+
+button {
+ margin: 2px
+}
