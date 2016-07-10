@@ -148,15 +148,14 @@ var PlayPanel = React.createClass({
       <table>
         <tr>
           <td>
-            <label htmlFor="playGround">Target to trace: </label>
-            <div><AutoClassLookup/></div>
+            <AutoClassLookup/>
           </td>
           <td><button onClick={this.submitMethodLogging}>Play</button></td>
           <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
-          <td><label className="switch" title='Refresh log from server'>
-              <input type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-              <div className="slider round"></div>
-            </label></td>
+          <td><label>Sync logs from server
+                <input type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
+              </label>
+              </td>
         </tr>
       </table>
     );
