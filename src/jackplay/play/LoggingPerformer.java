@@ -5,15 +5,18 @@ import javassist.CtClass;
 import javassist.CtMethod;
 
 public class LoggingPerformer implements Performer {
-    String methodName;
+    String methodLongName;
+    String methodShortName;
 
-    public LoggingPerformer(String methodName) {
-        this.methodName = methodName;
+    public LoggingPerformer(PlayGround playGround) {
+        this.methodLongName = playGround.methodLongName;
+        this.methodShortName = playGround.methodShortName;
     }
+
 
     @Override
     public CtClass play(CtClass aClass) throws Exception {
-        CtMethod method = aClass.getDeclaredMethod(methodName);
+        CtMethod method = findMethodByLongName(aClass);
 
         method.addLocalVariable("_elapsed$", CtClass.longType);
         method.insertBefore(logMethodStarting(method));
@@ -32,6 +35,17 @@ public class LoggingPerformer implements Performer {
         // tried to introduce a local variable - PlayLogger object instead of above approach
         // too tricky to work around limitation around try/catch/finally
         // ref: https://issues.jboss.org/browse/JASSIST-232
+    }
+
+    private CtMethod findMethodByLongName(CtClass aClass) throws Exception {
+        CtMethod[] methods = aClass.getDeclaredMethods(methodShortName);
+        for (CtMethod m : methods) {
+            if (m.getLongName().equals(methodLongName)) {
+                return m;
+            }
+        }
+
+        throw new RuntimeException("method " + methodLongName + " not found in class " + aClass.getName());
     }
 
     private static String ELAPSED_TIME_START = "_elapsed$ = System.currentTimeMillis();";

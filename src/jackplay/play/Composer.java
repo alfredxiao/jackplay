@@ -40,20 +40,20 @@ public class Composer {
     private boolean isNewPlay(PlayGround playGround, Genre genre) {
         boolean playExists =
                 program.containsKey(playGround.className)
-                && program.get(playGround.className).containsKey(playGround.methodName)
-                && program.get(playGround.className).get(playGround.methodName).containsKey(genre);
+                && program.get(playGround.className).containsKey(playGround.methodLongName)
+                && program.get(playGround.className).get(playGround.methodLongName).containsKey(genre);
         return !playExists || (genre == Genre.METHOD_REDEFINE);
     }
 
     private void addPlayToProgram(PlayGround playGround, Genre genre, String methodSource) {
-        prepareProgram(playGround.className, playGround.methodName);
-        Performer performer = createPerformer(playGround.methodName, genre, methodSource);
-        program.get(playGround.className).get(playGround.methodName).put(genre, performer);
+        prepareProgram(playGround.className, playGround.methodLongName);
+        Performer performer = createPerformer(playGround, genre, methodSource);
+        program.get(playGround.className).get(playGround.methodLongName).put(genre, performer);
     }
 
-    private Performer createPerformer(String methodName, Genre genre, String methodSource) {
+    private Performer createPerformer(PlayGround playGround, Genre genre, String methodSource) {
         if (genre == Genre.METHOD_LOGGING) {
-            return new LoggingPerformer(methodName);
+            return new LoggingPerformer(playGround);
         } else {
             return null;
         }
