@@ -4,12 +4,6 @@ var PlayPanel = React.createClass({
     $.ajax({
       url: '/logMethod',
       data: 'playGround=' + document.getElementById('playGround').value,
-      success: function(data) {
-        this.props.historyLoader();
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(err);
-      }.bind(this)
     });
   },
   requestToClearLogHistory: function() {
@@ -24,12 +18,12 @@ var PlayPanel = React.createClass({
         <tr>
           <td>
             <label htmlFor="playGround">Target to trace: </label>
-            <Select name="playGround" autofocus='true' options={this.props.loadedTargets} placeholder="E.g. com.example.RegistrationService" />
+
           </td>
           <td><button onClick={this.submitMethodLogging}>Play</button></td>
           <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
-          <td><label className="switch" title='Auto Refresh'>
-              <input type="checkbox" defaultChecked='true' onChange={this.props.toggleAutoRefresh}/>
+          <td><label className="switch" title='Refresh log from server'>
+              <input type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
               <div className="slider round"></div>
             </label></td>
         </tr>
@@ -60,39 +54,45 @@ var LogHistory = React.createClass({
 var JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
-            loadedTargets: [ {value: 'one', label: 'One' }],
-            autoRefresh: true};
+            loadedTargets: [ {value: 'one', label: 'one' }, {value: 'two', label: 'two' }],
+            isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
-    this.loadLogHistoryFromServer();
-    setInterval(this.refreshLogHistory, 1218);
+    this.syncDataWithServer();
+    setInterval(this.checkDataSync, 1218);
   },
-  loadLogHistoryFromServer: function() {
+  syncDataWithServer: function() {
     $.ajax({
       url: '/logHistory',
       success: function(history) {
         this.setState(Object.assign(this.state, {logHistory: history}));
       }.bind(this)
     });
+    $.ajax({
+      url: '/loadedTargets',
+      success: function(targets) {
+        this.setState(Object.assign(this.state, {loadedTargets: targets}));
+      }.bind(this)
+    });
   },
-  refreshLogHistory: function() {
-    if (this.state.autoRefresh) this.loadLogHistoryFromServer();
+  checkDataSync: function() {
+    if (!this.state.isSyncWithServerPaused) this.syncDataWithServer();
   },
   clearLogHistory: function() {
     this.setState(Object.assign(this.state, {logHistory: []}));
   },
-  toggleAutoRefresh: function() {
-    this.setState(Object.assign(this.state, {autoRefresh: !this.state.autoRefresh}));
+  toggleDataSync: function() {
+    this.setState(Object.assign(this.state, {isSyncWithServerPaused: !this.state.isSyncWithServerPaused}));
   },
   render: function() {
     return (
     <div>
-      <PlayPanel historyLoader={this.loadLogHistoryFromServer}
+      <PlayPanel historyLoader={this.syncDataWithServer}
                  clearLogHistory={this.clearLogHistory}
-                 toggleAutoRefresh={this.toggleAutoRefresh}
+                 toggleDataSync={this.toggleDataSync}
                  loadedTargets={this.state.loadedTargets}/>
       <LogHistory logHistory={this.state.logHistory}
-                  historyLoader={this.loadLogHistoryFromServer}/>
+                  historyLoader={this.syncDataWithServer}/>
     </div>
     );
     }

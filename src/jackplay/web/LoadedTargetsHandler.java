@@ -9,10 +9,10 @@ import jackplay.play.PlayLogger;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
-public class LoadedClassesHandler implements HttpHandler {
+public class LoadedTargetsHandler implements HttpHandler {
     Instrumentation inst;
 
-    public LoadedClassesHandler(Instrumentation inst) {
+    public LoadedTargetsHandler(Instrumentation inst) {
         this.inst = inst;
     }
 
