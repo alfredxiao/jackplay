@@ -6,8 +6,8 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSuggestions(allTargets, value) {
-  const escapedValue = escapeRegexCharacters(value.trim());
+function getSuggestions(allTargets, inputValue) {
+  const escapedValue = escapeRegexCharacters(inputValue.trim());
 
   if (escapedValue === '') {
     return [];
@@ -31,7 +31,6 @@ function renderSuggestion(suggestion) {
 class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
   constructor() {
     super();
-    console.log(this);
 
     this.state = {
       value: '',
@@ -54,10 +53,6 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
     });
   }
 
-  onSuggestionSelected(e, {suggestionValue}) {
-    console.log("suggestedValue:" + suggestionValue);
-  }
-
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
@@ -71,9 +66,8 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
                    renderSuggestion={renderSuggestion}
-                   onSuggestionSelected={this.onSuggestionSelected}
                    inputProps={inputProps}
-                   loadedTargets66={this.props.loadedTargets}/>
+                   loadedTargets={this.props.loadedTargets}/>
     );
   }
 }
@@ -83,7 +77,7 @@ var PlayPanel = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
       url: '/logMethod',
-      data: 'playGround=' + $("div#content input[type=text]")[0].value //this.props.getSelectedTarget(),
+      data: 'playGround=' + $("div#content input[type=text]")[0].value
     });
   },
   requestToClearLogHistory: function() {
@@ -97,7 +91,7 @@ var PlayPanel = React.createClass({
       <table>
         <tr>
           <td>
-            <AutoClassLookup loadedTargets={this.props.loadedTargets} setSelectedTarget={this.props.setSelectedTarget}/>
+            <AutoClassLookup loadedTargets={this.props.loadedTargets} />
           </td>
           <td><button onClick={this.submitMethodLogging}>Play</button></td>
           <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
@@ -123,7 +117,7 @@ var LogHistory = React.createClass({
       );
     });
     return (
-      <div>
+      <div className='logHistoryContainer'>
         {logList}
       </div>
     );
@@ -145,13 +139,19 @@ var JackPlay = React.createClass({
       url: '/logHistory',
       success: function(history) {
         this.setState(Object.assign(this.state, {logHistory: history}));
-      }.bind(this)
+      }.bind(this),
+      error: function(res) {
+        console.log("ERROR", res);
+      }
     });
     $.ajax({
       url: '/loadedTargets',
       success: function(targets) {
         this.setState(Object.assign(this.state, {loadedTargets: targets}));
-      }.bind(this)
+      }.bind(this),
+      error: function(res) {
+        console.log("ERROR", res);
+      }
     });
   },
   checkDataSync: function() {
@@ -163,21 +163,13 @@ var JackPlay = React.createClass({
   toggleDataSync: function() {
     this.setState(Object.assign(this.state, {isSyncWithServerPaused: !this.state.isSyncWithServerPaused}));
   },
-  setSelectedTarget: function(targetName) {
-    this.setState(Object.assign(this.state, {selectedTarget: targetName}))
-  },
-  getSelectedTarget: function() {
-    return this.state.selectedTarget;
-  },
   render: function() {
     return (
     <div>
       <PlayPanel historyLoader={this.syncDataWithServer}
                  clearLogHistory={this.clearLogHistory}
                  toggleDataSync={this.toggleDataSync}
-                 loadedTargets={this.state.loadedTargets}
-                 setSelectedTarget={this.setSelectedTarget}
-                 getSelectedTarget={this.getSelectedTarget}/>
+                 loadedTargets={this.state.loadedTargets}/>
       <LogHistory logHistory={this.state.logHistory}
                   historyLoader={this.syncDataWithServer}/>
     </div>

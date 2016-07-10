@@ -17,3 +17,7 @@ button {
   width: 360px;
 }
 
+.logHistoryContainer {
+  /*height: 600px;*/
+  /*overflow: auto; */
+}
