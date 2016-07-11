@@ -5,7 +5,7 @@
 .react-autosuggest__input {
   width: 530px;
   height: 18px;
-  padding: 10px 20px;
+  padding: 6px 10px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 16px;
@@ -43,7 +43,7 @@
 
 .react-autosuggest__suggestion {
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 3px 10px;
 }
 
 .react-autosuggest__suggestion--focused {

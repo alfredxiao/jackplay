@@ -23,3 +23,16 @@ button {
   /*height: 600px;*/
   /*overflow: auto; */
 }
+
+.suggestion_classname {
+}
+
+.suggestion_method_name {
+  color: green;
+}
+
+.suggestion_method_args {
+  font-size: 14px;
+  font-style: italic;
+  color: #333;
+}

@@ -15,7 +15,7 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return allTargets.filter(entry => regex.test(entry.targetName));
+  return allTargets.filter(entry => regex.test(entry.targetName.substring(0, entry.targetName.indexOf('('))));
 }
 
 function getSuggestionValue(suggestion) {
@@ -23,8 +23,19 @@ function getSuggestionValue(suggestion) {
 }
 
 function renderSuggestion(suggestion) {
+  var startParen = suggestion.targetName.indexOf('(');
+  var classAndMethod = suggestion.targetName.substring(0, startParen);
+  var lastDot = classAndMethod.lastIndexOf('.');
+  var className = classAndMethod.substring(0, lastDot);
+  var methodName = classAndMethod.substring(lastDot + 1, startParen);
+  var methodArgsNoParem = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
   return (
-    <span>{suggestion.targetName}</span>
+    <span>
+      <span className='suggestion_classname'>{className}.</span>
+      <span className='suggestion_method_name'>{methodName}(</span>
+      <span className='suggestion_method_args'>{methodArgsNoParem}</span>
+      <span className='suggestion_method_name'>)</span>
+    </span>
   );
 }
 
@@ -134,7 +145,7 @@ var JackPlay = React.createClass({
   },
   componentDidMount: function() {
     this.syncDataWithServer();
-    setInterval(this.checkDataSync, 1218);
+    setInterval(this.checkDataSync, 2218);
   },
   syncDataWithServer: function() {
     $.ajax({
