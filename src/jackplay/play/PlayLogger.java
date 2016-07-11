@@ -70,7 +70,7 @@ public class PlayLogger {
             builder.append("{");
             builder.append("\"type\":\"").append(entry.type.toString()).append("\",");
             builder.append("\"when\":\"").append(formatDate(entry.when)).append("\",");
-            builder.append("\"log\":\"").append(entry.log).append("\"");
+            builder.append("\"log\":\"").append(entry.log.replace("\"", "\\\"")).append("\"");
             builder.append("}");
             isFirst = false;
         }
