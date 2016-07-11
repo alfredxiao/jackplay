@@ -3,6 +3,7 @@ package jackplay.play;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
@@ -24,8 +25,11 @@ public class InformationCenter {
         for (Class clazz : classes) {
             if (inst.isModifiableClass(clazz) && isClassOfInterest(clazz)) {
 
-                CtClass cc = cp.get(clazz.getName());
-                modifiableClasses.add(cc);
+                try {
+                    CtClass cc = cp.get(clazz.getName());
+                    modifiableClasses.add(cc);
+                } catch(NotFoundException nfe) {
+                }
             }
         }
 
