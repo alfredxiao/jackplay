@@ -95,10 +95,12 @@ var PlayPanel = React.createClass({
           </td>
           <td><button onClick={this.submitMethodLogging}>Play</button></td>
           <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
-          <td><label>Sync logs from server
-                <input type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-              </label>
-              </td>
+          <td>
+            <div className='checkboxSwitch' title='Switch data sync'>
+              <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
+              <label htmlFor='autoSync'></label>
+            </div>
+          </td>
         </tr>
       </table>
     );

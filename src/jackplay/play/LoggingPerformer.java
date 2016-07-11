@@ -1,5 +1,6 @@
 package jackplay.play;
 
+import jackplay.JackLogger;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -13,9 +14,9 @@ public class LoggingPerformer implements Performer {
         this.methodShortName = playGround.methodShortName;
     }
 
-
     @Override
     public CtClass play(CtClass aClass) throws Exception {
+        JackLogger.debug("playing class:" + aClass.getName());
         CtMethod method = findMethodByLongName(aClass);
 
         method.addLocalVariable("_elapsed$", CtClass.longType);

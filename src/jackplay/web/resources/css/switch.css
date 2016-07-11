@@ -1,58 +1,51 @@
-/* The switch - the box around the slider */
-.switch {
-  position: fixed;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
+/**
+ * Start by hiding the checkboxes
+ */
+input[type=checkbox] {
+visibility: hidden;
 }
 
-/* Hide default HTML checkbox */
-.switch input {display:none;}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+/**
+ * Checkbox Four
+ */
+.checkboxSwitch {
+width: 28px;
+height: 28px;
+background: #ddd;
+margin: 1px 10px;
+border-radius: 100%;
+position: relative;
+-webkit-box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+-moz-box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 17px;
-  left: 4px;
-  bottom: 3px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+/**
+ * Create the checkbox button
+ */
+.checkboxSwitch label {
+display: block;
+width: 18px;
+height: 18px;
+border-radius: 100px;
+-webkit-transition: all .5s ease;
+-moz-transition: all .5s ease;
+-o-transition: all .5s ease;
+-ms-transition: all .5s ease;
+transition: all .5s ease;
+cursor: pointer;
+position: absolute;
+top: 5px;
+left: 5px;
+z-index: 1;
+background: #454545;
+-webkit-box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+-moz-box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
 }
-
-input:checked + .slider {
-  background-color: #A46307;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #A46307;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(16px);
-  -ms-transform: translateX(16px);
-  transform: translateX(16px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
+/**
+ * Create the checked state
+ */
+.checkboxSwitch input[type=checkbox]:checked + label {
+background: #26ca28;
 }

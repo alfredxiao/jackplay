@@ -1,3 +1,5 @@
+package myapp;
+
 public class Demo {
   public static void main(String[] args) throws Exception {
     Greeter greeter = new Greeter();

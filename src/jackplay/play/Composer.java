@@ -11,11 +11,12 @@ public class Composer {
     JackOptions options;
     Instrumentation inst;
     Map<String, Map<String, Map<Genre, Performer>>> program;
+    LeadPerformer leadPerformer;
 
     public Composer(JackOptions options, Instrumentation inst) {
         this.options = options;
         this.inst =  inst;
-        LeadPerformer leadPerformer = new LeadPerformer(this);
+        this.leadPerformer = new LeadPerformer(this);
         this.inst.addTransformer(leadPerformer, true);
         this.program = new HashMap<String, Map<String, Map<Genre, Performer>>>();
         PlayLogger.initialise(options);
@@ -59,23 +60,33 @@ public class Composer {
         }
     }
 
-    private void prepareProgram(String className, String methodName) {
+    private void prepareProgram(String className, String methodLongName) {
         if (!program.containsKey(className)) {
             program.put(className, new HashMap<String, Map<Genre, Performer>>());
         }
 
-        if (!program.get(className).containsKey(methodName)) {
-            program.get(className).put(methodName, new HashMap<Genre, Performer>());
+        if (!program.get(className).containsKey(methodLongName)) {
+            program.get(className).put(methodLongName, new HashMap<Genre, Performer>());
         }
     }
 
     private void performPlay(String className) throws Exception {
-        Class c = Class.forName(className);
-        if  (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
-            JackLogger.debug("class is modifiable, let's do it");
-            inst.retransformClasses(c);
-        } else {
-            throw new Exception("class not modifiable:" + className);
+        JackLogger.debug("perform play for class:" + className);
+//        Class c = Class.forName(className);
+        Class[] classes = inst.getAllLoadedClasses();
+        for (Class c : classes) {
+            if (c.getName().equals(className)) {
+                JackLogger.debug("modifiable:" + inst.isModifiableClass(c));
+                JackLogger.debug("inst.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
+                JackLogger.debug("inst.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
+                if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
+                    JackLogger.debug("class " + className + " is modifiable, let's do it");
+                    leadPerformer.setClassToPlay(c);
+                    inst.retransformClasses(c);
+                } else {
+                    throw new Exception("class not modifiable:" + className);
+                }
+            }
         }
     }
 

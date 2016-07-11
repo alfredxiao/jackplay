@@ -10,7 +10,9 @@
 }
 
 button {
- margin: 2px
+ margin: 2px;
+ width: 60px;
+ height: 28px;
 }
 
 .Select-control {

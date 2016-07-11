@@ -11,36 +11,48 @@ import java.util.List;
 
 public class LeadPerformer implements ClassFileTransformer {
     Composer composer;
+    private Class classToPlay;
 
     public LeadPerformer(Composer composer) {
         this.composer = composer;
     }
 
-    public byte[] transform(ClassLoader loader, String className, Class classBeingRedefined,
+    public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
-        byte[] byteCode = classfileBuffer;
-        List<Performer> performers = composer.findPerformers(className);
-        JackLogger.debug("className asked to transform:" + className);
-        JackLogger.debug(("performers:" + performers));
+        String clsName = classBeingRedefined.getName();
+        JackLogger.debug("Composer said class to play:" + classToPlay.getName());
+        JackLogger.debug(".transform() is called with class:" + clsName);
+        if (classBeingRedefined != classToPlay) {
+            JackLogger.debug("ignore a class not of interest");
+            return classfileBuffer;
+        } else {
+            byte[] byteCode = classfileBuffer;
+            List<Performer> performers = composer.findPerformers(clsName);
+            JackLogger.debug(("performers:" + performers));
 
-        try {
-            JackLogger.debug("size of bytecode before transform:" + byteCode.length);
+            try {
+                JackLogger.debug("size of bytecode before transform:" + byteCode.length);
 
-            ClassPool cp = ClassPool.getDefault();
-            CtClass cc = cp.get(className);
-            for (Performer performer : performers) {
-                cc = performer.play(cc);
+                ClassPool cp = ClassPool.getDefault();
+                CtClass cc = cp.get(clsName);
+                for (Performer performer : performers) {
+                    cc = performer.play(cc);
+                }
+
+                byteCode = cc.toBytecode();
+                cc.detach();
+
+                JackLogger.debug("size of bytecode after transform:" + byteCode.length);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
-            byteCode = cc.toBytecode();
-            cc.detach();
-
-            JackLogger.debug("size of bytecode after transform:" + byteCode.length);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            return byteCode;
         }
+    }
 
-        return byteCode;
+    public void setClassToPlay(Class classToPlay) {
+        this.classToPlay = classToPlay;
     }
 }
