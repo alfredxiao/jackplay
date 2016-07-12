@@ -33,12 +33,12 @@ function useShortTypeName(type) {
 }
 
 function renderSuggestion(suggestion) {
-  var startParen = suggestion.targetName.indexOf('(');
-  var classAndMethod = suggestion.targetName.substring(0, startParen);
-  var lastDot = classAndMethod.lastIndexOf('.');
-  var className = classAndMethod.substring(0, lastDot);
-  var methodName = classAndMethod.substring(lastDot + 1, startParen);
-  var methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
+  let startParen = suggestion.targetName.indexOf('(');
+  let classAndMethod = suggestion.targetName.substring(0, startParen);
+  let lastDot = classAndMethod.lastIndexOf('.');
+  let className = classAndMethod.substring(0, lastDot);
+  let methodName = classAndMethod.substring(lastDot + 1, startParen);
+  let methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
   if (methodArgsList) {
     methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName(argType)).join(', ');
   }
@@ -100,7 +100,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 }
 
 
-var PlayPanel = React.createClass({
+let PlayPanel = React.createClass({
   submitMethodLogging: function() {
     $.ajax({
       url: '/logMethod',
@@ -134,9 +134,9 @@ var PlayPanel = React.createClass({
   }
 });
 
-var LogHistory = React.createClass({
+let LogHistory = React.createClass({
   render: function() {
-    var logList = this.props.logHistory.map(function(entry) {
+    let logList = this.props.logHistory.map(function(entry) {
       return (
        <div>
          <span title={entry.type}>{entry.when}</span>
@@ -153,7 +153,7 @@ var LogHistory = React.createClass({
   }
 });
 
-var JackPlay = React.createClass({
+let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
             loadedTargets: [],
