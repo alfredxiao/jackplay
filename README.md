@@ -32,3 +32,6 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 22. **DONE** stop refresh log history
 23. Intercept interface?
 24. allow the use of wildcard such that we can trace all methods in a class without having to input all method names.
+25. improve the display log list in UI such that it becomes easier to identify which method entry correlates to which method return
+    and make it easier to tell which line is of what type, which bit of information is method name, which bit is about elapsed time and which bit is about input/output values.
+26. improve exception logging display in UI (esp. multiple line exception message)
