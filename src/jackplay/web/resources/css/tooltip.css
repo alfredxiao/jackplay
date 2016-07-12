@@ -22,13 +22,12 @@
     text-align: left;
     padding: 3px 0;
     border-radius: 6px;
-    opacity: 0.95;
     margin-top: 3px;
     margin-left: -3px;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
-    z-index: 1;
+    z-index: 10;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
