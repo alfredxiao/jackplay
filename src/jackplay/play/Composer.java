@@ -24,9 +24,7 @@ public class Composer {
 
     public void logMethod(PlayGround playGround) throws Exception {
         if (isNewPlay(playGround, Genre.METHOD_LOGGING)) {
-            JackLogger.debug("isNewPlay for " + playGround);
             addPlayToProgram(playGround, Genre.METHOD_LOGGING, null);
-            JackLogger.debug("program:" + program);
             this.performPlay(playGround.className);
         }
     }
@@ -71,12 +69,9 @@ public class Composer {
     }
 
     private void performPlay(String className) throws Exception {
-        JackLogger.debug("perform play for class:" + className);
         Class c = Class.forName(className);
         if (c.getName().equals(className)) {
-            JackLogger.debug("modifiable:" + inst.isModifiableClass(c));
             if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
-                JackLogger.debug("class " + className + " is modifiable, let's do it");
                 leadPerformer.setClassToPlay(c);
                 inst.retransformClasses(c);
             } else {

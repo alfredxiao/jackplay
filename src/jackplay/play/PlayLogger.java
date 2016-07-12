@@ -1,6 +1,5 @@
 package jackplay.play;
 
-import jackplay.JackLogger;
 import jackplay.JackOptions;
 
 import java.io.PrintWriter;
@@ -54,7 +53,6 @@ public class PlayLogger {
 
         StringBuilder builder = new StringBuilder();
 
-        JackLogger.debug("class of obj:" + obj.getClass().getName());
         if (obj instanceof String) {
             builder.append("\"").append(obj).append("\"");
         } else if (obj.getClass().equals(Character.class)) {
