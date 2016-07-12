@@ -19,6 +19,7 @@ public class QAGreeter implements Greeter {
         testReturningLong();
         testReturningFloat();
         testReturningDouble();
+        testReturningString();
         testReturningObject();
         testReturningQAGreeter();
         testReturningArray();
@@ -26,6 +27,10 @@ public class QAGreeter implements Greeter {
             testThrowingCheckException();
         } catch (Exception e) {}
         testThrowingRuntimeException();
+    }
+
+    private String testReturningString() {
+        return "Hello QA";
     }
 
     private void testThrowingCheckException() throws Exception {

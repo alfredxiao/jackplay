@@ -31,3 +31,4 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 21. change javassist package name such that we don't fight with app code that references javassist
 22. **DONE** stop refresh log history
 23. Intercept interface?
+24. allow the use of wildcard such that we can trace all methods in a class without having to input all method names.
