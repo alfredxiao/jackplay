@@ -23,6 +23,15 @@ function getSuggestionValue(suggestion) {
   return suggestion.targetName;
 }
 
+function useShortTypeName(type) {
+  let standardPackage = 'java.lang.'
+  if (type.startsWith(standardPackage)) {
+    return type.substring(standardPackage.length);
+  } else {
+    return type;
+  }
+}
+
 function renderSuggestion(suggestion) {
   var startParen = suggestion.targetName.indexOf('(');
   var classAndMethod = suggestion.targetName.substring(0, startParen);
@@ -30,6 +39,9 @@ function renderSuggestion(suggestion) {
   var className = classAndMethod.substring(0, lastDot);
   var methodName = classAndMethod.substring(lastDot + 1, startParen);
   var methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
+  if (methodArgsList) {
+    methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName(argType)).join(', ');
+  }
   return (
     <span>
       <span className='suggestion_classname'>{className}.</span>
