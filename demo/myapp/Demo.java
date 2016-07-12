@@ -1,16 +1,39 @@
 package myapp;
 
+import myapp.greeter.Greeter;
+import myapp.greeter.NiceGreeter;
+import myapp.greeter.AnnoyingGreeter;
+import myapp.greeter.QAGreeter;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Demo {
+  static Greeter[] greeters = new Greeter[3];
+  static {
+    greeters[0] = new NiceGreeter();
+    greeters[1] = new AnnoyingGreeter();
+    greeters[2] = new QAGreeter();
+  }
+
   public static void main(String[] args) throws Exception {
-    Greeter greeter = new Greeter();
-    greeter.greet("Alfred");
+    visitGreeters();
 
     while (true) {
-      Thread.sleep(2000);
-      Greeter greeter2 = new Greeter();
-      greeter2.greet("Gary").toString();
-      java.util.Date d = new java.util.Date();
-      System.out.println(d.getTime());
+      Thread.sleep(getRandomSleep());
+      visitGreeters();
     }
+  }
+
+  static void visitGreeters() {
+    for (Greeter g : greeters) {
+      try {
+        g.greet("Alfred");
+      } catch (Exception e) {
+      }
+    }
+  }
+
+  public static long getRandomSleep() {
+    return ThreadLocalRandom.current().nextLong(500, 12000);
   }
 }
