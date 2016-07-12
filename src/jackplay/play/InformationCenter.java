@@ -60,9 +60,8 @@ public class InformationCenter {
             for (CtMethod m : methods) {
                 if (!isFirst) builder.append(',');
                 builder.append("{\"targetName\":\"").append(m.getLongName()).append("\"}");
+                isFirst = false;
             }
-
-            isFirst = false;
         }
         builder.append("]");
         return builder.toString();

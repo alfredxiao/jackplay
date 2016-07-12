@@ -15,7 +15,8 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return allTargets.filter(entry => regex.test(entry.targetName.substring(0, entry.targetName.indexOf('('))));
+  return allTargets.filter(entry => regex.test(entry.targetName.substring(0, entry.targetName.indexOf('(')))
+                                    || regex.test(entry.targetName));
 }
 
 function getSuggestionValue(suggestion) {
@@ -28,13 +29,16 @@ function renderSuggestion(suggestion) {
   var lastDot = classAndMethod.lastIndexOf('.');
   var className = classAndMethod.substring(0, lastDot);
   var methodName = classAndMethod.substring(lastDot + 1, startParen);
-  var methodArgsNoParem = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
+  var methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
   return (
     <span>
       <span className='suggestion_classname'>{className}.</span>
-      <span className='suggestion_method_name'>{methodName}(</span>
-      <span className='suggestion_method_args'>{methodArgsNoParem}</span>
-      <span className='suggestion_method_name'>)</span>
+      <span className='suggestion_method_name'>{methodName}</span>
+      <span className='suggestion_method_signature'>
+          <span className='suggestion_method_paren'>(</span>
+          <span className='suggestion_method_args_list'>{methodArgsList}</span>
+          <span className='suggestion_method_paren'>)</span>
+      </span>
     </span>
   );
 }

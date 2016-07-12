@@ -27,12 +27,20 @@ button {
 .suggestion_classname {
 }
 
+.suggestion_method_signature {
+}
+
 .suggestion_method_name {
   color: green;
 }
 
-.suggestion_method_args {
+.suggestion_method_args_list {
   font-size: 13px;
   font-style: italic;
+  color: #333;
+}
+
+.suggestion_method_paren {
+  font-size: 13px;
   color: #333;
 }

@@ -1,5 +1,6 @@
 package jackplay.play;
 
+import jackplay.JackLogger;
 import jackplay.JackOptions;
 
 import java.io.PrintWriter;
@@ -48,8 +49,57 @@ public class PlayLogger {
 
     public static void logResult(String name, String longName, Object result, long elapsed) {
         StringBuilder builder = new StringBuilder(name);
-        builder.append("()").append(" elapsed ").append(elapsed).append(" ms ").append(" => ").append(result);
+        builder.append("()").append(" elapsed ").append(elapsed).append(" ms ").append(" => ").append(appendObject(result));
         addToHistory(LogEntryType.MethodReturns, builder.toString());
+    }
+
+    private static String appendObject(Object obj) {
+        if (null == obj) return "null";
+        if (obj.getClass().isArray()) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("[");
+
+             boolean isFirst = true;
+            Object[] values = (Object[]) obj;
+            for (Object value : values) {
+                if (!isFirst) builder.append(",");
+                builder.append(appendObject(value));
+                isFirst = false;
+            }
+            builder.append("]");
+
+            return builder.toString();
+        } else {
+            return obj.toString();
+        }
+    }
+
+    public static void logResult(String name, String longName, boolean result, long elapsed) {
+        logResult(name, longName, Boolean.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, byte result, long elapsed) {
+        logResult(name, longName, Byte.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, short result, long elapsed) {
+        logResult(name, longName, Short.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, int result, long elapsed) {
+        logResult(name, longName, Integer.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, long result, long elapsed) {
+        logResult(name, longName, Long.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, float result, long elapsed) {
+        logResult(name, longName, Float.valueOf(result), elapsed);
+    }
+
+    public static void logResult(String name, String longName, double result, long elapsed) {
+        logResult(name, longName, Double.valueOf(result), elapsed);
     }
 
     public static void logException(String name, String longName, Throwable t) {

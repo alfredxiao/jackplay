@@ -72,20 +72,15 @@ public class Composer {
 
     private void performPlay(String className) throws Exception {
         JackLogger.debug("perform play for class:" + className);
-//        Class c = Class.forName(className);
-        Class[] classes = inst.getAllLoadedClasses();
-        for (Class c : classes) {
-            if (c.getName().equals(className)) {
-                JackLogger.debug("modifiable:" + inst.isModifiableClass(c));
-                JackLogger.debug("inst.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
-                JackLogger.debug("inst.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
-                if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
-                    JackLogger.debug("class " + className + " is modifiable, let's do it");
-                    leadPerformer.setClassToPlay(c);
-                    inst.retransformClasses(c);
-                } else {
-                    throw new Exception("class not modifiable:" + className);
-                }
+        Class c = Class.forName(className);
+        if (c.getName().equals(className)) {
+            JackLogger.debug("modifiable:" + inst.isModifiableClass(c));
+            if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
+                JackLogger.debug("class " + className + " is modifiable, let's do it");
+                leadPerformer.setClassToPlay(c);
+                inst.retransformClasses(c);
+            } else {
+                throw new Exception("class not modifiable:" + className);
             }
         }
     }
