@@ -14,6 +14,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 9. **DONE* support overloading methods
 10. groovy, scala, clojure
 11. on web page, display all current programs/scripts
+    also display errors when fails to add a script, ie. request to trace a method that does not exist.
 12. can attach to a locally running JVM
 13. can start on a remote machine, and then attach to a 'local' JVM
 14. **PART** beautify web style
@@ -35,3 +36,4 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 25. improve the display log list in UI such that it becomes easier to identify which method entry correlates to which method return
     and make it easier to tell which line is of what type, which bit of information is method name, which bit is about elapsed time and which bit is about input/output values.
 26. improve exception logging display in UI (esp. multiple line exception message)
+27. highlight matched search text in auto suggest list (ref: http://codepen.io/moroshko/pen/PZWbzK)

@@ -15,15 +15,15 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return allTargets.filter(entry => regex.test(entry.targetName.substring(0, entry.targetName.indexOf('(')))
-                                    || regex.test(entry.targetName));
+  return allTargets.filter(entry => regex.test(entry.targetName));
 }
 
 function getSuggestionValue(suggestion) {
   return suggestion.targetName;
 }
 
-function useShortTypeName(type) {
+let useShortTypeName = false;
+function getShortTypeName(type) {
   let standardPackage = 'java.lang.'
   if (type.startsWith(standardPackage)) {
     return type.substring(standardPackage.length);
@@ -40,7 +40,7 @@ function renderSuggestion(suggestion) {
   let methodName = classAndMethod.substring(lastDot + 1, startParen);
   let methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
   if (methodArgsList) {
-    methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName(argType)).join(', ');
+    methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName ? getShortTypeName(argType) : argType).join(', ');
   }
   return (
     <span>
@@ -83,7 +83,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: 'E.g. com.example.RegistrationService.createUser',
+      placeholder: 'Type a class or method name, e.g. com.abc.UserService.getUser',
       value,
       onChange: this.onChange
     };
