@@ -44,3 +44,7 @@ button {
   font-size: 13px;
   color: #333;
 }
+
+.highlight {
+  background-color: yellow;
+}
