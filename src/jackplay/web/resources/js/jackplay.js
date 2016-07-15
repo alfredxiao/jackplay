@@ -258,27 +258,39 @@ let PlayPanel = React.createClass({
 });
 
 let LogHistory = React.createClass({
+  getInitialState: function() {
+    return {filter: ''};
+  },
   requestToClearLogHistory: function() {
     $.ajax({
           url: '/clearLogHistory',
     });
     this.props.clearLogHistory();
   },
+  updateFilter: function() {
+    this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
+  },
   render: function() {
+    let filter = this.state.filter;
+    let regex = new RegExp(filter, 'i');
     let logList = this.props.logHistory.map(function(entry) {
-      return (
-       <div>
-         <span title={entry.type}>{entry.when}</span>
-         <span> | </span>
-         <span title={entry.type} className={entry.type}>{entry.log}</span>
-       </div>
-      );
+        if (!filter || regex.test(entry.log)) {
+          return (
+               <div>
+                 <span title={entry.type}>{entry.when}</span>
+                 <span> | </span>
+                 <span title={entry.type} className={entry.type}>{entry.log}</span>
+               </div>
+          )
+        } else {
+          return null;
+        };
     });
     return (
       <div className='logHistoryContainer'>
         <table>
           <tr>
-            <td><input name='logFilter' id='logFilter' placeholder='input text to filter logs' /></td>
+            <td><input name='logFilter' id='logFilter' placeholder='input text to filter logs' onChange={this.updateFilter}/></td>
             <td><button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear All</button></td>
             <td>
               <div className='checkboxSwitch' title='Switch data sync'>
