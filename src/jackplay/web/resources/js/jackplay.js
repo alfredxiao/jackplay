@@ -175,14 +175,14 @@ let MethodRedefine = React.createClass({
   },
   render: function() {
   return (
-      <div style={{display: this.props.show, marginLeft: '6px'}}>
+      <div style={{display: this.props.show, marginLeft: '2px'}}>
         <div><label htmlFor='newSource'>Write method source:</label></div>
         <div>
-          <textarea rows="8" cols="66" id="newSource" placeholder="{ return 10; }" className='code'></textarea>
+          <textarea rows="8" cols="78" id="newSource" placeholder="{ return 10; }" className='code'></textarea>
         </div>
         <div><button onClick={this.props.submit} title='submit new method source'>Submit</button>
              <button onClick={this.emptyMethodSource} title='clear input area'>Empty</button>
-             <button onClick={this.props.cancel} title='hide this panel'>Cancel</button>
+             <button onClick={this.props.cancel} title='hide this panel'>Cancel &uarr;</button>
              <span className="tooltip "> An Example
                 <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
                     <pre><code>{
@@ -238,12 +238,6 @@ let PlayPanel = React.createClass({
         });
     }
   },
-  requestToClearLogHistory: function() {
-    $.ajax({
-          url: '/clearLogHistory',
-    });
-    this.props.clearLogHistory();
-  },
   render: function() {
     return (
     <div>
@@ -253,13 +247,7 @@ let PlayPanel = React.createClass({
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
           </td>
           <td><button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
-              <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'>Redefine</button>
-              <button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear</button></td>
-          <td>
-            <div className='checkboxSwitch' title='Switch data sync'>
-              <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-              <label htmlFor='autoSync'></label>
-            </div>
+              <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'>Redefine &darr;</button>
           </td>
         </tr>
       </table>
@@ -270,6 +258,12 @@ let PlayPanel = React.createClass({
 });
 
 let LogHistory = React.createClass({
+  requestToClearLogHistory: function() {
+    $.ajax({
+          url: '/clearLogHistory',
+    });
+    this.props.clearLogHistory();
+  },
   render: function() {
     let logList = this.props.logHistory.map(function(entry) {
       return (
@@ -282,6 +276,18 @@ let LogHistory = React.createClass({
     });
     return (
       <div className='logHistoryContainer'>
+        <table>
+          <tr>
+            <td><input name='logFilter' id='logFilter' placeholder='input text to filter logs' /></td>
+            <td><button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear All</button></td>
+            <td>
+              <div className='checkboxSwitch' title='Switch data sync'>
+                <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
+                <label htmlFor='autoSync'></label>
+              </div>
+            </td>
+          </tr>
+        </table>
         {logList}
       </div>
     );
@@ -330,12 +336,11 @@ let JackPlay = React.createClass({
   render: function() {
     return (
     <div>
-      <PlayPanel historyLoader={this.syncDataWithServer}
-                 clearLogHistory={this.clearLogHistory}
-                 toggleDataSync={this.toggleDataSync}
-                 loadedTargets={this.state.loadedTargets}/>
+      <PlayPanel loadedTargets={this.state.loadedTargets}/>
+      <hr/>
       <LogHistory logHistory={this.state.logHistory}
-                  historyLoader={this.syncDataWithServer}/>
+                  clearLogHistory={this.clearLogHistory}
+                  toggleDataSync={this.toggleDataSync}/>
     </div>
     );
     }

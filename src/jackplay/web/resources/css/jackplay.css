@@ -11,8 +11,17 @@
 
 button {
  margin: 2px;
- width: 68px;
+ width: 92px;
  height: 28px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #E3BA6F;
 }
 
 .Select-control {
@@ -66,4 +75,13 @@ button {
 
 pre {
     white-space: pre-wrap;
+}
+
+input {
+  padding: 6px 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
 }

@@ -1,0 +1,38 @@
+.fadein8 {
+    animation: fadein8 10s;
+    -moz-animation: fadein8 10s; /* Firefox */
+    -webkit-animation: fadein8 10s; /* Safari and Chrome */
+    -o-animation: fadein8 10s; /* Opera */
+}
+@keyframes fadein8 {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein8 { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein8 { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein8 { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}

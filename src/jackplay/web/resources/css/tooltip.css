@@ -9,16 +9,17 @@
 }
 
 .tooltip:hover{
-    background-color: #E3BA6F;
+    background-color: #6F3801;
     border-radius: 2px;
+    color: #fff;
 }
 
 /* Tooltip text */
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: #6F3801;
-    color: #fff;
+    background-color: #E3BA6F;
+    color: black;
     text-align: left;
     padding: 3px 0;
     border-radius: 6px;
