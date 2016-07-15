@@ -279,7 +279,7 @@ let LogHistory = React.createClass({
                <div>
                  <span title={entry.type}>{entry.when}</span>
                  <span> | </span>
-                 <span title={entry.type} className={entry.type}>{entry.log}</span>
+                 <span title={entry.type} className={entry.type}>{highlightTermsInText(filter, entry.log)}</span>
                </div>
           )
         } else {
