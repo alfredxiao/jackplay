@@ -31,6 +31,8 @@ public class RootHandler implements HttpHandler {
             new ClearLogHistoryHandler().handle(exchange);
         } else if (uri.startsWith("/loadedTargets")) {
             new LoadedTargetsHandler(inst).handle(exchange);
+        } else if (uri.startsWith("/redefineMethod")) {
+            new RedefineMethodHandler(inst, composer).handle(exchange);
         } else {
             if ("get".equalsIgnoreCase(exchange.getRequestMethod())) {
                 CommonHandling.serveStaticResource(exchange, 200, uri);

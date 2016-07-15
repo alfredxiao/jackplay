@@ -16,7 +16,7 @@ public class LoggingPerformer implements Performer {
 
     @Override
     public CtClass play(CtClass aClass) throws Exception {
-        JackLogger.debug("playing class:" + aClass.getName());
+        JackLogger.debug("logging method:" + methodLongName);
         CtMethod method = findMethodByLongName(aClass);
 
         method.addLocalVariable("_elapsed$", CtClass.longType);

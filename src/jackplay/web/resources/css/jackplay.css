@@ -11,7 +11,7 @@
 
 button {
  margin: 2px;
- width: 60px;
+ width: 68px;
  height: 28px;
 }
 
@@ -47,4 +47,23 @@ button {
 
 .highlight {
   background-color: yellow;
+}
+
+.valignTop {
+  vertical-align: top;
+}
+
+.code {
+  margin-top: 5px;
+  margin-left: 5px;
+  font-family: 'Courier New';
+  font-size: 16px;
+}
+
+.tooltip .tooltipBelow {
+  margin-top: 20px;
+}
+
+pre {
+    white-space: pre-wrap;
 }

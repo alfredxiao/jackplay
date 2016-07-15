@@ -18,7 +18,7 @@ public class NiceGreeter implements Greeter {
             return "Good afternoon";
         } else if (hourOfNow >= 18 && hourOfNow <= 20) {
             return "Good evening";
-        } else if (hourOfNow >= 22 && hourOfNow <= 1) {
+        } else if (hourOfNow >= 22 || hourOfNow <= 1) {
             return "Good night";
         } else {
             return "Hello";

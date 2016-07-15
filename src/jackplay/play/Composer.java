@@ -51,10 +51,13 @@ public class Composer {
     }
 
     private Performer createPerformer(PlayGround playGround, Genre genre, String methodSource) {
-        if (genre == Genre.METHOD_LOGGING) {
-            return new LoggingPerformer(playGround);
-        } else {
-            return null;
+        switch (genre) {
+            case METHOD_LOGGING:
+                return new LoggingPerformer(playGround);
+            case METHOD_REDEFINE:
+                return new RedefinePerformer(playGround, methodSource);
+            default:
+                return null;
         }
     }
 
@@ -83,8 +86,13 @@ public class Composer {
     public List<Performer> findPerformers(String className) {
         List<Performer> performers = new ArrayList<Performer>();
         Map<String, Map<Genre, Performer>> methodMap = program.get(className);
-        for (Map<Genre, Performer> genrePerformerMap : methodMap.values()) {
-            performers.addAll(genrePerformerMap.values());
+        for (Map<Genre, Performer> performerMap : methodMap.values()) {
+            if (performerMap.containsKey(Genre.METHOD_REDEFINE)) {
+                performers.add(performerMap.get(Genre.METHOD_REDEFINE));
+            }
+            if (performerMap.containsKey(Genre.METHOD_LOGGING)) {
+                performers.add(performerMap.get(Genre.METHOD_LOGGING));
+            }
         }
 
         return performers;

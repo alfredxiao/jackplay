@@ -169,13 +169,74 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
   }
 }
 
+let MethodRedefine = React.createClass({
+  emptyMethodSource: function() {
+    document.getElementById('newSource').value = '';
+  },
+  render: function() {
+  return (
+      <div style={{display: this.props.show, marginLeft: '6px'}}>
+        <div><label htmlFor='newSource'>Write method source:</label></div>
+        <div>
+          <textarea rows="8" cols="66" id="newSource" placeholder="{ return 10; }" className='code'></textarea>
+        </div>
+        <div><button onClick={this.props.submit} title='submit new method source'>Submit</button>
+             <button onClick={this.emptyMethodSource} title='clear input area'>Empty</button>
+             <button onClick={this.props.cancel} title='hide this panel'>Cancel</button>
+             <span className="tooltip "> An Example
+                <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
+                    <pre><code>{
+                     " {\n  java.util.Calendar rightNow = java.util.Calendar.getInstance();\n" +
+                     "  return rightNow.get(java.util.Calendar.SECOND); \n" + " }"
+                     }</code></pre>
+                </span>
+             </span>
+             <span className="tooltip "> Limitation
+                <span className="tooltipBelow tooltiptext " style={{width: '460px', marginLeft: '-75px'}}>
+                  <ul>
+                    <li>Use full classname (except java.lang): e.g. java.util.Calendar</li>
+                    <li>... see <a href='https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit'>Javassist</a> </li>
+                  </ul>
+                </span>
+             </span>
+        </div>
+      </div>
+  )}
+});
+
 
 let PlayPanel = React.createClass({
-  submitMethodLogging: function() {
-    $.ajax({
-      url: '/logMethod',
-      data: 'playGround=' + $("div#content input[type=text]")[0].value
-    });
+  getInitialState: function() {
+    return {showMethodDefine: 'none'};
+  },
+  toggleMethodRedefine: function() {
+    this.setState(Object.assign(this.state, {showMethodDefine: 'none' == this.state.showMethodDefine ? '' : 'none'}));
+  },
+  cancelMethodRedefine: function() {
+    this.setState(Object.assign(this.state, {showMethodDefine: 'none'}));
+  },
+  submitMethodTrace: function() {
+    let v = $("div#content input[type=text]")[0].value.trim();
+
+    if (v) {
+        $.ajax({
+          url: '/logMethod',
+          data: 'playGround=' + v
+        });
+    };
+  },
+  submitMethodRedefine: function() {
+    let pg = $("div#content input[type=text]")[0].value.trim();
+    let src = document.getElementById('newSource').value.trim();
+
+    if (pg && src) {
+        $.ajax({
+          method: 'post',
+          url: '/redefineMethod',
+          contentType: "application/x-www-form-urlencoded",
+          data: 'playGround=' + pg + "&newSource=" + encodeURIComponent(src)
+        });
+    }
   },
   requestToClearLogHistory: function() {
     $.ajax({
@@ -185,13 +246,15 @@ let PlayPanel = React.createClass({
   },
   render: function() {
     return (
+    <div>
       <table>
         <tr>
           <td>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
           </td>
-          <td><button onClick={this.submitMethodLogging}>Play</button></td>
-          <td><button onClick={this.requestToClearLogHistory}>Clear</button></td>
+          <td><button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
+              <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'>Redefine</button>
+              <button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear</button></td>
           <td>
             <div className='checkboxSwitch' title='Switch data sync'>
               <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
@@ -200,6 +263,8 @@ let PlayPanel = React.createClass({
           </td>
         </tr>
       </table>
+      <MethodRedefine show={this.state.showMethodDefine} cancel={this.cancelMethodRedefine} submit={this.submitMethodRedefine}/>
+    </div>
     );
   }
 });
