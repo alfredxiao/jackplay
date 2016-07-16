@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class PlayLogger {
         addToHistory(LogEntryType.MethodEntry, builder.toString());
     }
 
-    private static void addToHistory(LogEntryType type, String log) {
+    private synchronized static void addToHistory(LogEntryType type, String log) {
         while (logHistory.size() >= logLimit) {
             logHistory.remove(logHistory.size() - 1);
         }
@@ -120,7 +121,9 @@ public class PlayLogger {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         boolean isFirst = true;
-        for (LogEntry entry : logHistory) {
+        Iterator<LogEntry> it = logHistory.iterator();
+        while (it.hasNext()) {
+            LogEntry entry = it.next();
             if (!isFirst) builder.append(',');
             builder.append("{");
             builder.append("\"type\":\"").append(entry.type.toString()).append("\",");
@@ -196,7 +199,7 @@ public class PlayLogger {
         logLimit = options.logLimit();
     }
 
-    public static void clearLogHistory() {
+    public synchronized static void clearLogHistory() {
         logHistory.clear();
     }
 }
