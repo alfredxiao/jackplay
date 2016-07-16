@@ -266,15 +266,17 @@ let PlayPanel = React.createClass({
   },
   render: function() {
     let playButton = (TRACE_MODE == this.state.playMode) ?
-                     (<button onClick={this.submitMethodTrace} title='trace this method' style={{marginLeft: '5px'}}>Trace</button>)
+                     (<button onClick={this.submitMethodTrace} title='trace this method' style={{marginLeft: '5px', borderRadius: '4px 0px 0px 4px'}}>Trace</button>)
                      :
-                     (<button onClick={this.submitMethodRedefine} title='submit new method source' style={{marginLeft: '5px'}}>Redefine</button>);
+                     (<button onClick={this.submitMethodRedefine} title='submit new method source' style={{marginLeft: '5px', borderRadius: '4px 0px 0px 4px'}}>Redefine</button>);
     return (
     <div>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
             <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
             {playButton}
+            <button title='show/hide information about method being traced' onClick={this.props.clearFilter}
+                    style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{dTriangle}</button>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
                         toggleDataSync={this.props.toggleDataSync}
