@@ -21,7 +21,6 @@ public class RootHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String uri = exchange.getRequestURI().toString();
         if (uri.isEmpty() || "/".equals(uri)) uri = "/index.html";
-        JackLogger.debug("URI:" + uri);
 
         if (uri.startsWith("/logMethod")) {
             new LogMethodHandler(inst, composer).handle(exchange);

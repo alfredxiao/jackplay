@@ -4,6 +4,7 @@ import jackplay.JackLogger;
 import jackplay.JackOptions;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
 import java.util.*;
 
 // singleton
@@ -76,9 +77,29 @@ public class Composer {
         if (c.getName().equals(className)) {
             if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
                 leadPerformer.setClassToPlay(c);
-                inst.retransformClasses(c);
+                try {
+                    inst.retransformClasses(c);
+                } catch(VerifyError ve) {
+                    JackLogger.error(ve);
+                    JackLogger.log("can't verify a class, will reset its method body (while keep tracing if any)");
+                    UndoClassRedefinition(c);
+                }
             } else {
                 throw new Exception("class not modifiable:" + className);
+            }
+        }
+    }
+
+    private void UndoClassRedefinition(Class c) throws UnmodifiableClassException {
+        removeRedefinePerformers(c);
+        inst.retransformClasses(c);
+    }
+
+    private void removeRedefinePerformers(Class c) {
+        Map<String, Map<Genre, Performer>> methodMap = program.get(c.getName());
+        for (Map<Genre, Performer> performerMap : methodMap.values()) {
+            if (performerMap.containsKey(Genre.METHOD_REDEFINE)) {
+                performerMap.remove(Genre.METHOD_REDEFINE);
             }
         }
     }

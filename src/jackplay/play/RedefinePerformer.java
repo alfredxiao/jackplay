@@ -1,6 +1,7 @@
 package jackplay.play;
 
 import jackplay.JackLogger;
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -21,7 +22,11 @@ public class RedefinePerformer implements Performer {
         JackLogger.debug("redefining method:" + methodLongName);
         CtMethod method = findMethodByLongName(aClass);
 
-        method.setBody(newSource);
+        try {
+            method.setBody(newSource);
+        } catch(CannotCompileException cce) {
+            JackLogger.error(cce);
+        }
 
         return aClass;
     }
