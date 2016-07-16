@@ -170,19 +170,13 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 }
 
 let MethodRedefine = React.createClass({
-  emptyMethodSource: function() {
-    document.getElementById('newSource').value = '';
-  },
   render: function() {
   return (
-      <div style={{display: this.props.show, marginLeft: '2px'}}>
-        <div><label htmlFor='newSource'>Write method source:</label></div>
+      <div style={{display: this.props.show, marginLeft: '0px'}}>
         <div>
-          <textarea rows="8" cols="78" id="newSource" placeholder="{ return 10; }" className='code'></textarea>
+          <textarea rows="8" cols="78" id="newSource" placeholder="{ return 10; }" className='code' style={{marginTop: 0, marginLeft: 0}}></textarea>
         </div>
-        <div><button onClick={this.props.submit} title='submit new method source'>Submit</button>
-             <button onClick={this.emptyMethodSource} title='clear input area'>Empty</button>
-             <button onClick={this.props.cancel} title='hide this panel'>Cancel &uarr;</button>
+        <div>
              <span className="tooltip "> An Example
                 <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
                     <pre><code>{
@@ -204,25 +198,32 @@ let MethodRedefine = React.createClass({
   )}
 });
 
-
+const dTriangle = '\u25BE';
+const uTriangle = '\u25B4';
+const TRACE_MODE = 'TRACE';
+const REDEFINE_MODE = 'REDEFINE';
 let PlayPanel = React.createClass({
   getInitialState: function() {
-    return {showMethodDefine: 'none'};
+    return {playMode: TRACE_MODE};
+  },
+  toggledLabel: function() {
+    return TRACE_MODE == this.state.playMode ? dTriangle : uTriangle;
   },
   toggleMethodRedefine: function() {
-    this.setState(Object.assign(this.state, {showMethodDefine: 'none' == this.state.showMethodDefine ? '' : 'none'}));
+    this.setState(Object.assign(this.state, {playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
   },
-  cancelMethodRedefine: function() {
-    this.setState(Object.assign(this.state, {showMethodDefine: 'none'}));
+  showMethodDefine: function() {
+    return this.state.playMode == MethodRedefine;
   },
   submitMethodTrace: function() {
     let v = $("div#content input[type=text]")[0].value.trim();
 
     if (v) {
-        $.ajax({
-          url: '/logMethod',
-          data: 'playGround=' + v
-        });
+      this.props.setSomethingBeingTraced(true);
+      $.ajax({
+        url: '/logMethod',
+        data: 'playGround=' + v
+      });
     };
   },
   submitMethodRedefine: function() {
@@ -239,19 +240,25 @@ let PlayPanel = React.createClass({
     }
   },
   render: function() {
+    let playButton = (TRACE_MODE == this.state.playMode) ?
+                     (<button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>)
+                     :
+                     (<button onClick={this.submitMethodRedefine} title='submit new method source'>Redefine</button>);
     return (
     <div>
-      <table>
+      <table style={{borderSpacing: 0}}>
         <tr>
-          <td>
+          <td style={{paddingRight: 0}}>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
           </td>
-          <td><button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
-              <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'>Redefine &darr;</button>
+          <td style={{paddingLeft: 0}}>
+            <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel' style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px'}}>{this.toggledLabel()}</button>
+          </td>
+          <td>{playButton}
           </td>
         </tr>
       </table>
-      <MethodRedefine show={this.state.showMethodDefine} cancel={this.cancelMethodRedefine} submit={this.submitMethodRedefine}/>
+      <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
     </div>
     );
   }
@@ -271,6 +278,10 @@ let LogHistory = React.createClass({
     this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
   },
   render: function() {
+    if (!this.props.somethingBeingTraced) {
+      return null;
+    }
+
     let filter = this.state.filter;
     let regex = new RegExp(filter, 'i');
     let logList = this.props.logHistory.map(function(entry) {
@@ -288,9 +299,10 @@ let LogHistory = React.createClass({
     });
     return (
       <div className='logHistoryContainer'>
+        <hr/>
         <table>
           <tr>
-            <td><input name='logFilter' id='logFilter' placeholder='input text to filter logs' onChange={this.updateFilter}/></td>
+            <td><input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.updateFilter}/></td>
             <td><button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear All</button></td>
             <td>
               <div className='checkboxSwitch' title='Switch data sync'>
@@ -310,6 +322,7 @@ let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
             loadedTargets: [],
+            somethingBeingTraced: false,
             isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
@@ -345,13 +358,16 @@ let JackPlay = React.createClass({
   toggleDataSync: function() {
     this.setState(Object.assign(this.state, {isSyncWithServerPaused: !this.state.isSyncWithServerPaused}));
   },
+  setSomethingBeingTraced: function(v) {
+    this.setState(Object.assign(this.state, {somethingBeingTraced: v}))
+  },
   render: function() {
     return (
     <div>
-      <PlayPanel loadedTargets={this.state.loadedTargets}/>
-      <hr/>
+      <PlayPanel loadedTargets={this.state.loadedTargets} setSomethingBeingTraced={this.setSomethingBeingTraced}/>
       <LogHistory logHistory={this.state.logHistory}
                   clearLogHistory={this.clearLogHistory}
+                  somethingBeingTraced={this.state.somethingBeingTraced}
                   toggleDataSync={this.toggleDataSync}/>
     </div>
     );
