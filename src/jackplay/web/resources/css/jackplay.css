@@ -10,7 +10,7 @@
 }
 
 button {
- margin: 2px;
+ margin: 0px;
  width: 92px;
  height: 32px;
   font-family: 'Open Sans', sans-serif;
@@ -84,4 +84,12 @@ input {
   font-size: 16px;
   border: 1px solid #aaa;
   border-radius: 4px;
+}
+
+input:focus {
+  background-color: #E9CF9E;
+}
+
+input:hover {
+  background-color: #E9CF9E;
 }

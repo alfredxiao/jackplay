@@ -1,4 +1,3 @@
-//<!--input id='playGround' name='playGround' id='playGround' size="60" placeholder="E.g. com.example.RegistrationService" title='Format: className.methodName'/-->
 //import {App} from 'auto-class-lookup';
 
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
@@ -174,7 +173,7 @@ let MethodRedefine = React.createClass({
   return (
       <div style={{display: this.props.show, marginLeft: '0px'}}>
         <div>
-          <textarea rows="8" cols="78" id="newSource" placeholder="{ return 10; }" className='code' style={{marginTop: 0, marginLeft: 0}}></textarea>
+          <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code' style={{marginTop: '-1px', marginLeft: '0px', width: '565px'}}></textarea>
         </div>
         <div>
              <span className="tooltip "> An Example
@@ -219,7 +218,7 @@ let PlayPanel = React.createClass({
     let v = $("div#content input[type=text]")[0].value.trim();
 
     if (v) {
-      this.props.setSomethingBeingTraced(true);
+      this.props.setTraceStarted(true);
       $.ajax({
         url: '/logMethod',
         data: 'playGround=' + v
@@ -241,24 +240,16 @@ let PlayPanel = React.createClass({
   },
   render: function() {
     let playButton = (TRACE_MODE == this.state.playMode) ?
-                     (<button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>)
+                     (<button onClick={this.submitMethodTrace} title='trace this method' style={{marginLeft: '5px'}}>Trace</button>)
                      :
-                     (<button onClick={this.submitMethodRedefine} title='submit new method source'>Redefine</button>);
+                     (<button onClick={this.submitMethodRedefine} title='submit new method source' style={{marginLeft: '5px'}}>Redefine</button>);
     return (
     <div>
-      <table style={{borderSpacing: 0}}>
-        <tr>
-          <td style={{paddingRight: 0}}>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
-          </td>
-          <td style={{paddingLeft: 0}}>
-            <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel' style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px'}}>{this.toggledLabel()}</button>
-          </td>
-          <td>{playButton}
-          </td>
-        </tr>
-      </table>
-      <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
+            <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'
+                    style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
+            {playButton}
+            <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
     </div>
     );
   }
@@ -277,8 +268,12 @@ let LogHistory = React.createClass({
   updateFilter: function() {
     this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
   },
+  clearFilter: function() {
+    document.getElementById('logFilter').value = '';
+    this.updateFilter();
+  },
   render: function() {
-    if (!this.props.somethingBeingTraced) {
+    if (!this.props.traceStarted) {
       return null;
     }
 
@@ -297,21 +292,20 @@ let LogHistory = React.createClass({
           return null;
         };
     });
+    const CROSS = '\u2717';
     return (
       <div className='logHistoryContainer'>
-        <hr/>
-        <table>
-          <tr>
-            <td><input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.updateFilter}/></td>
-            <td><button onClick={this.requestToClearLogHistory} title='clear trace log'>Clear All</button></td>
-            <td>
-              <div className='checkboxSwitch' title='Switch data sync'>
-                <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-                <label htmlFor='autoSync'></label>
-              </div>
-            </td>
-          </tr>
-        </table>
+        <div>
+          <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.updateFilter}
+                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none'}} />
+          <button title='Clear filter' onClick={this.clearFilter}
+                  style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
+          <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
+          <div className='checkboxSwitch' title='Switch data sync' style={{display: 'inline'}}>
+            <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
+            <label htmlFor='autoSync'></label>
+          </div>
+        </div>
         {logList}
       </div>
     );
@@ -322,7 +316,7 @@ let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
             loadedTargets: [],
-            somethingBeingTraced: false,
+            traceStarted: false,
             isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
@@ -333,7 +327,8 @@ let JackPlay = React.createClass({
     $.ajax({
       url: '/logHistory',
       success: function(history) {
-        this.setState(Object.assign(this.state, {logHistory: history}));
+        this.setState(Object.assign(this.state, {logHistory: history,
+                                                 traceStarted: history.length > 0 || this.state.traceStarted }));
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
@@ -358,16 +353,17 @@ let JackPlay = React.createClass({
   toggleDataSync: function() {
     this.setState(Object.assign(this.state, {isSyncWithServerPaused: !this.state.isSyncWithServerPaused}));
   },
-  setSomethingBeingTraced: function(v) {
-    this.setState(Object.assign(this.state, {somethingBeingTraced: v}))
+  setTraceStarted: function(v) {
+    this.setState(Object.assign(this.state, {traceStarted: v}))
   },
   render: function() {
     return (
     <div>
-      <PlayPanel loadedTargets={this.state.loadedTargets} setSomethingBeingTraced={this.setSomethingBeingTraced}/>
+      <PlayPanel loadedTargets={this.state.loadedTargets} setTraceStarted={this.setTraceStarted}/>
+      <br/>
       <LogHistory logHistory={this.state.logHistory}
                   clearLogHistory={this.clearLogHistory}
-                  somethingBeingTraced={this.state.somethingBeingTraced}
+                  traceStarted={this.state.traceStarted}
                   toggleDataSync={this.toggleDataSync}/>
     </div>
     );
