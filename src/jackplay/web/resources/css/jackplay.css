@@ -87,9 +87,17 @@ input {
 }
 
 input:focus {
-  background-color: #E9CF9E;
+  background-color: #EFDAAF;
 }
 
 input:hover {
-  background-color: #E9CF9E;
+  background-color: #EFDAAF;
+}
+
+textarea:focus {
+  background-color: #EFDAAF;
+}
+
+textarea:hover {
+  background-color: #EFDAAF;
 }

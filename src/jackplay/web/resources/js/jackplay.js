@@ -173,7 +173,8 @@ let MethodRedefine = React.createClass({
   return (
       <div style={{display: this.props.show, marginLeft: '0px'}}>
         <div>
-          <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code' style={{marginTop: '-1px', marginLeft: '0px', width: '565px'}}></textarea>
+          <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code'
+                    style={{marginTop: '-1px', marginLeft: '0px', width: '535px', outline: 'none'}}></textarea>
         </div>
         <div>
              <span className="tooltip "> An Example
@@ -297,7 +298,7 @@ let LogHistory = React.createClass({
       <div className='logHistoryContainer'>
         <div>
           <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.updateFilter}
-                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none'}} />
+                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '133px'}} />
           <button title='Clear filter' onClick={this.clearFilter}
                   style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
           <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
