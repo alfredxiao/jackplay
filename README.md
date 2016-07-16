@@ -8,10 +8,10 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 5. Tracing
  - **DONE** method logging
  - across all classes from invocation triggered from specified package/class/method
-6. Hacking (replace method body)
+6. **Hacking** (replace method body)
 7. be able to reset all redefinitions
 8. **DONE** auto search class name & method name
-9. **DONE* support overloading methods
+9. **DONE** support overloading methods
 10. groovy, scala, clojure
 11. on web page, display all current programs/scripts
     also display errors when fails to add a script, ie. request to trace a method that does not exist.
@@ -27,7 +27,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
    - show only execution elapsed time
 17. Display current scripts, allow disable/remove one/multiple of them
 18. **DONE** auto refresh, and load only updated log history
-19. in UI,Filter log messages
+19. **DONE** in UI,Filter log messages
 20. merge javassist lib with agent lib
 21. change javassist package name such that we don't fight with app code that references javassist
 22. **DONE** stop refresh log history
@@ -36,5 +36,5 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 25. improve the display log list in UI such that it becomes easier to identify which method entry correlates to which method return
     and make it easier to tell which line is of what type, which bit of information is method name, which bit is about elapsed time and which bit is about input/output values.
 26. improve exception logging display in UI (esp. multiple line exception message)
-27. highlight matched search text in auto suggest list (ref: )
-28. handle exception if a method redefine fails
+27. **DONE** highlight matched search text in auto suggest list
+28. **DONE** handle exception if a method redefine fails
