@@ -198,6 +198,31 @@ let MethodRedefine = React.createClass({
   )}
 });
 
+const CROSS = '\u2717';
+let LogControl = React.createClass({
+  requestToClearLogHistory: function() {
+    $.ajax({
+          url: '/clearLogHistory',
+    });
+    this.props.clearLogHistory();
+  },
+  render: function() {
+    return (
+        <div style={{display:'inline', paddingLeft: '15px'}}>
+          <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.props.updateFilter}
+                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '133px'}} />
+          <button title='Clear filter' onClick={this.props.clearFilter}
+                  style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
+          <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
+          <div className='checkboxSwitch' title='Switch data sync' style={{display: 'inline'}}>
+            <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
+            <label htmlFor='autoSync'></label>
+          </div>
+        </div>
+    )
+  }
+});
+
 const dTriangle = '\u25BE';
 const uTriangle = '\u25B4';
 const TRACE_MODE = 'TRACE';
@@ -250,6 +275,10 @@ let PlayPanel = React.createClass({
             <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
             {playButton}
+            <LogControl updateFilter={this.props.updateFilter}
+                        clearFilter={this.props.clearFilter}
+                        toggleDataSync={this.props.toggleDataSync}
+                        clearLogHistory={this.props.clearLogHistory} />
             <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
     </div>
     );
@@ -257,28 +286,12 @@ let PlayPanel = React.createClass({
 });
 
 let LogHistory = React.createClass({
-  getInitialState: function() {
-    return {filter: ''};
-  },
-  requestToClearLogHistory: function() {
-    $.ajax({
-          url: '/clearLogHistory',
-    });
-    this.props.clearLogHistory();
-  },
-  updateFilter: function() {
-    this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
-  },
-  clearFilter: function() {
-    document.getElementById('logFilter').value = '';
-    this.updateFilter();
-  },
   render: function() {
     if (!this.props.traceStarted) {
       return null;
     }
 
-    let filter = this.state.filter;
+    let filter = this.props.filter;
     let regex = new RegExp(filter, 'i');
     let logList = this.props.logHistory.map(function(entry) {
         if (!filter || regex.test(entry.log)) {
@@ -293,20 +306,8 @@ let LogHistory = React.createClass({
           return null;
         };
     });
-    const CROSS = '\u2717';
     return (
       <div className='logHistoryContainer'>
-        <div>
-          <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.updateFilter}
-                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '133px'}} />
-          <button title='Clear filter' onClick={this.clearFilter}
-                  style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
-          <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
-          <div className='checkboxSwitch' title='Switch data sync' style={{display: 'inline'}}>
-            <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-            <label htmlFor='autoSync'></label>
-          </div>
-        </div>
         {logList}
       </div>
     );
@@ -316,6 +317,7 @@ let LogHistory = React.createClass({
 let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
+            filter: '',
             loadedTargets: [],
             traceStarted: false,
             isSyncWithServerPaused: false};
@@ -357,15 +359,26 @@ let JackPlay = React.createClass({
   setTraceStarted: function(v) {
     this.setState(Object.assign(this.state, {traceStarted: v}))
   },
+  updateFilter: function() {
+    this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
+  },
+  clearFilter: function() {
+    document.getElementById('logFilter').value = '';
+    this.updateFilter();
+  },
   render: function() {
     return (
     <div>
-      <PlayPanel loadedTargets={this.state.loadedTargets} setTraceStarted={this.setTraceStarted}/>
+      <PlayPanel loadedTargets={this.state.loadedTargets}
+                 setTraceStarted={this.setTraceStarted}
+                 updateFilter={this.updateFilter}
+                 clearFilter={this.clearFilter}
+                 toggleDataSync={this.toggleDataSync}
+                 clearLogHistory={this.clearLogHistory} />
       <br/>
       <LogHistory logHistory={this.state.logHistory}
-                  clearLogHistory={this.clearLogHistory}
                   traceStarted={this.state.traceStarted}
-                  toggleDataSync={this.toggleDataSync}/>
+                  filter={this.state.filter}/>
     </div>
     );
     }
