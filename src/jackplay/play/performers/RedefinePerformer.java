@@ -1,12 +1,11 @@
-package jackplay.play;
+package jackplay.play.performers;
 
-import jackplay.JackLogger;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
+import jackplay.Logger;
+import jackplay.play.domain.PlayGround;
 import javassist.CtClass;
 import javassist.CtMethod;
 
-public class RedefinePerformer implements Performer {
+public class RedefinePerformer implements jackplay.play.performers.Performer {
     String methodLongName;
     String methodShortName;
     String newSource;
@@ -19,7 +18,7 @@ public class RedefinePerformer implements Performer {
 
     @Override
     public CtClass perform(CtClass aClass) throws Exception {
-        JackLogger.debug("redefining method:" + methodLongName);
+        Logger.debug("redefining method:" + methodLongName);
         CtMethod method = findMethodByLongName(aClass);
 
         method.setBody(newSource);

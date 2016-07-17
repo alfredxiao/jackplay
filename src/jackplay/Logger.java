@@ -1,6 +1,6 @@
 package jackplay;
 
-public class JackLogger {
+public class Logger {
     static boolean log = true;
     static boolean debug = true;
 

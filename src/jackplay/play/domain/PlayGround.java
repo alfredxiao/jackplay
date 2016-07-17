@@ -1,4 +1,4 @@
-package jackplay.play;
+package jackplay.play.domain;
 
 import javassist.ClassPool;
 import javassist.CtClass;

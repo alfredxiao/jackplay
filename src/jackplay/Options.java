@@ -3,7 +3,7 @@ package jackplay;
 import java.util.*;
 
 // singleton
-public class JackOptions {
+public class Options {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';
     final static Map<String, String> DEFAULTS = new HashMap<String, String>();
@@ -21,12 +21,12 @@ public class JackOptions {
 
     Map<String, String> options;
 
-    public JackOptions(Map<String, String> options) {
+    public Options(Map<String, String> options) {
         this.options = options;
     }
 
-    public static JackOptions optionsMergedWithDefaults(String args) {
-        return new JackOptions(addDefaults(parseArguments(args)));
+    public static Options optionsMergedWithDefaults(String args) {
+        return new Options(addDefaults(parseArguments(args)));
     }
 
     private static Map<String, String> parseArguments(String args) {

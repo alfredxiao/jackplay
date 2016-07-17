@@ -1,6 +1,8 @@
-package jackplay.play;
+package jackplay.play.performers;
 
-import jackplay.JackLogger;
+import jackplay.Logger;
+import jackplay.play.Composer;
+import jackplay.play.Performer;
 import javassist.ClassPool;
 import javassist.CtClass;
 
@@ -23,18 +25,18 @@ public class LeadPerformer implements ClassFileTransformer {
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
         String clsName = classBeingRedefined.getName();
-        JackLogger.debug("Composer said class to perform:" + classToPlay.getName());
-        JackLogger.debug(".transform() is called with class:" + clsName);
+        Logger.debug("Composer said class to perform:" + classToPlay.getName());
+        Logger.debug(".transform() is called with class:" + clsName);
         if (classBeingRedefined != classToPlay) {
-            JackLogger.debug("ignore a class not of interest");
+            Logger.debug("ignore a class not of interest");
             return classfileBuffer;
         } else {
             byte[] byteCode = classfileBuffer;
             List<Performer> performers = composer.findPerformers(clsName);
-            JackLogger.debug(("performers:" + performers));
+            Logger.debug(("performers:" + performers));
 
             try {
-                JackLogger.debug("size of bytecode before transform:" + byteCode.length);
+                Logger.debug("size of bytecode before transform:" + byteCode.length);
 
                 List<Exception> exceptions = new LinkedList<Exception>();
                 ClassPool cp = ClassPool.getDefault();
@@ -45,6 +47,7 @@ public class LeadPerformer implements ClassFileTransformer {
                     } catch (Exception e) {
                         // markdown what exception happened and continue with next performer
                         exceptions.add(e);
+                        // tell program manager to remove this performer
                     }
                 }
                 this.setExceptionsDuringPerformance(exceptions);
@@ -52,7 +55,7 @@ public class LeadPerformer implements ClassFileTransformer {
                 byteCode = cc.toBytecode();
                 cc.detach();
 
-                JackLogger.debug("size of bytecode after transform:" + byteCode.length);
+                Logger.debug("size of bytecode after transform:" + byteCode.length);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

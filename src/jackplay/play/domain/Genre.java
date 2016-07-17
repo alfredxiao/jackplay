@@ -1,4 +1,4 @@
-package jackplay.play;
+package jackplay.play.domain;
 
 public enum Genre {
     METHOD_LOGGING,

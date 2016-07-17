@@ -1,4 +1,4 @@
-package jackplay.play;
+package jackplay.play.performers;
 
 
 import javassist.CtClass;

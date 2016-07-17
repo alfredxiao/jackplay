@@ -1,16 +1,17 @@
-package jackplay.play;
+package jackplay.play.performers;
 
-import jackplay.JackLogger;
+import jackplay.Logger;
+import jackplay.play.domain.PlayGround;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 
-public class LoggingPerformer implements Performer {
+public class TracingPerformer implements Performer {
     String methodLongName;
     String methodShortName;
     PlayGround playGround;
 
-    public LoggingPerformer(PlayGround playGround) {
+    public TracingPerformer(PlayGround playGround) {
         this.playGround = playGround;
         this.methodLongName = playGround.methodLongName;
         this.methodShortName = playGround.methodShortName;
@@ -18,8 +19,8 @@ public class LoggingPerformer implements Performer {
 
     @Override
     public CtClass perform(CtClass aClass) throws Exception {
-        JackLogger.debug("logging method:" + methodLongName);
-        CtMethod method = playGround.findMethod();
+        Logger.debug("logging method:" + methodLongName);
+        CtMethod method = playGround.locateMethod();
 
         method.addLocalVariable("_elapsed$", CtClass.longType);
         method.insertBefore(logMethodStarting(method));
