@@ -101,3 +101,28 @@ textarea:focus {
 textarea:hover {
   background-color: #EFDAAF;
 }
+
+.globalMessage {
+  padding: 5px;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  margin-bottom: 10px;
+}
+
+.msg_INFO {
+  color: green;
+}
+
+.msg_ERROR {
+  color: red;
+}
+
+button.light {
+ margin-left: 10px;
+ width: 25px;
+ height: 25px;
+ font-family: 'Open Sans', sans-serif;
+ font-weight: 300;
+ font-size: 16px;
+ border: 1px solid #aaa;
+ border-radius: 4px;
+}

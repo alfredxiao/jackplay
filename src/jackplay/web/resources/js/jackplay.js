@@ -1,6 +1,17 @@
 //import {App} from 'auto-class-lookup';
 
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+
+const ERROR = 'ERROR';
+const INFO = 'INFO';
+const SUNG= '\u266A';
+const dTriangle = '\u25BE';
+const uTriangle = '\u25B4';
+const CROSS = '\u2717';
+const STAR = '\u2605';
+const TRACE_MODE = 'TRACE';
+const REDEFINE_MODE = 'REDEFINE';
+
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -198,7 +209,6 @@ let MethodRedefine = React.createClass({
   )}
 });
 
-const CROSS = '\u2717';
 let LogControl = React.createClass({
   requestToClearLogHistory: function() {
     $.ajax({
@@ -223,10 +233,6 @@ let LogControl = React.createClass({
   }
 });
 
-const dTriangle = '\u25BE';
-const uTriangle = '\u25B4';
-const TRACE_MODE = 'TRACE';
-const REDEFINE_MODE = 'REDEFINE';
 let PlayPanel = React.createClass({
   getInitialState: function() {
     return {playMode: TRACE_MODE};
@@ -241,13 +247,20 @@ let PlayPanel = React.createClass({
     return this.state.playMode == MethodRedefine;
   },
   submitMethodTrace: function() {
-    let v = $("div#content input[type=text]")[0].value.trim();
+    let pg = $("div#content input[type=text]")[0].value.trim();
+    if (!pg) this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
 
-    if (v) {
+    if (pg) {
       this.props.setTraceStarted(true);
       $.ajax({
         url: '/logMethod',
-        data: 'playGround=' + v
+        data: 'playGround=' + pg,
+        success: function(data) {
+          this.props.setGlobalMessage(INFO, data);
+        }.bind(this),
+        error: function(data) {
+          this.props.setGlobalMessage(ERROR, data.statusText + " : " + data.responseText);
+        }.bind(this)
       });
     };
   },
@@ -255,12 +268,20 @@ let PlayPanel = React.createClass({
     let pg = $("div#content input[type=text]")[0].value.trim();
     let src = document.getElementById('newSource').value.trim();
 
+    if (!pg || !src) this.props.setGlobalMessage(ERROR, 'A valid classname.methodname and source body must be provided!');
+
     if (pg && src) {
         $.ajax({
           method: 'post',
           url: '/redefineMethod',
           contentType: "application/x-www-form-urlencoded",
-          data: 'playGround=' + pg + "&newSource=" + encodeURIComponent(src)
+          data: 'playGround=' + pg + "&newSource=" + encodeURIComponent(src),
+          success: function(data) {
+            this.props.setGlobalMessage(INFO, data);
+          }.bind(this),
+          error: function(data) {
+            this.props.setGlobalMessage(ERROR, data.statusText + " : " + data.responseText);
+          }.bind(this)
         });
     }
   },
@@ -316,12 +337,34 @@ let LogHistory = React.createClass({
   }
 });
 
+let GlobalMessage = React.createClass({
+  render: function() {
+    let gm = this.props.globalMessage;
+    if (gm) {
+      let icon = (INFO == gm.level) ? SUNG : STAR;
+      return (
+        <div style={{paddingBottom: '8px'}}>
+          <span className='globalMessage'>
+              <span>
+                <span style={{paddingRight: '5px'}}>{icon}</span>
+                <span className={'msg_' + gm.level}>{gm.message}</span>
+              </span>
+          </span>
+          <button onClick={this.props.clearGlobalMessage} className='light' title='Dismiss this message'>{CROSS}</button>
+        </div>
+      );
+    }
+   return null;
+  }
+});
+
 let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
             filter: '',
             loadedTargets: [],
             traceStarted: false,
+            globalMessage: null,
             isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
@@ -368,6 +411,12 @@ let JackPlay = React.createClass({
     document.getElementById('logFilter').value = '';
     this.updateFilter();
   },
+  setGlobalMessage: function(level, msg) {
+    this.setState(Object.assign(this.state, {globalMessage: {level: level, message: msg}}));
+  },
+  clearGlobalMessage: function() {
+    this.setState(Object.assign(this.state, {globalMessage: null}))
+  },
   render: function() {
     return (
     <div>
@@ -376,8 +425,10 @@ let JackPlay = React.createClass({
                  updateFilter={this.updateFilter}
                  clearFilter={this.clearFilter}
                  toggleDataSync={this.toggleDataSync}
+                 setGlobalMessage={this.setGlobalMessage}
                  clearLogHistory={this.clearLogHistory} />
       <br/>
+      <GlobalMessage globalMessage={this.state.globalMessage} clearGlobalMessage={this.clearGlobalMessage} />
       <LogHistory logHistory={this.state.logHistory}
                   traceStarted={this.state.traceStarted}
                   filter={this.state.filter}/>
