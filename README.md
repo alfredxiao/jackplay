@@ -38,3 +38,12 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 26. improve exception logging display in UI (esp. multiple line exception message)
 27. **DONE** highlight matched search text in auto suggest list
 28. **DONE** handle exception if a method redefine fails
+29. handle exceptions
+ - invalid format: abc,  abc.ddd
+   -> not added to program
+ - method not found: abc.nosuchmethod(),  abc.validmethod(
+   -> not added to program
+ - cannot compile src
+   -> added to (since error found when actually performing) and method redefinition should be removed from program
+ - verifier error (passed compilation, but fail verification)
+   -> should all method redefinition of a class, keep method tracing
