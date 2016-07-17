@@ -8,9 +8,9 @@ import javassist.NotFoundException;
 import java.util.Objects;
 
 public class PlayGround {
-    final String className;
-    final String methodLongName;
-    final String methodShortName;
+    public final String className;
+    public final String methodLongName;
+    public final String methodShortName;
 
     final static String INVALID_MESSAGE = "invalid format, correct format is className.methodName()";
 
@@ -46,7 +46,7 @@ public class PlayGround {
     }
 
 
-    CtMethod findMethod() throws NotFoundException {
+    public CtMethod locateMethod() throws NotFoundException {
         ClassPool cp = ClassPool.getDefault();
         CtClass cc = cp.get(this.className);
 

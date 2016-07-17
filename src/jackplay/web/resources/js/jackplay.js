@@ -191,8 +191,8 @@ let MethodRedefine = React.createClass({
              <span className="tooltip "> An Example
                 <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
                     <pre><code>{
-                     " {\n  java.util.Calendar rightNow = java.util.Calendar.getInstance();\n" +
-                     "  return rightNow.get(java.util.Calendar.SECOND); \n" + " }"
+                     " {\n  java.util.Calendar now = java.util.Calendar.getInstance();\n" +
+                     "  return now.get(java.util.Calendar.SECOND); \n" + " }"
                      }</code></pre>
                 </span>
              </span>
@@ -247,14 +247,14 @@ let PlayPanel = React.createClass({
     return this.state.playMode == MethodRedefine;
   },
   submitMethodTrace: function() {
-    let pg = $("div#content input[type=text]")[0].value.trim();
-    if (!pg) this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
+    let longMethodName = $("div#content input[type=text]")[0].value.trim();
+    if (!longMethodName) this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
 
-    if (pg) {
+    if (longMethodName) {
       this.props.setTraceStarted(true);
       $.ajax({
         url: '/logMethod',
-        data: 'playGround=' + pg,
+        data: 'longMethodName=' + longMethodName,
         success: function(data) {
           this.props.setGlobalMessage(INFO, data);
         }.bind(this),
@@ -265,17 +265,17 @@ let PlayPanel = React.createClass({
     };
   },
   submitMethodRedefine: function() {
-    let pg = $("div#content input[type=text]")[0].value.trim();
+    let longMethodName = $("div#content input[type=text]")[0].value.trim();
     let src = document.getElementById('newSource').value.trim();
 
-    if (!pg || !src) this.props.setGlobalMessage(ERROR, 'A valid classname.methodname and source body must be provided!');
+    if (!longMethodName || !src) this.props.setGlobalMessage(ERROR, 'A valid classname.methodname and source body must be provided!');
 
-    if (pg && src) {
+    if (longMethodName && src) {
         $.ajax({
           method: 'post',
           url: '/redefineMethod',
           contentType: "application/x-www-form-urlencoded",
-          data: 'playGround=' + pg + "&newSource=" + encodeURIComponent(src),
+          data: 'longMethodName=' + longMethodName + "&src=" + encodeURIComponent(src),
           success: function(data) {
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),

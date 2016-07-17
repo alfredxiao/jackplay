@@ -2,9 +2,8 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jackplay.JackLogger;
+import jackplay.Logger;
 import jackplay.play.InformationCenter;
-import jackplay.play.PlayLogger;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
@@ -17,13 +16,13 @@ public class LoadedTargetsHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange t) throws IOException {
+    public void handle(HttpExchange http) throws IOException {
         try {
-            t.getResponseHeaders().add("Content-Type", "application/json");
-            CommonHandling.serveStringBody(t, 200, InformationCenter.loadedClassesAsJson(inst));
+            http.getResponseHeaders().add("Content-Type", "application/json");
+            CommonHandling.serveStringBody(http, 200, InformationCenter.loadedClassesAsJson(inst));
         } catch (Exception e) {
-            JackLogger.error(e);
-            CommonHandling.serveStringBody(t, 500, e.getMessage());
+            Logger.error(e);
+            CommonHandling.serveStringBody(http, 500, e.getMessage());
         }
     }
 }

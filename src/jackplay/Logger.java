@@ -21,7 +21,7 @@ public class Logger {
         }
     }
 
-    public static void initialise(JackOptions options) {
+    public static void initialise(Options options) {
         log = options.log();
         debug = options.debug();
     }

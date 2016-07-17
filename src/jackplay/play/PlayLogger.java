@@ -1,6 +1,6 @@
 package jackplay.play;
 
-import jackplay.JackOptions;
+import jackplay.Options;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -195,7 +195,7 @@ public class PlayLogger {
         return formatter.format(when);
     }
 
-    public static void initialise(JackOptions options) {
+    public static void initialise(Options options) {
         logLimit = options.logLimit();
     }
 

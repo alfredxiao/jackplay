@@ -30,25 +30,25 @@ public class ParameterFilter extends Filter {
         chain.doFilter(exchange);
     }
 
-    private void parseGetParameters(HttpExchange exchange)
+    private void parseGetParameters(HttpExchange http)
             throws UnsupportedEncodingException {
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        URI requestedUri = exchange.getRequestURI();
+        URI requestedUri = http.getRequestURI();
         String query = requestedUri.getRawQuery();
         parseQuery(query, parameters);
-        exchange.setAttribute("parameters", parameters);
+        http.setAttribute("parameters", parameters);
     }
 
-    private void parsePostParameters(HttpExchange exchange)
+    private void parsePostParameters(HttpExchange http)
             throws IOException {
 
-        if ("post".equalsIgnoreCase(exchange.getRequestMethod())) {
+        if ("post".equalsIgnoreCase(http.getRequestMethod())) {
             @SuppressWarnings("unchecked")
             Map<String, Object> parameters =
-                    (Map<String, Object>)exchange.getAttribute("parameters");
+                    (Map<String, Object>)http.getAttribute("parameters");
             InputStreamReader isr =
-                    new InputStreamReader(exchange.getRequestBody(),"utf-8");
+                    new InputStreamReader(http.getRequestBody(),"utf-8");
             BufferedReader br = new BufferedReader(isr);
             String query = br.readLine();
             parseQuery(query, parameters);

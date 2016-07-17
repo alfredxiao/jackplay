@@ -1,6 +1,6 @@
 package jackplay.web;
 
-import jackplay.JackLogger;
+import jackplay.Logger;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -10,13 +10,13 @@ import java.io.IOException;
 
 public class LogHistoryHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange t) throws IOException {
+    public void handle(HttpExchange http) throws IOException {
         try {
-            t.getResponseHeaders().add("Content-Type", "application/json");
-            CommonHandling.serveStringBody(t, 200, PlayLogger.getLogHistoryAsJson());
+            http.getResponseHeaders().add("Content-Type", "application/json");
+            CommonHandling.serveStringBody(http, 200, PlayLogger.getLogHistoryAsJson());
         } catch (Exception e) {
-            JackLogger.error(e);
-            CommonHandling.serveStringBody(t, 500, e.getMessage());
+            Logger.error(e);
+            CommonHandling.serveStringBody(http, 500, e.getMessage());
         }
     }
 }

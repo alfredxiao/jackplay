@@ -2,9 +2,8 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jackplay.JackLogger;
-import jackplay.play.Composer;
-import jackplay.play.PlayGround;
+import jackplay.Logger;
+import jackplay.play.ProgramManager;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
@@ -12,29 +11,26 @@ import java.util.Map;
 
 public class RedefineMethodHandler implements HttpHandler {
     Instrumentation inst;
-    Composer composer;
+    ProgramManager pm;
 
-    public RedefineMethodHandler(Instrumentation inst, Composer composer) {
+    public RedefineMethodHandler(Instrumentation inst, ProgramManager pm) {
         this.inst = inst;
-        this.composer = composer;
+        this.pm = pm;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void handle(HttpExchange t) throws IOException {
-        Map<String, Object> params = (Map<String, Object>) t.getAttribute("parameters");
-        String playGroundParam = (String) params.get("playGround");
+    public void handle(HttpExchange http) throws IOException {
+        Map<String, Object> params = (Map<String, Object>) http.getAttribute("parameters");
+        String longMethodName = (String) params.get("longMethodName");
         String newSource = (String) params.get("newSource");
-        JackLogger.debug("playGround:" + playGroundParam);
-        JackLogger.debug("newSource:" + newSource);
 
         try {
-            PlayGround playGround = new PlayGround(playGroundParam);
-            composer.redefineMethod(playGround, newSource);
-            CommonHandling.serveStringBody(t, 200, "OK");
+            pm.addPlayAsRedefinition(longMethodName, newSource);
+            CommonHandling.serveStringBody(http, 200, "OK");
         } catch (Exception e) {
-            JackLogger.error(e);
-            CommonHandling.serveStringBody(t, 500, e.getMessage());
+            Logger.error(e);
+            CommonHandling.serveStringBody(http, 500, e.getMessage());
         }
     }
 }

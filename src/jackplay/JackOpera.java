@@ -1,19 +1,31 @@
 package jackplay;
 
 import jackplay.play.Composer;
+import jackplay.play.Opera;
 import jackplay.play.ProgramManager;
 import jackplay.play.performers.LeadPerformer;
 import jackplay.web.BoxOffice;
 
 import java.lang.instrument.*;
 
-public class JackOpera implements IOpera {
+public class JackOpera implements Opera {
     static JackOpera jackOpera;
 
+    Options options;
+    Instrumentation inst;
     Composer composer;
     ProgramManager pm;
     LeadPerformer leader;
     BoxOffice boxOffice;
+
+    public JackOpera(Options options, Instrumentation inst, Composer composer, ProgramManager pm, LeadPerformer leader, BoxOffice boxOffice) {
+        this.options = options;
+        this.inst = inst;
+        this.composer = composer;
+        this.pm = pm;
+        this.leader = leader;
+        this.boxOffice = boxOffice;
+    }
 
     public static void premain(String agentArgs, Instrumentation inst) {
         Logger.log("running JackOpera with arguments:" + agentArgs);
@@ -23,33 +35,44 @@ public class JackOpera implements IOpera {
         Options options = Options.optionsMergedWithDefaults(agentArgs);
         Logger.initialise(options);
 
-        jackOpera = new JackOpera();
-        Composer composer = new Composer(jackOpera);
+        Composer composer = new Composer();
         ProgramManager pm = new ProgramManager();
-        LeadPerformer leader = new LeadPerformer(jackOpera);
-        BoxOffice boxOffice = new BoxOffice(jackOpera);
+        LeadPerformer leader = new LeadPerformer();
+        BoxOffice boxOffice = new BoxOffice();
 
-        jackOpera.composer = composer;
-        jackOpera.pm = pm;
-        jackOpera.leader = leader;
-        jackOpera.boxOffice = boxOffice;
+        jackOpera = new JackOpera(options, inst, composer, pm, leader, boxOffice);
 
         jackOpera.start();
     }
 
+    @Override
+    public Options getOptions() {
+        return this.options;
+    }
+
+    @Override
+    public Instrumentation getInstrumentation() {
+        return this.inst;
+    }
+
     public Composer getComposer() {
-        return composer;
+        return this.composer;
     }
 
     public ProgramManager getProgramManager() {
-        return pm;
+        return this.pm;
     }
 
     public LeadPerformer getLeadPerformer() {
-        return leader;
+        return this.leader;
     }
 
     public void start() {
+        composer.init(this);
+        pm.init(this);
+        leader.init(this);
+        boxOffice.init(this);
+
         this.boxOffice.start();
     }
 }

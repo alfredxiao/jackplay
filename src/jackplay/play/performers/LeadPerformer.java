@@ -2,38 +2,42 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.play.Composer;
-import jackplay.play.Performer;
+import jackplay.play.Opera;
+import jackplay.play.ProgramManager;
+import jackplay.play.domain.Genre;
 import javassist.ClassPool;
 import javassist.CtClass;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class LeadPerformer implements ClassFileTransformer {
     Composer composer;
+    ProgramManager pm;
     private Class classToPlay;
     private List<Exception> exceptionsDuringPerformance;
 
-    public LeadPerformer(Composer composer) {
-        this.composer = composer;
+    public void init(Opera opera) {
+        this.composer = opera.getComposer();
+        this.pm = opera.getProgramManager();
     }
 
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
         String clsName = classBeingRedefined.getName();
-        Logger.debug("Composer said class to perform:" + classToPlay.getName());
-        Logger.debug(".transform() is called with class:" + clsName);
         if (classBeingRedefined != classToPlay) {
-            Logger.debug("ignore a class not of interest");
             return classfileBuffer;
         } else {
             byte[] byteCode = classfileBuffer;
-            List<Performer> performers = composer.findPerformers(clsName);
-            Logger.debug(("performers:" + performers));
+
+            List<Performer> allPerformers = new ArrayList<Performer>();
+            allPerformers.addAll(pm.findPerformers(Genre.METHOD_REDEFINE, clsName));
+            allPerformers.addAll(pm.findPerformers(Genre.METHOD_LOGGING, clsName));
 
             try {
                 Logger.debug("size of bytecode before transform:" + byteCode.length);
@@ -41,7 +45,7 @@ public class LeadPerformer implements ClassFileTransformer {
                 List<Exception> exceptions = new LinkedList<Exception>();
                 ClassPool cp = ClassPool.getDefault();
                 CtClass cc = cp.get(clsName);
-                for (Performer performer : performers) {
+                for (Performer performer : allPerformers) {
                     try {
                         cc = performer.perform(cc);
                     } catch (Exception e) {

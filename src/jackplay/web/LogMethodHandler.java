@@ -1,9 +1,8 @@
 package jackplay.web;
 
-import jackplay.play.Composer;
-import jackplay.JackLogger;
+import jackplay.Logger;
 
-import jackplay.play.PlayGround;
+import jackplay.play.ProgramManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -13,27 +12,24 @@ import java.util.Map;
 
 public class LogMethodHandler implements HttpHandler {
     Instrumentation inst;
-    Composer composer;
+    ProgramManager pm;
 
-    public LogMethodHandler(Instrumentation inst, Composer composer) {
+    public LogMethodHandler(Instrumentation inst, ProgramManager pm) {
         this.inst = inst;
-        this.composer = composer;
+        this.pm = pm;
     }
 
     @Override
-    public void handle(HttpExchange t) throws IOException {
-        Map<String, String> params = WebUtils.parseParams(t.getRequestURI());
-        String playGroundParam = params.get("playGround");
-
-        JackLogger.debug("playGround:" + playGroundParam);
+    public void handle(HttpExchange http) throws IOException {
+        Map<String, String> params = WebUtils.parseParams(http.getRequestURI());
+        String longMethodName = params.get("longMethodName");
 
         try {
-            PlayGround playGround = new PlayGround(playGroundParam);
-            composer.logMethod(playGround);
-            CommonHandling.serveStringBody(t, 200, "OK");
+            pm.addPlayAsTracing(longMethodName);
+            CommonHandling.serveStringBody(http, 200, "OK");
         } catch (Exception e) {
-            JackLogger.error(e);
-            CommonHandling.serveStringBody(t, 500, e.getMessage());
+            Logger.error(e);
+            CommonHandling.serveStringBody(http, 500, e.getMessage());
         }
     }
 }

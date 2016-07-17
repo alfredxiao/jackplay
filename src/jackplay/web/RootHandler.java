@@ -2,19 +2,18 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jackplay.JackLogger;
-import jackplay.play.Composer;
+import jackplay.play.ProgramManager;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
 public class RootHandler implements HttpHandler {
     private final Instrumentation inst;
-    private final Composer composer;
+    private final ProgramManager pm;
 
-    public RootHandler(Instrumentation inst, Composer composer) {
+    public RootHandler(Instrumentation inst, ProgramManager pm) {
         this.inst = inst;
-        this.composer = composer;
+        this.pm = pm;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class RootHandler implements HttpHandler {
         if (uri.isEmpty() || "/".equals(uri)) uri = "/index.html";
 
         if (uri.startsWith("/logMethod")) {
-            new LogMethodHandler(inst, composer).handle(exchange);
+            new LogMethodHandler(inst, pm).handle(exchange);
         } else if (uri.startsWith("/logHistory")) {
             new LogHistoryHandler().handle(exchange);
         } else if (uri.startsWith("/clearLogHistory")) {
@@ -31,7 +30,7 @@ public class RootHandler implements HttpHandler {
         } else if (uri.startsWith("/loadedTargets")) {
             new LoadedTargetsHandler(inst).handle(exchange);
         } else if (uri.startsWith("/redefineMethod")) {
-            new RedefineMethodHandler(inst, composer).handle(exchange);
+            new RedefineMethodHandler(inst, pm).handle(exchange);
         } else {
             if ("get".equalsIgnoreCase(exchange.getRequestMethod())) {
                 CommonHandling.serveStaticResource(exchange, 200, uri);
