@@ -1,5 +1,10 @@
 package jackplay.play;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+
 import java.util.Objects;
 
 public class PlayGround {
@@ -7,11 +12,14 @@ public class PlayGround {
     final String methodLongName;
     final String methodShortName;
 
+    final static String INVALID_MESSAGE = "invalid format, correct format is className.methodName()";
+
     public PlayGround(String methodLongName) {
         int lastDot = methodLongName.lastIndexOf('.');
-        if (lastDot <= 1 || methodLongName.endsWith(".")) throw new RuntimeException(methodLongName + " : Invalid format which should conform to className.methodLongName");
+        if (lastDot <= 1 || methodLongName.endsWith(".")) throwInvalidFormatMessage(methodLongName);
 
         int firstParen = methodLongName.indexOf('(');
+        if (firstParen <= 0) throwInvalidFormatMessage(methodLongName);
         int dotBeforeMethodName = methodLongName.substring(0, firstParen).lastIndexOf('.');
 
         this.className = methodLongName.substring(0, dotBeforeMethodName);
@@ -19,10 +27,29 @@ public class PlayGround {
         this.methodShortName = findMethodShortName(methodLongName);
     }
 
+    private void throwInvalidFormatMessage(String methodLongName) {
+        throw new RuntimeException("[" + methodLongName + "] is " + INVALID_MESSAGE);
+    }
+
     private static String findMethodShortName(String methodLongName) {
         int firstParen = methodLongName.indexOf('(');
         int dotBeforeMethodName = methodLongName.substring(0, firstParen).lastIndexOf('.');
         return methodLongName.substring(dotBeforeMethodName + 1, firstParen);
+    }
+
+
+    CtMethod findMethod() throws NotFoundException {
+        ClassPool cp = ClassPool.getDefault();
+        CtClass cc = cp.get(this.className);
+
+        CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
+        for (CtMethod m : methods) {
+            if (m.getLongName().equals(methodLongName)) {
+                return m;
+            }
+        }
+
+        throw new NotFoundException("method " + methodLongName + " not found!");
     }
 
     @Override

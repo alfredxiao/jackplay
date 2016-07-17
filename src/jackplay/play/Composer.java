@@ -2,6 +2,8 @@ package jackplay.play;
 
 import jackplay.JackLogger;
 import jackplay.JackOptions;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
@@ -24,20 +26,25 @@ public class Composer {
     }
 
     public void logMethod(PlayGround playGround) throws Exception {
-        if (isNewPlay(playGround, Genre.METHOD_LOGGING)) {
+        if (isNewAndValidPlay(playGround, Genre.METHOD_LOGGING)) {
             addPlayToProgram(playGround, Genre.METHOD_LOGGING, null);
             this.performPlay(playGround.className);
         }
     }
 
     public void redefineMethod(PlayGround playGround, String methodSource) throws Exception {
-        if (isNewPlay(playGround, Genre.METHOD_REDEFINE)) {
+        if (isNewAndValidPlay(playGround, Genre.METHOD_REDEFINE)) {
             addPlayToProgram(playGround, Genre.METHOD_REDEFINE, methodSource);
             this.performPlay(playGround.className);
         }
     }
 
-    private boolean isNewPlay(PlayGround playGround, Genre genre) {
+    private static void lookupMethod(PlayGround pg) throws NotFoundException {
+        CtMethod m = pg.findMethod();
+    }
+
+    private boolean isNewAndValidPlay(PlayGround playGround, Genre genre) throws NotFoundException {
+        lookupMethod(playGround);
         boolean playExists =
                 program.containsKey(playGround.className)
                 && program.get(playGround.className).containsKey(playGround.methodLongName)
@@ -83,6 +90,11 @@ public class Composer {
                     JackLogger.error(ve);
                     JackLogger.log("can't verify a class, will reset its method body (while keep tracing if any)");
                     UndoClassRedefinition(c);
+                    // todo: remove redefine performer
+                }
+
+                if (!leadPerformer.getExceptionsDuringPerformance().isEmpty()) {
+                    throw new Exception("error in performing class redefinition", leadPerformer.getExceptionsDuringPerformance().get(0));
                 }
             } else {
                 throw new Exception("class not modifiable:" + className);

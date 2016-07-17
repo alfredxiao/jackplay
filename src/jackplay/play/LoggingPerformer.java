@@ -8,16 +8,18 @@ import javassist.CtMethod;
 public class LoggingPerformer implements Performer {
     String methodLongName;
     String methodShortName;
+    PlayGround playGround;
 
     public LoggingPerformer(PlayGround playGround) {
+        this.playGround = playGround;
         this.methodLongName = playGround.methodLongName;
         this.methodShortName = playGround.methodShortName;
     }
 
     @Override
-    public CtClass play(CtClass aClass) throws Exception {
+    public CtClass perform(CtClass aClass) throws Exception {
         JackLogger.debug("logging method:" + methodLongName);
-        CtMethod method = findMethodByLongName(aClass);
+        CtMethod method = playGround.findMethod();
 
         method.addLocalVariable("_elapsed$", CtClass.longType);
         method.insertBefore(logMethodStarting(method));
@@ -38,35 +40,24 @@ public class LoggingPerformer implements Performer {
         // ref: https://issues.jboss.org/browse/JASSIST-232
     }
 
-    private CtMethod findMethodByLongName(CtClass aClass) throws Exception {
-        CtMethod[] methods = aClass.getDeclaredMethods(methodShortName);
-        for (CtMethod m : methods) {
-            if (m.getLongName().equals(methodLongName)) {
-                return m;
-            }
-        }
-
-        throw new RuntimeException("method " + methodLongName + " not found in class " + aClass.getName());
-    }
-
     private static String ELAPSED_TIME_START = "_elapsed$ = System.currentTimeMillis();";
     private static String logMethodStarting(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.PlayLogger.logArguments(\"%2$s\", \"%3$s\", $args);",
+        return String.format("%1$s ; jackplay.perform.PlayLogger.logArguments(\"%2$s\", \"%3$s\", $args);",
                              ELAPSED_TIME_START, m.getName(), m.getLongName());
     }
 
     private static String ELAPSED_TIME_END = "_elapsed$ = System.currentTimeMillis() - _elapsed$;";
     private static String logMethodReturn(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.PlayLogger.logReturn(\"%2$s\", \"%3$s\", _elapsed$);",
+        return String.format("%1$s ; jackplay.perform.PlayLogger.logReturn(\"%2$s\", \"%3$s\", _elapsed$);",
                 ELAPSED_TIME_END, m.getName(), m.getLongName());
     }
     private static String logMethodResult(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.PlayLogger.logResult(\"%2$s\", \"%3$s\", $_, _elapsed$);",
+        return String.format("%1$s ; jackplay.perform.PlayLogger.logResult(\"%2$s\", \"%3$s\", $_, _elapsed$);",
                 ELAPSED_TIME_END, m.getName(), m.getLongName());
     }
 
     private static String logMethodException(CtMethod m) {
-        return String.format("{ jackplay.play.PlayLogger.logException(\"%1$s\", \"%2$s\", $e); throw $e; }",
+        return String.format("{ jackplay.perform.PlayLogger.logException(\"%1$s\", \"%2$s\", $e); throw $e; }",
                              m.getName(), m.getLongName());
     }
 }

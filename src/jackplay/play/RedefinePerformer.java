@@ -18,15 +18,11 @@ public class RedefinePerformer implements Performer {
     }
 
     @Override
-    public CtClass play(CtClass aClass) throws Exception {
+    public CtClass perform(CtClass aClass) throws Exception {
         JackLogger.debug("redefining method:" + methodLongName);
         CtMethod method = findMethodByLongName(aClass);
 
-        try {
-            method.setBody(newSource);
-        } catch(CannotCompileException cce) {
-            JackLogger.error(cce);
-        }
+        method.setBody(newSource);
 
         return aClass;
     }
