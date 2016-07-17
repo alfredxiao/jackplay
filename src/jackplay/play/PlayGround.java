@@ -15,11 +15,19 @@ public class PlayGround {
     final static String INVALID_MESSAGE = "invalid format, correct format is className.methodName()";
 
     public PlayGround(String methodLongName) {
+        if (null == methodLongName
+                || methodLongName.length() < 5
+                || !methodLongName.endsWith(")")
+                || methodLongName.indexOf(' ') >= 0) {
+            throwInvalidFormatMessage(methodLongName);
+        }
+
         int lastDot = methodLongName.lastIndexOf('.');
         if (lastDot <= 1 || methodLongName.endsWith(".")) throwInvalidFormatMessage(methodLongName);
 
         int firstParen = methodLongName.indexOf('(');
         if (firstParen <= 0) throwInvalidFormatMessage(methodLongName);
+
         int dotBeforeMethodName = methodLongName.substring(0, firstParen).lastIndexOf('.');
 
         this.className = methodLongName.substring(0, dotBeforeMethodName);
