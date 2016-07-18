@@ -28,7 +28,7 @@ public class ProgramManager {
     private void addPlay(String methodLongName, Genre genre, String src) throws Exception {
         PlayGround pg = new PlayGround(methodLongName);     // basic format validation
         validateMethodLocation(pg);                         // validate method existence
-        if (!existsPlay(pg, genre)) {
+        if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addToProgram(pg, genre, src);
             composer.performPlay(pg.className);
         }
@@ -38,12 +38,13 @@ public class ProgramManager {
         pg.locateMethod();
     }
 
-    public void removeRedefinition(String methodLongName) {
-
+    public void removeRedefinition(String className, String methodLongName) {
+        program.get(Genre.METHOD_REDEFINE).get(className).remove(methodLongName);
     }
 
-    public void removeRedefinitions(String className) {
-
+    // called when verifier error
+    void removeRedefinitions(String className) {
+        program.get(Genre.METHOD_REDEFINE).remove(className);
     }
 
     private boolean existsPlay(PlayGround pg, Genre genre) throws NotFoundException {
@@ -84,12 +85,12 @@ public class ProgramManager {
         }
     }
 
-    void removeRedefinePerformers(String className) {
-        program.get(Genre.METHOD_REDEFINE).remove(className);
+    public Collection<Performer> findPerformers(Genre genre, String className) {
+        if (program.containsKey(genre) && program.get(genre).containsKey(className)) {
+            return program.get(genre).get(className).values();
+        } else {
+            return null;
+        }
     }
 
-    public Collection<Performer> findPerformers(Genre genre, String className) {
-        Map<String, Performer> methodMap = program.get(genre).get(className);
-        return methodMap.values();
-    }
 }

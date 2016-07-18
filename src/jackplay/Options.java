@@ -10,9 +10,8 @@ public class Options {
 
     static {
         DEFAULTS.put("port", "8080");
-        DEFAULTS.put("log", "true");
-        DEFAULTS.put("debug", "false");
-        DEFAULTS.put("logLimit", "200");
+        DEFAULTS.put("logLevel", "info");
+        DEFAULTS.put("playBookSize", "200");
     }
 
     public static boolean isEmpty(String s) {
@@ -57,15 +56,11 @@ public class Options {
         return Integer.parseInt(options.get("port"));
     }
 
-    public boolean log() {
-        return Boolean.parseBoolean(options.get("log"));
+    public String logLevel() {
+        return options.get("logLevel");
     }
 
-    public boolean debug() {
-        return Boolean.parseBoolean(options.get("debug"));
-    }
-
-    public int logLimit() {
-        return Integer.parseInt(options.get("logLimit"));
+    public int playBookSize() {
+        return Integer.parseInt(options.get("playBookSize"));
     }
 }

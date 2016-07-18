@@ -48,16 +48,24 @@ public class PlayGround {
 
     public CtMethod locateMethod() throws NotFoundException {
         ClassPool cp = ClassPool.getDefault();
-        CtClass cc = cp.get(this.className);
+        CtMethod found = null;
+        try {
+            CtClass cc = cp.get(this.className);
 
-        CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
-        for (CtMethod m : methods) {
-            if (m.getLongName().equals(methodLongName)) {
-                return m;
+            CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
+            for (CtMethod m : methods) {
+                if (m.getLongName().equals(methodLongName)) {
+                    found = m;
+                }
             }
+        } catch(NotFoundException nfe) {
         }
 
-        throw new NotFoundException("method " + methodLongName + " not found!");
+        if (null == found) {
+            throw new NotFoundException(this.methodLongName + " not found!");
+        } else {
+            return found;
+        }
     }
 
     @Override
@@ -76,9 +84,6 @@ public class PlayGround {
 
     @Override
     public String toString() {
-        return "PlayGround{" +
-                "className='" + className + '\'' +
-                ", methodLongName='" + methodLongName + '\'' +
-                '}';
+        return "methodLongName";
     }
 }

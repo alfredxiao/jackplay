@@ -10,11 +10,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PlayLogger {
-    static List<LogEntry> logHistory = new LinkedList<LogEntry>();
-    static int logLimit;
+public class PlayKeeper {
+    static List<PlayEntry> logHistory = new LinkedList<PlayEntry>();
+    static int playBookSize;
 
-    public static void logArguments(String name, String longName, Object[] args) {
+    public static void traceArguments(String name, String longName, Object[] args) {
         StringBuilder builder = new StringBuilder(name);
         builder.append("(");
         boolean firstArgument = true;
@@ -26,27 +26,27 @@ public class PlayLogger {
         }
         builder.append(")");
 
-        addToHistory(LogEntryType.MethodEntry, builder.toString());
+        addToHistory(PlayEntryType.MethodEntry, builder.toString());
     }
 
-    private synchronized static void addToHistory(LogEntryType type, String log) {
-        while (logHistory.size() >= logLimit) {
+    private synchronized static void addToHistory(PlayEntryType type, String log) {
+        while (logHistory.size() >= playBookSize) {
             logHistory.remove(logHistory.size() - 1);
         }
-        LogEntry entry = new LogEntry(type, log);
+        PlayEntry entry = new PlayEntry(type, log);
         logHistory.add(0, entry);
     }
 
-    public static void logReturn(String name, String longName, long elapsed) {
+    public static void traceReturn(String name, String longName, long elapsed) {
         StringBuilder builder = new StringBuilder(name);
         builder.append(name).append("() returns, elapsed ").append(elapsed).append(" ms");
-        addToHistory(LogEntryType.MethodReturns, builder.toString());
+        addToHistory(PlayEntryType.MethodReturns, builder.toString());
     }
 
-    public static void logResult(String name, String longName, Object result, long elapsed) {
+    public static void traceResult(String name, String longName, Object result, long elapsed) {
         StringBuilder builder = new StringBuilder(name);
         builder.append("()").append(" elapsed ").append(elapsed).append(" ms ").append(" => ").append(objectToString(result));
-        addToHistory(LogEntryType.MethodReturns, builder.toString());
+        addToHistory(PlayEntryType.MethodReturns, builder.toString());
     }
 
     private static String objectToString(Object obj) {
@@ -76,54 +76,54 @@ public class PlayLogger {
         return builder.toString();
     }
 
-    public static void logResult(String name, String longName, boolean result, long elapsed) {
-        logResult(name, longName, Boolean.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, boolean result, long elapsed) {
+        traceResult(name, longName, Boolean.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, byte result, long elapsed) {
-        logResult(name, longName, Byte.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, byte result, long elapsed) {
+        traceResult(name, longName, Byte.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, short result, long elapsed) {
-        logResult(name, longName, Short.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, short result, long elapsed) {
+        traceResult(name, longName, Short.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, int result, long elapsed) {
-        logResult(name, longName, Integer.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, int result, long elapsed) {
+        traceResult(name, longName, Integer.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, long result, long elapsed) {
-        logResult(name, longName, Long.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, long result, long elapsed) {
+        traceResult(name, longName, Long.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, float result, long elapsed) {
-        logResult(name, longName, Float.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, float result, long elapsed) {
+        traceResult(name, longName, Float.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, char result, long elapsed) {
-        logResult(name, longName, Character.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, char result, long elapsed) {
+        traceResult(name, longName, Character.valueOf(result), elapsed);
     }
 
-    public static void logResult(String name, String longName, double result, long elapsed) {
-        logResult(name, longName, Double.valueOf(result), elapsed);
+    public static void traceResult(String name, String longName, double result, long elapsed) {
+        traceResult(name, longName, Double.valueOf(result), elapsed);
     }
 
-    public static void logException(String name, String longName, Throwable t) {
+    public static void traceException(String name, String longName, Throwable t) {
         StringBuilder builder = new StringBuilder(name);
         builder.append("() throws an exception! ");
         StringWriter errors = new StringWriter();
         t.printStackTrace(new PrintWriter(errors));
         builder.append(errors);
-        addToHistory(LogEntryType.MethodThrowsException, builder.toString());
+        addToHistory(PlayEntryType.MethodThrowsException, builder.toString());
     }
 
     public static String getLogHistoryAsJson() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         boolean isFirst = true;
-        Iterator<LogEntry> it = logHistory.iterator();
+        Iterator<PlayEntry> it = logHistory.iterator();
         while (it.hasNext()) {
-            LogEntry entry = it.next();
+            PlayEntry entry = it.next();
             if (!isFirst) builder.append(',');
             builder.append("{");
             builder.append("\"type\":\"").append(entry.type.toString()).append("\",");
@@ -195,8 +195,8 @@ public class PlayLogger {
         return formatter.format(when);
     }
 
-    public static void initialise(Options options) {
-        logLimit = options.logLimit();
+    public static void init(Options options) {
+        playBookSize = options.playBookSize();
     }
 
     public synchronized static void clearLogHistory() {
@@ -204,19 +204,19 @@ public class PlayLogger {
     }
 }
 
-class LogEntry{
+class PlayEntry {
     Date when;
     String log;
-    LogEntryType type;
+    PlayEntryType type;
 
-    public LogEntry(LogEntryType type, String log) {
+    public PlayEntry(PlayEntryType type, String log) {
         this.when = new Date();
         this.log = log;
         this.type = type;
     }
 }
 
-enum LogEntryType {
+enum PlayEntryType {
     MethodEntry,
     MethodReturns,
     MethodThrowsException

@@ -1,8 +1,6 @@
 package jackplay;
 
-import jackplay.play.Composer;
-import jackplay.play.Opera;
-import jackplay.play.ProgramManager;
+import jackplay.play.*;
 import jackplay.play.performers.LeadPerformer;
 import jackplay.web.BoxOffice;
 
@@ -28,12 +26,15 @@ public class JackOpera implements Opera {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        Logger.log("running JackOpera with arguments:" + agentArgs);
+        Logger.info("running JackOpera with arguments:" + agentArgs);
         Logger.debug("Instrumentation.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
         Logger.debug("Instrumentation.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
 
         Options options = Options.optionsMergedWithDefaults(agentArgs);
-        Logger.initialise(options);
+        Logger.info("open your browser and point to http://localhost:" + options.port());
+
+        Logger.init(options);
+        PlayKeeper.init(options);
 
         Composer composer = new Composer();
         ProgramManager pm = new ProgramManager();

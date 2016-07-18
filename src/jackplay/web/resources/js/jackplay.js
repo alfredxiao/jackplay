@@ -369,7 +369,7 @@ let JackPlay = React.createClass({
   },
   componentDidMount: function() {
     this.syncDataWithServer();
-    setInterval(this.checkDataSync, 2218);
+    setInterval(this.checkDataSync, 3333);
   },
   syncDataWithServer: function() {
     $.ajax({

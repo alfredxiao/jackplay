@@ -23,10 +23,10 @@ public class RedefineMethodHandler implements HttpHandler {
     public void handle(HttpExchange http) throws IOException {
         Map<String, Object> params = (Map<String, Object>) http.getAttribute("parameters");
         String longMethodName = (String) params.get("longMethodName");
-        String newSource = (String) params.get("newSource");
+        String src = (String) params.get("src");
 
         try {
-            pm.addPlayAsRedefinition(longMethodName, newSource);
+            pm.addPlayAsRedefinition(longMethodName, src);
             CommonHandling.serveStringBody(http, 200, "OK");
         } catch (Exception e) {
             Logger.error(e);

@@ -35,11 +35,11 @@ public class CommonHandling {
     }
 
     private static InputStream loadResource(String resourcePath) throws IOException {
-        //InputStream resourceStream = this.getClass().getResourceAsStream("/web/resources" + resourcePath);
-        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/src/jackplay/web/resources" + resourcePath);
+        InputStream resourceStream = CommonHandling.class.getResourceAsStream("/jackplay/web/resources" + resourcePath);
+        //InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/src/jackplay/web/resources" + resourcePath);
 
         if (null == resourceStream) {
-            resourceStream = CommonHandling.class.getResourceAsStream("/web/resources/404.html");
+            resourceStream = CommonHandling.class.getResourceAsStream("/jackplay/web/resources/404.html");
         }
 
         return resourceStream;

@@ -1,11 +1,10 @@
 package jackplay;
 
 public class Logger {
-    static boolean log = true;
-    static boolean debug = true;
+    static String logLevel = "info";
 
-    public static void log(Object msg) {
-        if (log) {
+    public static void info(Object msg) {
+        if ("info".equalsIgnoreCase(logLevel) || "debug".equalsIgnoreCase(logLevel)) {
             System.out.println("jackplay[info]: " + ((null == msg) ? "" : msg.toString()));
         }
     }
@@ -16,13 +15,12 @@ public class Logger {
     }
 
     public static void debug(Object msg) {
-        if (debug) {
+        if ("debug".equalsIgnoreCase(logLevel)) {
             System.out.println("jackplay[debug]: " + ((null == msg) ? "" : msg.toString()));
         }
     }
 
-    public static void initialise(Options options) {
-        log = options.log();
-        debug = options.debug();
+    public static void init(Options options) {
+        logLevel = options.logLevel();
     }
 }

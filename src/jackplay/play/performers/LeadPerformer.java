@@ -1,17 +1,17 @@
 package jackplay.play.performers;
 
-import jackplay.Logger;
 import jackplay.play.Composer;
 import jackplay.play.Opera;
 import jackplay.play.ProgramManager;
 import jackplay.play.domain.Genre;
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,13 +35,9 @@ public class LeadPerformer implements ClassFileTransformer {
         } else {
             byte[] byteCode = classfileBuffer;
 
-            List<Performer> allPerformers = new ArrayList<Performer>();
-            allPerformers.addAll(pm.findPerformers(Genre.METHOD_REDEFINE, clsName));
-            allPerformers.addAll(pm.findPerformers(Genre.METHOD_LOGGING, clsName));
+            List<Performer> allPerformers = findAllPerformers(clsName);
 
             try {
-                Logger.debug("size of bytecode before transform:" + byteCode.length);
-
                 List<Exception> exceptions = new LinkedList<Exception>();
                 ClassPool cp = ClassPool.getDefault();
                 CtClass cc = cp.get(clsName);
@@ -52,20 +48,34 @@ public class LeadPerformer implements ClassFileTransformer {
                         // markdown what exception happened and continue with next performer
                         exceptions.add(e);
                         // tell program manager to remove this performer
+                        if (performer instanceof  RedefinePerformer) {
+                            RedefinePerformer redefPerf = (RedefinePerformer) performer;
+                            pm.removeRedefinition(clsName, redefPerf.methodLongName);
+                        }
                     }
                 }
                 this.setExceptionsDuringPerformance(exceptions);
 
                 byteCode = cc.toBytecode();
                 cc.detach();
-
-                Logger.debug("size of bytecode after transform:" + byteCode.length);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
             return byteCode;
         }
+    }
+
+    private List<Performer> findAllPerformers(String clsName) {
+        List<Performer> allPerformers = new LinkedList<Performer>();
+
+        Collection<Performer> redefiningPerformers = pm.findPerformers(Genre.METHOD_REDEFINE, clsName);
+        if (redefiningPerformers != null) allPerformers.addAll(redefiningPerformers);
+
+        Collection<Performer> tracingPerformers = pm.findPerformers(Genre.METHOD_LOGGING, clsName);
+        if (tracingPerformers != null) allPerformers.addAll(tracingPerformers);
+
+        return allPerformers;
     }
 
     public void setClassToPlay(Class classToPlay) {
