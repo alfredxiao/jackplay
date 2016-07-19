@@ -185,7 +185,7 @@ let MethodRedefine = React.createClass({
       <div style={{display: this.props.show, marginLeft: '0px'}}>
         <div>
           <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code'
-                    style={{marginTop: '-1px', marginLeft: '0px', width: '535px', outline: 'none'}}></textarea>
+                    style={{marginTop: '-1px', marginLeft: '0px', width: '549px', outline: 'none'}}></textarea>
         </div>
         <div>
              <span className="tooltip "> An Example
@@ -292,6 +292,10 @@ let PlayPanel = React.createClass({
                      (<button onClick={this.submitMethodRedefine} title='submit new method source' style={{marginLeft: '5px', borderRadius: '4px 0px 0px 4px'}}>Redefine</button>);
     return (
     <div>
+            <button style={{borderRight: 0, margin: 0, paddingLeft: '6px', width: '20px', borderRadius: '4px 0px 0px 4px', outline:'none'}}
+                    id='searchIcon'>
+                <span className="fa fa-search" style={{fontSize:'14px', color: '#666'}}></span>
+            </button>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
             <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>

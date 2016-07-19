@@ -7,12 +7,14 @@
   width: 500px;
   height: 18px;
   padding: 6px 10px;
+  padding-left: 5px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 16px;
   border: 1px solid #aaa;
-  border-radius: 4px 0px 0px 4px;
+  border-radius: 0px 0px 0px 0px;
   border-right: 0px;
+  border-left: 0px;
 }
 
 .react-autosuggest__input:focus {
@@ -27,7 +29,7 @@
 .react-autosuggest__suggestions-container {
   position: absolute;
   /*top: -1px;*/
-  width: 539px;
+  width: 553px;
   margin: 0;
   padding: 0;
   list-style-type: none;

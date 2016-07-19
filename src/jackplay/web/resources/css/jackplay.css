@@ -86,21 +86,6 @@ input {
   border-radius: 4px;
 }
 
-input:focus {
-  background-color: #EFDAAF;
-}
-
-input:hover {
-  background-color: #EFDAAF;
-}
-
-textarea:focus {
-  background-color: #EFDAAF;
-}
-
-textarea:hover {
-  background-color: #EFDAAF;
-}
 
 .globalMessage {
   padding: 5px;
@@ -126,3 +111,11 @@ button.light {
  border: 1px solid #aaa;
  border-radius: 4px;
 }
+
+#searchIcon {
+  background-color: transparent;
+}
+#searchIcon:hover {
+  background-color: transparent;
+}
+
