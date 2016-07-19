@@ -277,6 +277,7 @@ let PlayPanel = React.createClass({
           contentType: "application/x-www-form-urlencoded",
           data: 'longMethodName=' + longMethodName + "&src=" + encodeURIComponent(src),
           success: function(data) {
+            this.toggleMethodRedefine();
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),
           error: function(data) {
