@@ -73,6 +73,7 @@ public class JackOpera implements Opera {
         pm.init(this);
         leader.init(this);
         boxOffice.init(this);
+        InformationCenter.init(pm);
 
         this.boxOffice.start();
     }

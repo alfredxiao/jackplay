@@ -11,6 +11,8 @@ const CROSS = '\u2717';
 const STAR = '\u2605';
 const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
+const CONTROL = 'CONTROL';
+const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -209,6 +211,41 @@ let MethodRedefine = React.createClass({
   )}
 });
 
+let PlayBook = React.createClass({
+  render: function() {
+    let program = this.props.program;
+    let programList = Object.keys(program).map(function (genre) {
+      let classList = Object.keys(program[genre]).map(function (clsName) {
+        let methodList = Object.keys(program[genre][clsName]).map(function (methodName) {
+          return (
+            <div>
+              <span>{methodName}</span>
+            </div>
+          )
+        });
+        return (
+           <div>
+             <div>{clsName}</div>
+             <div style={{marginLeft: '10px'}}>{methodList}</div>
+           </div>
+        )
+      });
+      return (
+           <div>
+             <div>{genre}</div>
+             <div style={{marginLeft: '10px'}}>{classList}</div>
+           </div>
+      )
+    });
+    return (
+      <div style={{display: this.props.show}}>
+          <div style={{marginTop: '10px', marginLeft: '0px', width: '672px', backgroundColor: '#6699CC', overflowX: 'auto'}}>
+            {programList}
+          </div>
+      </div>
+  )}
+});
+
 let LogControl = React.createClass({
   requestToClearLogHistory: function() {
     $.ajax({
@@ -235,16 +272,19 @@ let LogControl = React.createClass({
 
 let PlayPanel = React.createClass({
   getInitialState: function() {
-    return {playMode: TRACE_MODE};
+    return {playMode: TRACE_MODE,
+            mode: TRACE_OR_REDEFINE};
   },
   toggledLabel: function() {
     return TRACE_MODE == this.state.playMode ? dTriangle : uTriangle;
   },
-  toggleMethodRedefine: function() {
-    this.setState(Object.assign(this.state, {playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
+  togglePlayMode: function() {
+    this.setState(Object.assign(this.state, {mode: TRACE_OR_REDEFINE,
+                                             playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
   },
-  showMethodDefine: function() {
-    return this.state.playMode == MethodRedefine;
+  togglePlayBook: function() {
+    this.setState(Object.assign(this.state, {mode: CONTROL == this.state.mode ? TRACE_OR_REDEFINE : CONTROL,
+                                             playMode: TRACE_MODE}));
   },
   submitMethodTrace: function() {
     let longMethodName = $("div#content input[type=text]")[0].value.trim();
@@ -277,7 +317,7 @@ let PlayPanel = React.createClass({
           contentType: "application/x-www-form-urlencoded",
           data: 'longMethodName=' + longMethodName + "&src=" + encodeURIComponent(src),
           success: function(data) {
-            this.toggleMethodRedefine();
+            this.togglePlayMode();
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),
           error: function(data) {
@@ -298,16 +338,17 @@ let PlayPanel = React.createClass({
                 <span className="fa fa-search" style={{fontSize:'14px', color: '#666'}}></span>
             </button>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} />
-            <button onClick={this.toggleMethodRedefine} title='show/hide method redefinition panel'
+            <button onClick={this.togglePlayMode} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
             {playButton}
-            <button title='show/hide information about method being traced' onClick={this.props.clearFilter}
+            <button title='show/hide information about method being traced' onClick={this.togglePlayBook}
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{dTriangle}</button>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
                         toggleDataSync={this.props.toggleDataSync}
                         clearLogHistory={this.props.clearLogHistory} />
             <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
+            <PlayBook show={this.state.mode == CONTROL ? '' : 'none'} program={this.props.program}/>
     </div>
     );
   }
@@ -366,6 +407,7 @@ let GlobalMessage = React.createClass({
 let JackPlay = React.createClass({
   getInitialState: function() {
     return {logHistory: [],
+            program: [],
             filter: '',
             loadedTargets: [],
             traceStarted: false,
@@ -382,6 +424,15 @@ let JackPlay = React.createClass({
       success: function(history) {
         this.setState(Object.assign(this.state, {logHistory: history,
                                                  traceStarted: history.length > 0 || this.state.traceStarted }));
+      }.bind(this),
+      error: function(res) {
+        console.log("ERROR", res);
+      }
+    });
+    $.ajax({
+      url: '/program',
+      success: function(program) {
+        this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
@@ -429,6 +480,7 @@ let JackPlay = React.createClass({
                  setTraceStarted={this.setTraceStarted}
                  updateFilter={this.updateFilter}
                  clearFilter={this.clearFilter}
+                 program={this.state.program}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
                  clearLogHistory={this.clearLogHistory} />

@@ -1,17 +1,17 @@
 package jackplay.play;
 
+import jackplay.play.domain.Genre;
+import jackplay.play.performers.Performer;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class InformationCenter {
+    static ProgramManager pm;
     final static ClassComparator classComparator = new ClassComparator();
     final static MethodComparator methodComparator = new MethodComparator();
 
@@ -65,6 +65,52 @@ public class InformationCenter {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    public static String programAsJson(Instrumentation inst) {
+        return ObjectAsJson(pm.program);
+    }
+
+    private static String ObjectAsJson(Map<Genre, Map<String, Map<String, Performer>>> program) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+
+        Set<Genre> genres = program.keySet();
+        boolean isFirstGenre = true;
+        for (Genre genre : genres) {
+            if (!isFirstGenre) builder.append(",");
+            builder.append("\"").append(genre.toString()).append("\":{");
+
+            Map<String, Map<String, Performer>> classMap = program.get(genre);
+            Set<String> classes = classMap.keySet();
+            boolean isFirstClass = true;
+            for (String cls : classes) {
+                if (!isFirstClass) builder.append(",");
+                builder.append("\"").append(cls).append("\":{");
+
+                Map<String, Performer> methodMap = classMap.get(cls);
+                Set<String> methods = methodMap.keySet();
+                boolean isFirstMethod = true;
+                for (String m : methods) {
+                    if (!isFirstMethod) builder.append(",");
+                    builder.append("\"").append(m).append("\":");
+                    builder.append("\"").append(methodMap.get(m)).append("\"");
+                    isFirstMethod = false;
+                }
+                builder.append("}");
+                isFirstClass = false;
+            }
+
+            builder.append("}");
+            isFirstGenre = false;
+        }
+
+        builder.append("}");
+        return builder.toString();
+    }
+
+    public static void init(ProgramManager pm1) {
+        pm = pm1;
     }
 }
 

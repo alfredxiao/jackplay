@@ -48,3 +48,4 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
  - verifier error (passed compilation, but fail verification)
    -> should all method redefinition of a class, keep method tracing
 30. refactor web tier, all the handlers
+31. Use jdk logging
