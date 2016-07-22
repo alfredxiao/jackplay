@@ -90,6 +90,7 @@ class Modal extends React.Component{
 const ERROR = 'ERROR';
 const INFO = 'INFO';
 const SUNG= '\u266A';
+const BULLET = '\u2022';
 const dTriangle = '\u25BE';
 const uTriangle = '\u25B4';
 const CROSS = '\u2717';
@@ -98,6 +99,7 @@ const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
+const METHOD_LOGGING = 'METHOD_LOGGING';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -129,6 +131,21 @@ function getShortTypeName(type) {
   }
 }
 
+function extractMethodInfo(methodLongName) {
+  let startParen = methodLongName.indexOf('(');
+  let classAndMethod = methodLongName.substring(0, startParen);
+  let lastDotBeforeParen = classAndMethod.lastIndexOf('.');
+  let className = classAndMethod.substring(0, lastDotBeforeParen);
+  let methodName = classAndMethod.substring(lastDotBeforeParen + 1, startParen);
+  let methodArgsList = methodLongName.substring(startParen + 1, methodLongName.length - 1);
+
+  return {
+    className: className,
+    methodName: methodName,
+    methodArgsList: methodArgsList
+  }
+}
+
 function getSearchTerms(search, realClassName) {
   const defaultTerms = {classTerm: '', methodTerm: ''};
 
@@ -154,14 +171,10 @@ function getSearchTerms(search, realClassName) {
                                      : '',
             methodTerm: lastPart}
   } else if (search.indexOf('(') > 0) {     // with (, with . in the middle -> myapp.Greet.main(  or myapp.Greet.main(int
-    let startParen = search.indexOf('(');
-    let classAndMethod = search.substring(0, startParen);
-    let lastDotBeforeParen = classAndMethod.lastIndexOf('.');
-    let className = classAndMethod.substring(0, lastDotBeforeParen);
-    let methodName = classAndMethod.substring(lastDotBeforeParen + 1, startParen);
+    let methodInfo = extractMethodInfo(search);
     return {
-      classTerm: className,
-      methodTerm: methodName
+      classTerm: methodInfo.className,
+      methodTerm: methodInfo.methodName
     }
   } else {
     return defaultTerms;
@@ -198,12 +211,10 @@ function highlightMethodName(search, methodName) {
 }
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
-  let startParen = suggestion.targetName.indexOf('(');
-  let classAndMethod = suggestion.targetName.substring(0, startParen);
-  let lastDotBeforeParen = classAndMethod.lastIndexOf('.');
-  let className = classAndMethod.substring(0, lastDotBeforeParen);
-  let methodName = classAndMethod.substring(lastDotBeforeParen + 1, startParen);
-  let methodArgsList = suggestion.targetName.substring(startParen + 1, suggestion.targetName.length - 1);
+  let methodInfo = extractMethodInfo(suggestion.targetName);
+  let className = methodInfo.className;
+  let methodName = methodInfo.methodName;
+  let methodArgsList = methodInfo.methodArgsList;
   if (methodArgsList) {
     methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName ? getShortTypeName(argType) : argType).join(', ');
   }
@@ -315,7 +326,8 @@ let containerDefaultStyle = {
   position: 'relative',
   margin: '6% auto',
   padding: '10px 20px 13px 20px',
-  background: '#fff'
+  background: '#fff',
+  borderRadius: '8px'
 }
 
 let closeDefaultStyle = {
@@ -323,9 +335,9 @@ let closeDefaultStyle = {
   color: '#FFFFFF',
   lineHeight: '25px',
   position: 'absolute',
-  right: '-12px',
+  right: '-10px',
   textAlign: 'center',
-  top: '-10px',
+  top: '-8px',
   width: '24px',
   textDecoration: 'none',
   fontWeight: 'bold',
@@ -337,27 +349,30 @@ let closeDefaultStyle = {
 let PlayBook = React.createClass({
   render: function(){
     let program = this.props.program;
+    let removeMethod = this.props.removeMethod;
     let programList = Object.keys(program).map(function (genre) {
       let classList = Object.keys(program[genre]).map(function (clsName) {
-        let methodList = Object.keys(program[genre][clsName]).map(function (methodName) {
+        let methodList = Object.keys(program[genre][clsName]).map(function (methodLongName) {
+          let methodInfo = extractMethodInfo(methodLongName);
           return (
-            <div>
-              <span>{methodName}</span>
-            </div>
+            <li style={{marginLeft: '-42px'}}>
+              <button className='removeMethod' onClick={() => removeMethod(genre, methodLongName)}><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+              <span style={{marginLeft: '6px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
+            </li>
           )
         });
         return (
-           <div>
-             <div>{clsName}</div>
-             <div style={{marginLeft: '10px'}}>{methodList}</div>
-           </div>
+           <li style={{marginTop: '2px'}}>
+             <span style={{fontWeight: 'bold'}}>{clsName}</span>
+             <ul style={{marginLeft: '0px', listStyle: 'none'}}>{methodList}</ul>
+           </li>
         )
       });
       return (
-           <div>
-             <div>{genre}</div>
-             <div style={{marginLeft: '10px'}}>{classList}</div>
-           </div>
+           <ul>
+             <span style={{fontSize: '18px', marginTop: '10px'}}>{genre == METHOD_LOGGING ? 'Traced' : 'Redefined'}</span>
+             {classList}
+           </ul>
       )
     });
     return (
@@ -372,8 +387,12 @@ let PlayBook = React.createClass({
 
           <a style={closeDefaultStyle} onClick={this.props.hidePlayBook}>X</a>
           <div style={{display: this.props.show}}>
-              <div style={{overflowX: 'auto'}}>
+              <div style={{fontSize: '22px', textAlign: 'center'}}>Methods being Traced or Redefined</div>
+              <div style={{overflowX: 'auto', marginTop: '5px', maxHeight: '520px'}}>
                 {programList}
+              </div>
+              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
+                <button onClick={this.props.hidePlayBook}>Close</button>
               </div>
           </div>
         </Modal>
@@ -486,6 +505,7 @@ let PlayPanel = React.createClass({
             <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
             <PlayBook playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
+                      removeMethod={this.props.removeMethod}
                       program={this.props.program}/>
     </div>
     );
@@ -525,7 +545,7 @@ let GlobalMessage = React.createClass({
   render: function() {
     let gm = this.props.globalMessage;
     if (gm) {
-      let icon = (INFO == gm.level) ? SUNG : STAR;
+      let icon = (INFO == gm.level) ? SUNG : BULLET;
       return (
         <div style={{paddingBottom: '8px'}}>
           <span className='globalMessage'>
@@ -611,6 +631,18 @@ let JackPlay = React.createClass({
   clearGlobalMessage: function() {
     this.setState(Object.assign(this.state, {globalMessage: null}))
   },
+  removeMethod: function(genre, methodLongName) {
+    $.ajax({
+      url: '/removeMethod',
+        data: 'longMethodName=' + methodLongName + '&genre=' + genre,
+      success: function(data) {
+        this.syncDataWithServer();
+      }.bind(this),
+      error: function(res) {
+        console.log("ERROR", res);
+      }
+    });
+  },
   render: function() {
     return (
     <div>
@@ -619,6 +651,7 @@ let JackPlay = React.createClass({
                  updateFilter={this.updateFilter}
                  clearFilter={this.clearFilter}
                  program={this.state.program}
+                 removeMethod={this.removeMethod}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
                  clearLogHistory={this.clearLogHistory} />

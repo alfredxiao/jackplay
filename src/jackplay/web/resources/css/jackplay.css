@@ -120,3 +120,16 @@ button.light {
   background-color: transparent;
 }
 
+button.removeMethod {
+  margin: 0px;
+  padding: 0px;
+  width: 22px;
+  height: 18px;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+button.removeMethod:hover {
+  background-color: #E3BA6F;
+  border: 1px solid #aaa;
+}

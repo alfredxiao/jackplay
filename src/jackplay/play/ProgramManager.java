@@ -42,6 +42,18 @@ public class ProgramManager {
         program.get(Genre.METHOD_REDEFINE).get(className).remove(methodLongName);
     }
 
+    public void removeProgram(Genre genre, String methodLongName) throws Exception {
+        PlayGround pg = new PlayGround(methodLongName);
+        program.get(genre).get(pg.className).remove(methodLongName);
+        if (program.get(genre).get(pg.className).isEmpty()) {
+            program.get(genre).remove(pg.className);
+            if (program.get(genre).isEmpty()) {
+                program.remove(genre);
+            }
+        }
+        composer.performPlay(pg.className);
+    }
+
     // called when verifier error
     void removeRedefinitions(String className) {
         program.get(Genre.METHOD_REDEFINE).remove(className);

@@ -33,6 +33,8 @@ public class RootHandler implements HttpHandler {
             new ProgramHandler(inst).handle(exchange);
         } else if (uri.startsWith("/redefineMethod")) {
             new RedefineMethodHandler(inst, pm).handle(exchange);
+        } else if (uri.startsWith("/removeMethod")) {
+            new RemoveMethodHandler(inst, pm).handle(exchange);
         } else {
             if ("get".equalsIgnoreCase(exchange.getRequestMethod())) {
                 CommonHandling.serveStaticResource(exchange, 200, uri);
