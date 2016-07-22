@@ -7,11 +7,11 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 public class PlayKeeper {
-    static List<PlayEntry> logHistory = new LinkedList<PlayEntry>();
+    static List<PlayEntry> logHistory = new CopyOnWriteArrayList<PlayEntry>();
     static int playBookSize;
 
     public static void traceArguments(String name, String longName, Object[] args) {
