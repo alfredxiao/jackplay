@@ -11,6 +11,7 @@
 
 button {
  margin: 0px;
+ margin-left: 5px;
  width: 92px;
  height: 32px;
   font-family: 'Open Sans', sans-serif;

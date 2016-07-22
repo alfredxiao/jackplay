@@ -2,6 +2,91 @@
 
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 
+class Modal extends React.Component{
+
+  constructor(props){
+    super()
+    this.hideOnOuterClick = this.hideOnOuterClick.bind(this)
+    this.fadeIn = this.fadeIn.bind(this)
+    this.fadeOut = this.fadeOut.bind(this)
+
+    let opacity = 0,
+      display = 'block',
+      visibility = 'hidden';
+
+    if(props.show){
+      opacity = 1;
+      display = 'block';
+      visibility = 'visible'
+    }
+
+    this.state = {
+      opacity,
+      display,
+      visibility,
+      show: props.show
+    };
+
+  }
+
+  hideOnOuterClick(event){
+    if(this.props.closeOnOuterClick === false) return
+    if(event.target.dataset.modal) this.props.onClose(event)
+  }
+
+  componentWillReceiveProps(props){
+    if(this.props.show != props.show){
+      if(this.props.transitionSpeed){
+        if(props.show == true) this.fadeIn()
+        else this.fadeOut()
+      }
+      else this.setState({show: props.show})
+    }
+  }
+
+  fadeIn(){
+    this.setState({
+      display: 'block',
+      visibility: 'visible',
+      show: true
+    }, ()=>{
+      setTimeout(()=>{
+        this.setState({opacity: 1})
+      },10)
+    })
+  }
+
+  fadeOut(){
+    this.setState({opacity: 0}, ()=>{
+      setTimeout(()=>{
+        this.setState({show: false})
+      }, this.props.transitionSpeed)
+    })
+  }
+
+  render(){
+    if(!this.state.show) return null
+    let modalStyle, containerStyle
+    //completely overwrite if they use a class
+    if(this.props.className){
+      modalStyle = this.props.style
+      containerStyle = this.props.containerStyle
+    }
+    else{
+      modalStyle = Object.assign({}, styles.modal, this.props.style)
+      containerStyle = Object.assign({}, styles.container, this.props.containerStyle)
+    }
+    if(this.props.transitionSpeed) modalStyle = Object.assign({}, this.state, modalStyle)
+
+    return (
+      <div {...this.props} style={modalStyle} onClick={this.hideOnOuterClick} data-modal="true">
+        <div className={this.props.containerClassName} style={containerStyle}>
+          {this.props.children}
+        </div>
+      </div>
+    )
+  }
+}
 const ERROR = 'ERROR';
 const INFO = 'INFO';
 const SUNG= '\u266A';
@@ -211,8 +296,46 @@ let MethodRedefine = React.createClass({
   )}
 });
 
+let modalDefaultStyle = {
+  position: 'fixed',
+  fontFamily: 'Arial, Helvetica, sans-serif',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  background: 'rgba(0, 0, 0, 0.8)',
+  zIndex: 99999,
+  transition: 'opacity 1s ease-in',
+  pointerEvents: 'auto',
+  overflowY: 'auto'
+}
+
+let containerDefaultStyle = {
+  width: '680px',
+  position: 'relative',
+  margin: '6% auto',
+  padding: '10px 20px 13px 20px',
+  background: '#fff'
+}
+
+let closeDefaultStyle = {
+  background: '#606061',
+  color: '#FFFFFF',
+  lineHeight: '25px',
+  position: 'absolute',
+  right: '-12px',
+  textAlign: 'center',
+  top: '-10px',
+  width: '24px',
+  textDecoration: 'none',
+  fontWeight: 'bold',
+  borderRadius: '12px',
+  boxShadow: '1px 1px 3px #000',
+  cursor: 'pointer'
+}
+
 let PlayBook = React.createClass({
-  render: function() {
+  render: function(){
     let program = this.props.program;
     let programList = Object.keys(program).map(function (genre) {
       let classList = Object.keys(program[genre]).map(function (clsName) {
@@ -238,12 +361,25 @@ let PlayBook = React.createClass({
       )
     });
     return (
-      <div style={{display: this.props.show}}>
-          <div style={{marginTop: '10px', marginLeft: '0px', width: '672px', backgroundColor: '#6699CC', overflowX: 'auto'}}>
-            {programList}
+      <div>
+        <Modal className="test-class" //this will completely overwrite the default css completely
+              style={modalDefaultStyle} //overwrites the default background
+              containerStyle={containerDefaultStyle} //changes styling on the inner content area
+              containerClassName="test"
+              closeOnOuterClick={false}
+              show={this.props.playBookBeingShown}
+              >
+
+          <a style={closeDefaultStyle} onClick={this.props.hidePlayBook}>X</a>
+          <div style={{display: this.props.show}}>
+              <div style={{overflowX: 'auto'}}>
+                {programList}
+              </div>
           </div>
+        </Modal>
       </div>
-  )}
+    )
+  }
 });
 
 let LogControl = React.createClass({
@@ -255,7 +391,7 @@ let LogControl = React.createClass({
   },
   render: function() {
     return (
-        <div style={{display:'inline', paddingLeft: '15px'}}>
+        <div style={{display:'inline', paddingLeft: '5px'}}>
           <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.props.updateFilter}
                  style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '133px'}} />
           <button title='Clear filter' onClick={this.props.clearFilter}
@@ -273,18 +409,19 @@ let LogControl = React.createClass({
 let PlayPanel = React.createClass({
   getInitialState: function() {
     return {playMode: TRACE_MODE,
-            mode: TRACE_OR_REDEFINE};
+            playBookBeingShown: false};
   },
   toggledLabel: function() {
     return TRACE_MODE == this.state.playMode ? dTriangle : uTriangle;
   },
   togglePlayMode: function() {
-    this.setState(Object.assign(this.state, {mode: TRACE_OR_REDEFINE,
-                                             playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
+    this.setState(Object.assign(this.state, {playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
   },
-  togglePlayBook: function() {
-    this.setState(Object.assign(this.state, {mode: CONTROL == this.state.mode ? TRACE_OR_REDEFINE : CONTROL,
-                                             playMode: TRACE_MODE}));
+  showPlayBook: function() {
+    this.setState(Object.assign(this.state, {playBookBeingShown: true}));
+  },
+  hidePlayBook: function() {
+    this.setState(Object.assign(this.state, {playBookBeingShown: false}));
   },
   submitMethodTrace: function() {
     let longMethodName = $("div#content input[type=text]")[0].value.trim();
@@ -328,9 +465,9 @@ let PlayPanel = React.createClass({
   },
   render: function() {
     let playButton = (TRACE_MODE == this.state.playMode) ?
-                     (<button onClick={this.submitMethodTrace} title='trace this method' style={{marginLeft: '5px', borderRadius: '4px 0px 0px 4px'}}>Trace</button>)
+                     (<button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>)
                      :
-                     (<button onClick={this.submitMethodRedefine} title='submit new method source' style={{marginLeft: '5px', borderRadius: '4px 0px 0px 4px'}}>Redefine</button>);
+                     (<button onClick={this.submitMethodRedefine} title='submit new method source'>Redefine</button>);
     return (
     <div>
             <button style={{borderRight: 0, margin: 0, paddingLeft: '6px', width: '20px', borderRadius: '4px 0px 0px 4px', outline:'none'}}
@@ -341,14 +478,15 @@ let PlayPanel = React.createClass({
             <button onClick={this.togglePlayMode} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
             {playButton}
-            <button title='show/hide information about method being traced' onClick={this.togglePlayBook}
-                    style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{dTriangle}</button>
+            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Control</button>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
                         toggleDataSync={this.props.toggleDataSync}
                         clearLogHistory={this.props.clearLogHistory} />
             <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
-            <PlayBook show={this.state.mode == CONTROL ? '' : 'none'} program={this.props.program}/>
+            <PlayBook playBookBeingShown={this.state.playBookBeingShown}
+                      hidePlayBook={this.hidePlayBook}
+                      program={this.props.program}/>
     </div>
     );
   }
