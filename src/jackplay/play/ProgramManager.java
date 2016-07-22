@@ -42,7 +42,7 @@ public class ProgramManager {
         program.get(Genre.METHOD_REDEFINE).get(className).remove(methodLongName);
     }
 
-    public void removeProgram(Genre genre, String methodLongName) throws Exception {
+    public void removeProgrammedMethod(Genre genre, String methodLongName) throws Exception {
         PlayGround pg = new PlayGround(methodLongName);
         program.get(genre).get(pg.className).remove(methodLongName);
         if (program.get(genre).get(pg.className).isEmpty()) {
@@ -52,6 +52,12 @@ public class ProgramManager {
             }
         }
         composer.performPlay(pg.className);
+    }
+
+    public void removeProgrammedClass(Genre genre, String className) throws Exception {
+        program.get(genre).remove(className);
+        composer.performPlay(className);
+        if (program.get(genre).isEmpty()) program.remove(genre);
     }
 
     // called when verifier error

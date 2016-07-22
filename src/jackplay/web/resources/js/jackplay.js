@@ -350,26 +350,30 @@ let PlayBook = React.createClass({
   render: function(){
     let program = this.props.program;
     let removeMethod = this.props.removeMethod;
+    let removeClass = this.props.removeClass;
     let programList = Object.keys(program).map(function (genre) {
       let classList = Object.keys(program[genre]).map(function (clsName) {
         let methodList = Object.keys(program[genre][clsName]).map(function (methodLongName) {
           let methodInfo = extractMethodInfo(methodLongName);
           return (
-            <li style={{marginLeft: '-42px'}}>
-              <button className='removeMethod' onClick={() => removeMethod(genre, methodLongName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+            <li style={{marginLeft: '-38px', fontSize: '14px'}}>
+              <button className='removePlayTarget' onClick={() => removeMethod(genre, methodLongName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
               <span style={{marginLeft: '6px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
             </li>
           )
         });
         return (
-           <li style={{marginTop: '2px'}}>
-             <span style={{fontWeight: 'bold'}}>{clsName}</span>
-             <ul style={{marginLeft: '0px', listStyle: 'none'}}>{methodList}</ul>
+           <li style={{marginTop: '2px', marginLeft: '-5px'}}>
+             <span>
+               <button className='removePlayTarget' onClick={() => removeClass(genre, clsName)} title='Remove the trace or redefinition on this class'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+               <span style={{fontSize: '16px'}}>{clsName}</span>
+             </span>
+             <ul style={{marginLeft: '20px', listStyle: 'none'}}>{methodList}</ul>
            </li>
         )
       });
       return (
-           <ul>
+           <ul style={{listStyle: 'none'}}>
              <span style={{fontSize: '18px', marginTop: '10px'}}>{genre == METHOD_LOGGING ? 'Traced' : 'Redefined'}</span>
              {classList}
            </ul>
@@ -507,6 +511,7 @@ let PlayPanel = React.createClass({
             <PlayBook playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
                       removeMethod={this.props.removeMethod}
+                      removeClass={this.props.removeClass}
                       program={this.props.program}/>
     </div>
     );
@@ -639,7 +644,19 @@ let JackPlay = React.createClass({
       url: '/removeMethod',
         data: 'longMethodName=' + methodLongName + '&genre=' + genre,
       success: function(data) {
-        this.syncDataWithServer();
+        this.loadProgram();
+      }.bind(this),
+      error: function(res) {
+        console.log("ERROR", res);
+      }
+    });
+  },
+  removeClass: function(genre, className) {
+    $.ajax({
+      url: '/removeClass',
+        data: 'className=' + className + '&genre=' + genre,
+      success: function(data) {
+        this.loadProgram();
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
@@ -656,6 +673,7 @@ let JackPlay = React.createClass({
                  program={this.state.program}
                  loadProgram={this.loadProgram}
                  removeMethod={this.removeMethod}
+                 removeClass={this.removeClass}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
                  clearLogHistory={this.clearLogHistory} />

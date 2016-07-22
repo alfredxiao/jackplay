@@ -120,7 +120,7 @@ button.light {
   background-color: transparent;
 }
 
-button.removeMethod {
+button.removePlayTarget {
   margin: 0px;
   padding: 0px;
   width: 22px;
@@ -129,7 +129,7 @@ button.removeMethod {
   border: 1px solid transparent;
 }
 
-button.removeMethod:hover {
+button.removePlayTarget:hover {
   background-color: #E3BA6F;
   border: 1px solid #aaa;
 }
