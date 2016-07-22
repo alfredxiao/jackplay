@@ -356,7 +356,7 @@ let PlayBook = React.createClass({
           let methodInfo = extractMethodInfo(methodLongName);
           return (
             <li style={{marginLeft: '-42px'}}>
-              <button className='removeMethod' onClick={() => removeMethod(genre, methodLongName)}><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+              <button className='removeMethod' onClick={() => removeMethod(genre, methodLongName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
               <span style={{marginLeft: '6px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
             </li>
           )
@@ -437,6 +437,7 @@ let PlayPanel = React.createClass({
     this.setState(Object.assign(this.state, {playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
   },
   showPlayBook: function() {
+    this.props.loadProgram();
     this.setState(Object.assign(this.state, {playBookBeingShown: true}));
   },
   hidePlayBook: function() {
@@ -588,18 +589,20 @@ let JackPlay = React.createClass({
       }
     });
     $.ajax({
-      url: '/program',
-      success: function(program) {
-        this.setState(Object.assign(this.state, {program: program}));
+      url: '/loadedTargets',
+      success: function(targets) {
+        this.setState(Object.assign(this.state, {loadedTargets: targets}));
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
       }
     });
+  },
+  loadProgram: function() {
     $.ajax({
-      url: '/loadedTargets',
-      success: function(targets) {
-        this.setState(Object.assign(this.state, {loadedTargets: targets}));
+      url: '/program',
+      success: function(program) {
+        this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
@@ -651,6 +654,7 @@ let JackPlay = React.createClass({
                  updateFilter={this.updateFilter}
                  clearFilter={this.clearFilter}
                  program={this.state.program}
+                 loadProgram={this.loadProgram}
                  removeMethod={this.removeMethod}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
