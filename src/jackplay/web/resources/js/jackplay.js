@@ -478,7 +478,7 @@ let PlayPanel = React.createClass({
             <button onClick={this.togglePlayMode} title='show/hide method redefinition panel'
                     style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
             {playButton}
-            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Control</button>
+            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Manage</button>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
                         toggleDataSync={this.props.toggleDataSync}
