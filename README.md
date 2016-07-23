@@ -49,3 +49,5 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
    -> should all method redefinition of a class, keep method tracing
 30. refactor web tier, all the handlers
 31. Use jdk logging
+32. refactor project building structure
+33. refactor the redefine pane (not to confuse with drop down list)

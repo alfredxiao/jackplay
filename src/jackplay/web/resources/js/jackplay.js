@@ -234,11 +234,11 @@ function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
 }
 
 class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      value: '',
+      value: this.props.currentTarget ? this.props.currentTarget : '',
       suggestions: getSuggestions([], '')
     };
 
@@ -250,6 +250,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
     this.setState({
       value: newValue
     });
+    this.props.setCurrentTarget(newValue);
   }
 
   onSuggestionsUpdateRequested({ value }) {
@@ -261,51 +262,27 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: 'Type a class or method name, e.g. com.abc.UserService.getUser',
-      value,
+      placeholder: 'Type a class or method name: com.abc.UserService.getUser',
+      value: value,
       onChange: this.onChange
     };
 
     return (
-      <Autosuggest suggestions={suggestions} // eslint-disable-line react/jsx-no-undef
+      <span>
+        <button style={{borderRight: 0, margin: 0, paddingLeft: '6px', width: '20px', borderRadius: '4px 0px 0px 4px', outline:'none'}}
+                id='searchIcon'>
+            <span className="fa fa-search" style={{fontSize:'14px', color: '#666'}}></span>
+        </button>
+        <Autosuggest suggestions={suggestions} // eslint-disable-line react/jsx-no-undef
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
                    renderSuggestion={renderSuggestion}
                    inputProps={inputProps}
                    loadedTargets={this.props.loadedTargets}/>
+      </span>
     );
   }
 }
-
-let MethodRedefine = React.createClass({
-  render: function() {
-  return (
-      <div style={{display: this.props.show, marginLeft: '0px'}}>
-        <div>
-          <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code'
-                    style={{marginTop: '-1px', marginLeft: '0px', width: '549px', outline: 'none'}}></textarea>
-        </div>
-        <div>
-             <span className="tooltip "> An Example
-                <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
-                    <pre><code>{
-                     " {\n  java.util.Calendar now = java.util.Calendar.getInstance();\n" +
-                     "  return now.get(java.util.Calendar.SECOND); \n" + " }"
-                     }</code></pre>
-                </span>
-             </span>
-             <span className="tooltip "> Limitation
-                <span className="tooltipBelow tooltiptext " style={{width: '460px', marginLeft: '-75px'}}>
-                  <ul>
-                    <li>Use full classname (except java.lang): e.g. java.util.Calendar</li>
-                    <li>... see <a href='https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit'>Javassist</a> </li>
-                  </ul>
-                </span>
-             </span>
-        </div>
-      </div>
-  )}
-});
 
 let modalDefaultStyle = {
   position: 'fixed',
@@ -346,6 +323,60 @@ let closeDefaultStyle = {
   cursor: 'pointer'
 }
 
+let MethodRedefine = React.createClass({
+  render: function() {
+  return (
+    <div>
+        <Modal className="test-class" //this will completely overwrite the default css completely
+              style={modalDefaultStyle} //overwrites the default background
+              containerStyle={containerDefaultStyle} //changes styling on the inner content area
+              containerClassName="test"
+              closeOnOuterClick={false}
+              show={this.props.shown}
+              >
+
+          <a style={closeDefaultStyle} onClick={this.props.hideMethodRedefine}>X</a>
+          <div>
+              <div style={{fontSize: '22px', textAlign: 'center'}}>Redefine a Method</div>
+              <div style={{marginTop: '5px', maxHeight: '420px'}}>
+                <div>
+                  <AutoClassLookup loadedTargets={this.props.loadedTargets}
+                                   setCurrentTarget={this.props.setCurrentTarget}
+                                   currentTarget={this.props.currentTarget} />
+                </div>
+                <div>
+                  <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code'
+                            style={{width: '662px', outline: 'none'}}></textarea>
+                </div>
+                <div>
+                     <span className="tooltip "> An Example
+                        <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
+                            <pre><code>{
+                             " {\n  java.util.Calendar now = java.util.Calendar.getInstance();\n" +
+                             "  return now.get(java.util.Calendar.SECOND); \n" + " }"
+                             }</code></pre>
+                        </span>
+                     </span>
+                     <span className="tooltip "> Limitation
+                        <span className="tooltipBelow tooltiptext " style={{width: '460px', marginLeft: '-75px'}}>
+                          <ul>
+                            <li>Use full classname (except java.lang): e.g. java.util.Calendar</li>
+                            <li>... see <a href='https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit'>Javassist</a> </li>
+                          </ul>
+                        </span>
+                     </span>
+                </div>
+              </div>
+              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
+                <button onClick={this.props.submitMethodRedefine}>Submit</button>
+                <button onClick={this.props.hideMethodRedefine}>Close</button>
+              </div>
+          </div>
+        </Modal>
+    </div>
+  )}
+});
+
 let PlayBook = React.createClass({
   render: function(){
     let program = this.props.program;
@@ -358,7 +389,7 @@ let PlayBook = React.createClass({
           return (
             <li style={{marginLeft: '-38px', fontSize: '14px'}}>
               <button className='removePlayTarget' onClick={() => removeMethod(genre, methodLongName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
-              <span style={{marginLeft: '6px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
+              <span style={{marginLeft: '4px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
             </li>
           )
         });
@@ -366,17 +397,21 @@ let PlayBook = React.createClass({
            <li style={{marginTop: '2px', marginLeft: '-5px'}}>
              <span>
                <button className='removePlayTarget' onClick={() => removeClass(genre, clsName)} title='Remove the trace or redefinition on this class'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
-               <span style={{fontSize: '16px'}}>{clsName}</span>
+               <span style={{fontSize: '16px', marginLeft: '4px'}}>{clsName}</span>
              </span>
              <ul style={{marginLeft: '20px', listStyle: 'none'}}>{methodList}</ul>
            </li>
         )
       });
       return (
-           <ul style={{listStyle: 'none'}}>
-             <span style={{fontSize: '18px', marginTop: '10px'}}>{genre == METHOD_LOGGING ? 'Traced' : 'Redefined'}</span>
+        <fieldset style={{marginTop: '10px'}}>
+          <legend>
+            <span style={{fontSize: '18px', margin: '3px'}}>{genre == METHOD_LOGGING ? 'Traced' : 'Redefined'}</span>
+          </legend>
+           <ul style={{listStyle: 'none', margin: '0px', padding: '0px'}}>
              {classList}
            </ul>
+        </fieldset>
       )
     });
     return (
@@ -391,13 +426,13 @@ let PlayBook = React.createClass({
 
           <a style={closeDefaultStyle} onClick={this.props.hidePlayBook}>X</a>
           <div style={{display: this.props.show}}>
-              <div style={{fontSize: '22px', textAlign: 'center'}}>Methods being Traced or Redefined</div>
-              <div style={{overflowX: 'auto', marginTop: '5px', maxHeight: '520px'}}>
-                {programList}
-              </div>
-              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
-                <button onClick={this.props.hidePlayBook}>Close</button>
-              </div>
+            <div style={{fontSize: '22px', textAlign: 'center'}}>Manage Methods</div>
+            <div style={{overflowX: 'auto', marginTop: '5px', maxHeight: '420px'}}>
+              {($.isEmptyObject(program)) ? <p>There are no methods being traced or redefined.</p> : programList}
+            </div>
+            <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
+              <button onClick={this.props.hidePlayBook}>Close</button>
+            </div>
           </div>
         </Modal>
       </div>
@@ -416,7 +451,7 @@ let LogControl = React.createClass({
     return (
         <div style={{display:'inline', paddingLeft: '5px'}}>
           <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.props.updateFilter}
-                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '133px'}} />
+                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '108px'}} />
           <button title='Clear filter' onClick={this.props.clearFilter}
                   style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
           <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
@@ -431,14 +466,8 @@ let LogControl = React.createClass({
 
 let PlayPanel = React.createClass({
   getInitialState: function() {
-    return {playMode: TRACE_MODE,
-            playBookBeingShown: false};
-  },
-  toggledLabel: function() {
-    return TRACE_MODE == this.state.playMode ? dTriangle : uTriangle;
-  },
-  togglePlayMode: function() {
-    this.setState(Object.assign(this.state, {playMode: TRACE_MODE == this.state.playMode ? REDEFINE_MODE : TRACE_MODE}));
+    return {playBookBeingShown: false,
+            MethodRedefineIsShow: false};
   },
   showPlayBook: function() {
     this.props.loadProgram();
@@ -447,9 +476,23 @@ let PlayPanel = React.createClass({
   hidePlayBook: function() {
     this.setState(Object.assign(this.state, {playBookBeingShown: false}));
   },
+  showMethodRedefine: function() {
+    this.setState(Object.assign(this.state, {MethodRedefineIsShow: true}));
+  },
+  hideMethodRedefine: function() {
+    this.setState(Object.assign(this.state, {MethodRedefineIsShow: false}));
+  },
+  validatePlayTarget: function() {
+    let longMethodName = this.props.currentTarget;  //$("div#content input[type=text]")[0].value.trim();
+    if (!longMethodName) {
+      this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
+      $("div#content input[type=text]")[0].focus();
+    }
+
+    return longMethodName;
+  },
   submitMethodTrace: function() {
-    let longMethodName = $("div#content input[type=text]")[0].value.trim();
-    if (!longMethodName) this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
+    let longMethodName = this.validatePlayTarget();
 
     if (longMethodName) {
       this.props.setTraceStarted(true);
@@ -466,7 +509,7 @@ let PlayPanel = React.createClass({
     };
   },
   submitMethodRedefine: function() {
-    let longMethodName = $("div#content input[type=text]")[0].value.trim();
+    let longMethodName = this.validatePlayTarget();
     let src = document.getElementById('newSource').value.trim();
 
     if (!longMethodName || !src) this.props.setGlobalMessage(ERROR, 'A valid classname.methodname and source body must be provided!');
@@ -478,7 +521,6 @@ let PlayPanel = React.createClass({
           contentType: "application/x-www-form-urlencoded",
           data: 'longMethodName=' + longMethodName + "&src=" + encodeURIComponent(src),
           success: function(data) {
-            this.togglePlayMode();
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),
           error: function(data) {
@@ -488,26 +530,22 @@ let PlayPanel = React.createClass({
     }
   },
   render: function() {
-    let playButton = (TRACE_MODE == this.state.playMode) ?
-                     (<button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>)
-                     :
-                     (<button onClick={this.submitMethodRedefine} title='submit new method source'>Redefine</button>);
     return (
     <div>
-            <button style={{borderRight: 0, margin: 0, paddingLeft: '6px', width: '20px', borderRadius: '4px 0px 0px 4px', outline:'none'}}
-                    id='searchIcon'>
-                <span className="fa fa-search" style={{fontSize:'14px', color: '#666'}}></span>
-            </button>
-            <AutoClassLookup loadedTargets={this.props.loadedTargets} />
-            <button onClick={this.togglePlayMode} title='show/hide method redefinition panel'
-                    style={{borderLeft: 0, margin: 0, width: '20px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{this.toggledLabel()}</button>
-            {playButton}
-            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Manage</button>
+            <AutoClassLookup loadedTargets={this.props.loadedTargets} setCurrentTarget={this.props.setCurrentTarget} currentTarget={this.props.currentTarget}/>
+            <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
+            <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
+            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Manage...</button>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
                         toggleDataSync={this.props.toggleDataSync}
                         clearLogHistory={this.props.clearLogHistory} />
-            <MethodRedefine show={this.state.playMode == REDEFINE_MODE ? '' : 'none'}/>
+            <MethodRedefine shown={this.state.MethodRedefineIsShow}
+                            hideMethodRedefine={this.hideMethodRedefine}
+                            loadedTargets={this.props.loadedTargets}
+                            currentTarget={this.props.currentTarget}
+                            setCurrentTarget={this.props.setCurrentTarget}
+                            submitMethodRedefine={this.submitMethodRedefine} />
             <PlayBook playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
                       removeMethod={this.props.removeMethod}
@@ -573,6 +611,7 @@ let JackPlay = React.createClass({
     return {logHistory: [],
             program: [],
             filter: '',
+            currentTarget: '',
             loadedTargets: [],
             traceStarted: false,
             globalMessage: null,
@@ -637,7 +676,10 @@ let JackPlay = React.createClass({
     this.setState(Object.assign(this.state, {globalMessage: {level: level, message: msg}}));
   },
   clearGlobalMessage: function() {
-    this.setState(Object.assign(this.state, {globalMessage: null}))
+    this.setState(Object.assign(this.state, {globalMessage: null}));
+  },
+  setCurrentTarget: function(newValue) {
+    this.setState(Object.assign(this.state, {currentTarget: newValue}))
   },
   removeMethod: function(genre, methodLongName) {
     $.ajax({
@@ -676,6 +718,8 @@ let JackPlay = React.createClass({
                  removeClass={this.removeClass}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
+                 currentTarget={this.state.currentTarget}
+                 setCurrentTarget={this.setCurrentTarget}
                  clearLogHistory={this.clearLogHistory} />
       <br/>
       <GlobalMessage globalMessage={this.state.globalMessage} clearGlobalMessage={this.clearGlobalMessage} />
