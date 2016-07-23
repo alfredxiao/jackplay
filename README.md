@@ -51,3 +51,4 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 31. Use jdk logging
 32. refactor project building structure
 33. refactor the redefine pane (not to confuse with drop down list)
+34. when redefine... pane is closed with currentTarget(method input box) changed, the outer input box doesn't reflect this

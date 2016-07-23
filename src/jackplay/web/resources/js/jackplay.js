@@ -345,7 +345,7 @@ let MethodRedefine = React.createClass({
                                    currentTarget={this.props.currentTarget} />
                 </div>
                 <div>
-                  <textarea rows="8" id="newSource" placeholder="{ return 10; }" className='code'
+                  <textarea rows="8" id="newSource" placeholder="type in source: e.g. { return 10; }" className='code'
                             style={{width: '662px', outline: 'none'}}></textarea>
                 </div>
                 <div>
