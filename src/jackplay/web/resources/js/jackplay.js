@@ -237,30 +237,22 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
   constructor(props) {
     super(props);
 
-    this.state = {
-      value: this.props.currentTarget ? this.props.currentTarget : '',
-      suggestions: getSuggestions([], '')
-    };
-
     this.onChange = this.onChange.bind(this);
     this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
   }
 
   onChange(event, { newValue }) {
-    this.setState({
-      value: newValue
-    });
-    this.props.setCurrentTarget(newValue);
+    this.props.setAutoClassLookupState(Object.assign(this.props.autoClassLookupState, {value: newValue}));
   }
 
   onSuggestionsUpdateRequested({ value }) {
-    this.setState({
-      suggestions: getSuggestions(this.props.loadedTargets, value)
-    });
+    this.props.setAutoClassLookupState(Object.assign(this.props.autoClassLookupState,
+                                                    {suggestions: getSuggestions(this.props.loadedTargets, value)}));
   }
 
   render() {
-    const { value, suggestions } = this.state;
+    const { value, suggestions } = this.props.autoClassLookupState;
+
     const inputProps = {
       placeholder: 'Type a class or method name: com.abc.UserService.getUser',
       value: value,
@@ -341,8 +333,8 @@ let MethodRedefine = React.createClass({
               <div style={{marginTop: '5px', maxHeight: '420px'}}>
                 <div>
                   <AutoClassLookup loadedTargets={this.props.loadedTargets}
-                                   setCurrentTarget={this.props.setCurrentTarget}
-                                   currentTarget={this.props.currentTarget} />
+                                   setAutoClassLookupState={this.props.setAutoClassLookupState}
+                                   autoClassLookupState={this.props.autoClassLookupState} />
                 </div>
                 <div>
                   <textarea rows="8" id="newSource" placeholder="type in source: e.g. { return 10; }" className='code'
@@ -483,7 +475,7 @@ let PlayPanel = React.createClass({
     this.setState(Object.assign(this.state, {MethodRedefineIsShow: false}));
   },
   validatePlayTarget: function() {
-    let longMethodName = this.props.currentTarget;  //$("div#content input[type=text]")[0].value.trim();
+    let longMethodName = this.props.autoClassLookupState.value;  //$("div#content input[type=text]")[0].value.trim();
     if (!longMethodName) {
       this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
       $("div#content input[type=text]")[0].focus();
@@ -532,7 +524,7 @@ let PlayPanel = React.createClass({
   render: function() {
     return (
     <div>
-            <AutoClassLookup loadedTargets={this.props.loadedTargets} setCurrentTarget={this.props.setCurrentTarget} currentTarget={this.props.currentTarget}/>
+            <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
             <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Manage...</button>
@@ -543,8 +535,8 @@ let PlayPanel = React.createClass({
             <MethodRedefine shown={this.state.MethodRedefineIsShow}
                             hideMethodRedefine={this.hideMethodRedefine}
                             loadedTargets={this.props.loadedTargets}
-                            currentTarget={this.props.currentTarget}
-                            setCurrentTarget={this.props.setCurrentTarget}
+                            autoClassLookupState={this.props.autoClassLookupState}
+                            setAutoClassLookupState={this.props.setAutoClassLookupState}
                             submitMethodRedefine={this.submitMethodRedefine} />
             <PlayBook playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
@@ -611,7 +603,7 @@ let JackPlay = React.createClass({
     return {logHistory: [],
             program: [],
             filter: '',
-            currentTarget: '',
+            autoClassLookupState: { value: '', suggestions: [] },
             loadedTargets: [],
             traceStarted: false,
             globalMessage: null,
@@ -678,8 +670,8 @@ let JackPlay = React.createClass({
   clearGlobalMessage: function() {
     this.setState(Object.assign(this.state, {globalMessage: null}));
   },
-  setCurrentTarget: function(newValue) {
-    this.setState(Object.assign(this.state, {currentTarget: newValue}))
+  setAutoClassLookupState: function(newValue) {
+    this.setState(Object.assign(this.state, {autoClassLookupState: newValue}))
   },
   removeMethod: function(genre, methodLongName) {
     $.ajax({
@@ -718,8 +710,8 @@ let JackPlay = React.createClass({
                  removeClass={this.removeClass}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
-                 currentTarget={this.state.currentTarget}
-                 setCurrentTarget={this.setCurrentTarget}
+                 autoClassLookupState={this.state.autoClassLookupState}
+                 setAutoClassLookupState={this.setAutoClassLookupState}
                  clearLogHistory={this.clearLogHistory} />
       <br/>
       <GlobalMessage globalMessage={this.state.globalMessage} clearGlobalMessage={this.clearGlobalMessage} />
