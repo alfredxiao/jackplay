@@ -330,7 +330,7 @@ let MethodRedefine = React.createClass({
           <a style={closeDefaultStyle} onClick={this.props.hideMethodRedefine}>X</a>
           <div>
               <div style={{fontSize: '22px', textAlign: 'center'}}>Redefine a Method</div>
-              <div style={{marginTop: '5px', maxHeight: '420px'}}>
+              <div style={{marginLeft: '5px', marginTop : '5px', maxHeight: '420px'}}>
                 <div>
                   <AutoClassLookup loadedTargets={this.props.loadedTargets}
                                    setAutoClassLookupState={this.props.setAutoClassLookupState}
