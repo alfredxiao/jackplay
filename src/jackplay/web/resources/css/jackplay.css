@@ -128,6 +128,7 @@ button.removePlayTarget {
   color: #aaa;
   background-color: transparent;
   border: 1px solid transparent;
+  border-radius: 3px;
 }
 
 button.removePlayTarget:hover {
