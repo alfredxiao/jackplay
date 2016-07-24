@@ -1,6 +1,10 @@
 //import {App} from 'auto-class-lookup';
-var global = {};
-var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+let alertGlobal = {};
+let ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
+// the alert notification is based on http://schiehll.github.io/react-alert/
+// highlight is based on https://github.com/moroshko/react-autosuggest
+// modal dialog is based on https://github.com/sergiodxa/react-simple-modal
 
 class AlertMessage extends React.Component {
   constructor(props){
@@ -45,16 +49,15 @@ class AlertMessage extends React.Component {
    * @return {void}
    */
   _removeSelf(){
-    global.reactAlertEvents.emit('ALERT.REMOVE', this);
+    alertGlobal.reactAlertEvents.emit('ALERT.REMOVE', this);
   }
 
   componentDidMount(){
     this.domNode = ReactDOM.findDOMNode(this);
     this.setState({
       closeButtonStyle: {
-        height: '10px',//this.domNode.offsetHeight + 'px',
-        lineHeight: '10px', //this.domNode.offsetHeight + 'px',
-        backgroundColor: this.props.style.closeButton.bg
+        height: this.domNode.offsetHeight + 'px',
+        lineHeight: this.domNode.offsetHeight + 'px'
       }
     });
 
@@ -65,16 +68,16 @@ class AlertMessage extends React.Component {
 
   render(){
     return(
-      <div style={{zIndex: 9999, backgroundColor: 'yellow'}}>
-        <span>
+      <div className='alertContainer'>
+        <div className='alertNoticeIcon'>
           {this._showIcon.bind(this)()}
-        </span>
-        <span>
+        </div>
+        <div className='alertMessage'>
           {this.props.message}
-        </span>
-        <span onClick={this._handleCloseClick.bind(this)} style={this.state.closeButtonStyle}>
-          <span className="fa fa-times" style={{fontSize:'22px', color: '#666'}} aria-hidden="true"></span>
-        </span>
+        </div>
+        <div onClick={this._handleCloseClick.bind(this)} style={{}} className='alertCloseIcon'>
+          {false ? "XX": <span className="fa fa-times" aria-hidden="true"></span>}
+        </div>
       </div>
     );
   }
@@ -93,7 +96,7 @@ AlertMessage.propTypes = {
 class AlertContainer extends React.Component {
   constructor(props){
     super(props);
-    global.reactAlertEvents = new EventEmitter();
+    alertGlobal.reactAlertEvents = new EventEmitter();
     this.state = {
       alerts: []
     };
@@ -186,7 +189,7 @@ class AlertContainer extends React.Component {
    * @return {void}
    */
   _eventListners(){
-    global.reactAlertEvents.on('ALERT.REMOVE', (alert) => {
+    alertGlobal.reactAlertEvents.on('ALERT.REMOVE', (alert) => {
       this.setState({alerts: this._removeAlert(alert)});
     });
   }
@@ -1029,9 +1032,9 @@ let JackPlay = React.createClass({
   setGlobalMessage: function(level, msg) {
 //    this.setState(Object.assign(this.state, {globalMessage: {level: level, message: msg}}));
     this.msg.show(msg, {
-                   time: 60000,
+                   time: 50000,
                    type: 'success',
-                   icon: <span className="fa fa-info-circle" style={{fontSize:'22px', color: '#666'}} aria-hidden="true"></span>
+                   icon: <span className="fa fa-info-circle" aria-hidden="true"></span>
                  })
   },
   clearGlobalMessage: function() {

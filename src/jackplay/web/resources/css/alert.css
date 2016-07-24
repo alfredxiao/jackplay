@@ -1,0 +1,42 @@
+.alertContainer {
+  margin: 15px 0px 15px 15px;
+  background-color: #E3BA6F;
+  border-radius: 4px;
+  color: black;
+  height: 36px;
+  width: 360px;
+  display: table;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 6px 20px 0 rgba(0, 0, 0, 0.69);
+}
+
+.alertContainer div {
+  padding: 6px;
+  display: table-cell;;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.alertContainer .alertMessage {
+  width: 99%;
+}
+.alertContainer .alertNoticeIcon {
+  font-size: 24px;
+  color: black;
+  text-align: center;
+}
+
+.alertContainer .alertCloseIcon {
+  background-color: #C69549;
+  color: black;
+  min-width: 36px;
+  text-align: center;
+  font-size: 24px;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.alertContainer .alertCloseIcon:hover {
+  background-color: #6F3801;
+  color: white;
+  cursor: default;
+  border-radius: 0px 4px 4px 0px;
+}
