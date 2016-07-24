@@ -3,11 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <title>Jackplay Homepage - Jack plays!</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-with-addons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.1.0/EventEmitter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.9.1/polyfill.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/classnames/2.2.5/index.min.js"></script>
     <script src="https://npmcdn.com/react-autosuggest@3.7.4/dist/standalone/autosuggest.min.js"></script>
     <script src="/js/highlight.js"></script>
 
@@ -15,54 +18,21 @@
     <link rel="stylesheet" href="/css/tooltip.css" />
     <link rel="stylesheet" href="/css/switch.css" />
     <link rel="stylesheet" href="/css/autosuggest.css" />
-    <link rel="stylesheet" href="/css/fade-8.css" />
+    <link rel="stylesheet" href="/css/fadein.css" />
+    <!--<link rel="stylesheet" href="/css/alert.css" />-->
     <link rel="stylesheet" href="/css/jackplay.css" />
   </head>
 <body>
 
-  <table>
-    <tr>
-      <td>
-        <img src="/img/guitar.png"/>
-      </td>
-      <td>
-        <span style="font-size:30px; font-weight:bold">Jackplay!</span><br/>
-        <span style="color:grey; font-size:16px" class="fadein8">
-          <span style="font-style:italic">"All work and no play makes Jack a dull boy."</span>
-          <span> &mdash; So, let's have Jack play!</span>
-        </span>
-      </td>
-      <td>
-        <!--<span>-->
-          <!--<span class="tooltip fadein8">What is Jackplay?-->
-            <!--<span class="tooltiptext" style="width:320px">-->
-              <!--<ul>-->
-                <!--<li>Jackplay is a tool for developers, testers to diagnose program execution at runtime.</li>-->
-                <!--<li>It supports languages running on JVM.</li>-->
-                <!--<li>You can trace method execution.</li>-->
-                <!--<li>You can modify method body LIVE!</li>-->
-              <!--</ul>-->
-            <!--</span>-->
-          <!--</span>-->
-          <!--<span class="tooltip fadein8">How to use?-->
-            <!--<span class="tooltiptext" style="width:320px">-->
-              <!--<ul>-->
-                <!--<li>To trace a method, input a class name and method name and then click 'Play'!</li>-->
-              <!--</ul>-->
-            <!--</span>-->
-          <!--</span>-->
-          <!--<span class="tooltip fadein8">How it works!-->
-            <!--<span class="tooltiptext" style="width:220px">-->
-              <!--<ul>-->
-                <!--<li>Java Instrumentation</li>-->
-                <!--<li>Live class redefinition</li>-->
-              <!--</ul>-->
-            <!--</span>-->
-          <!--</span>-->
-        <!--</span>-->
-      </td>
-    </tr>
-  </table>
+  <div style="padding-bottom: 6px">
+    <span>
+      <img src="/img/guitar.png" style="vertical-align: bottom"/>
+    </span>
+    <span style="font-size:32px; font-weight:bold">Jackplay!</span>
+    <span style="margin-left: 15px; color:grey; font-size:16px; font-style:italic" class="fadein">
+      "All work and no play makes Jack a dull boy. &mdash; So, let's have Jack play!"
+    </span>
+  </div>
 
   <div id="content"/>
 
