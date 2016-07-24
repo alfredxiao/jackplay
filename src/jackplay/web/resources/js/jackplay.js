@@ -95,6 +95,7 @@ const dTriangle = '\u25BE';
 const uTriangle = '\u25B4';
 const CROSS = '\u2717';
 const STAR = '\u2605';
+const RETURNS_ARROW = '\u27F9';
 const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
@@ -254,7 +255,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
     const { value, suggestions } = this.props.autoClassLookupState;
 
     const inputProps = {
-      placeholder: 'Type a class or method name: com.abc.UserService.getUser',
+      placeholder: 'E.g. com.abc.TimeService.getCurrentHour()',
       value: value,
       onChange: this.onChange
     };
@@ -317,6 +318,12 @@ let closeDefaultStyle = {
 
 let MethodRedefine = React.createClass({
   render: function() {
+  let returnTypeMessage = ($.isEmptyObject(this.props.autoClassLookupState.returnType))
+  ? ''
+  : (<span title='return type of this method' style={{marginLeft: '5px'}}>
+       <span>{RETURNS_ARROW}</span>
+       <span style={{ fontFamily: 'Courier New', fontSize: '16px', marginLeft: '5px'}}>{this.props.autoClassLookupState.returnType}</span>
+     </span>);
   return (
     <div>
         <Modal className="test-class" //this will completely overwrite the default css completely
@@ -335,10 +342,12 @@ let MethodRedefine = React.createClass({
                   <AutoClassLookup loadedTargets={this.props.loadedTargets}
                                    setAutoClassLookupState={this.props.setAutoClassLookupState}
                                    autoClassLookupState={this.props.autoClassLookupState} />
+                  <br/>
+                  {returnTypeMessage}
                 </div>
                 <div>
                   <textarea rows="8" id="newSource" placeholder="type in source: e.g. { return 10; }" className='code'
-                            style={{width: '662px', outline: 'none'}}></textarea>
+                            style={{width: '662px', outline: 'none'}} title='type in source for this method'></textarea>
                 </div>
                 <div>
                      <span className="tooltip "> An Example
@@ -603,7 +612,7 @@ let JackPlay = React.createClass({
     return {logHistory: [],
             program: [],
             filter: '',
-            autoClassLookupState: { value: '', suggestions: [] },
+            autoClassLookupState: { value: '', suggestions: [], returnType: ''},
             loadedTargets: [],
             traceStarted: false,
             globalMessage: null,
@@ -670,8 +679,19 @@ let JackPlay = React.createClass({
   clearGlobalMessage: function() {
     this.setState(Object.assign(this.state, {globalMessage: null}));
   },
-  setAutoClassLookupState: function(newValue) {
-    this.setState(Object.assign(this.state, {autoClassLookupState: newValue}))
+  findReturnTypeOfCurrentLookup: function() {
+    let loadedTargets = this.state.loadedTargets;
+    let currentLookup = this.state.autoClassLookupState.value;
+    for (let target of loadedTargets) {
+      if (target.targetName == currentLookup) return target.returnType;
+    }
+
+    return '';
+  },
+  setAutoClassLookupState: function(newState) {
+    let returnTypeOfCurrentLookup = this.findReturnTypeOfCurrentLookup(newState.value)
+    this.setState(Object.assign(this.state, {autoClassLookupState: Object.assign(newState, {returnType: returnTypeOfCurrentLookup})}));
+
   },
   removeMethod: function(genre, methodLongName) {
     $.ajax({

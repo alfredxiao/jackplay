@@ -59,7 +59,9 @@ public class InformationCenter {
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
                 if (!isFirst) builder.append(',');
-                builder.append("{\"targetName\":\"").append(m.getLongName()).append("\"}");
+                builder.append("{\"targetName\":\"").append(m.getLongName()).append("\"");
+                builder.append(",\"returnType\":\"").append(m.getReturnType().getName()).append("\"");
+                builder.append(",\"signature\":\"").append(m.getSignature()).append("\"}");
                 isFirst = false;
             }
         }
