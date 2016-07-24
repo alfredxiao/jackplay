@@ -351,7 +351,7 @@ let MethodRedefine = React.createClass({
                 </div>
                 <div>
                      <span className="tooltip "> An Example
-                        <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-82px'}}>
+                        <span className="tooltipBelow tooltiptext code " style={{width: '520px', fontSize: '13px', marginLeft: '-90px'}}>
                             <pre><code>{
                              " {\n  java.util.Calendar now = java.util.Calendar.getInstance();\n" +
                              "  return now.get(java.util.Calendar.SECOND); \n" + " }"
@@ -359,7 +359,7 @@ let MethodRedefine = React.createClass({
                         </span>
                      </span>
                      <span className="tooltip "> Limitation
-                        <span className="tooltipBelow tooltiptext " style={{width: '460px', marginLeft: '-75px'}}>
+                        <span className="tooltipBelow tooltiptext " style={{width: '460px', marginLeft: '-73px'}}>
                           <ul>
                             <li>Use full classname (except java.lang): e.g. java.util.Calendar</li>
                             <li>... see <a href='https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit'>Javassist</a> </li>
