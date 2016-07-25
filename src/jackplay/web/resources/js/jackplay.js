@@ -798,7 +798,7 @@ let LogControl = React.createClass({
   },
   render: function() {
     return (
-        <div style={{display:'inline', paddingLeft: '5px'}}>
+        <div style={{display:'inline', paddingLeft: '15px'}}>
           <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.props.updateFilter}
                  style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '108px'}} />
           <button title='Clear filter' onClick={this.props.clearFilter}
