@@ -449,6 +449,7 @@ const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
 const METHOD_LOGGING = 'METHOD_LOGGING';
+const SHOW_MAX_HIT_SEARCH = 25;
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -463,7 +464,7 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return allTargets.filter(entry => regex.test(entry.targetName));
+  return Lazy(allTargets).filter(entry => regex.test(entry.targetName)).take(SHOW_MAX_HIT_SEARCH).toArray();
 }
 
 function getSuggestionValue(suggestion) {
