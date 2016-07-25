@@ -847,7 +847,7 @@ let PlayPanel = React.createClass({
       this.props.setTraceStarted(true);
       $.ajax({
         url: '/logMethod',
-        data: 'longMethodName=' + longMethodName,
+        data: 'longMethodName=' + encodeURIComponent(longMethodName),
         success: function(data) {
           this.props.setGlobalMessage(INFO, data);
         }.bind(this),
@@ -868,7 +868,7 @@ let PlayPanel = React.createClass({
           method: 'post',
           url: '/redefineMethod',
           contentType: "application/x-www-form-urlencoded",
-          data: 'longMethodName=' + longMethodName + "&src=" + encodeURIComponent(src),
+          data: 'longMethodName=' + encodeURIComponent(longMethodName) + "&src=" + encodeURIComponent(src),
           success: function(data) {
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),
@@ -1058,7 +1058,7 @@ let JackPlay = React.createClass({
   removeMethod: function(genre, methodLongName) {
     $.ajax({
       url: '/removeMethod',
-        data: 'longMethodName=' + methodLongName + '&genre=' + genre,
+        data: 'longMethodName=' + encodeURIComponent(methodLongName) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();
       }.bind(this),
@@ -1070,7 +1070,7 @@ let JackPlay = React.createClass({
   removeClass: function(genre, className) {
     $.ajax({
       url: '/removeClass',
-        data: 'className=' + className + '&genre=' + genre,
+        data: 'className=' + encodeURIComponent(className) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();
       }.bind(this),
