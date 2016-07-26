@@ -1,10 +1,9 @@
 package jackplay.play.performers;
 
 import jackplay.play.Composer;
-import jackplay.play.Opera;
+import jackplay.play.Theatre;
 import jackplay.play.ProgramManager;
 import jackplay.play.domain.Genre;
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 
@@ -21,9 +20,9 @@ public class LeadPerformer implements ClassFileTransformer {
     private Class classToPlay;
     private List<Exception> exceptionsDuringPerformance;
 
-    public void init(Opera opera) {
-        this.composer = opera.getComposer();
-        this.pm = opera.getProgramManager();
+    public void init(Theatre theatre) {
+        this.composer = theatre.getComposer();
+        this.pm = theatre.getProgramManager();
     }
 
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
@@ -50,7 +49,7 @@ public class LeadPerformer implements ClassFileTransformer {
                         // tell program manager to remove this performer
                         if (performer instanceof  RedefinePerformer) {
                             RedefinePerformer redefPerf = (RedefinePerformer) performer;
-                            pm.removeRedefinition(clsName, redefPerf.methodLongName);
+                            pm.removeRedefinition(clsName, redefPerf.methodFullName);
                         }
                     }
                 }

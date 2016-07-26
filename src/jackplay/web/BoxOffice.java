@@ -8,7 +8,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import jackplay.Options;
 import jackplay.play.Composer;
-import jackplay.play.Opera;
+import jackplay.play.Theatre;
 import jackplay.play.ProgramManager;
 
 // singleton
@@ -18,11 +18,11 @@ public class BoxOffice extends Thread {
     Composer composer;
     ProgramManager pm;
 
-    public void init(Opera opera) {
-        this.options = opera.getOptions();
-        this.inst = opera.getInstrumentation();
-        this.composer = opera.getComposer();
-        this.pm = opera.getProgramManager();
+    public void init(Theatre theatre) {
+        this.options = theatre.getOptions();
+        this.inst = theatre.getInstrumentation();
+        this.composer = theatre.getComposer();
+        this.pm = theatre.getProgramManager();
         super.setDaemon(true);
     }
 

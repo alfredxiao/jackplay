@@ -7,19 +7,19 @@ import javassist.CtClass;
 import javassist.CtMethod;
 
 public class TracingPerformer implements Performer {
-    String methodLongName;
+    String methodFullName;
     String methodShortName;
     PlayGround playGround;
 
     public TracingPerformer(PlayGround playGround) {
         this.playGround = playGround;
-        this.methodLongName = playGround.methodLongName;
+        this.methodFullName = playGround.methodFullName;
         this.methodShortName = playGround.methodShortName;
     }
 
     @Override
     public CtClass perform(CtClass aClass) throws Exception {
-        Logger.debug("logging method:" + methodLongName);
+        Logger.debug("logging method:" + methodFullName);
         CtMethod method = playGround.locateMethod();
 
         method.addLocalVariable("_elapsed$", CtClass.longType);

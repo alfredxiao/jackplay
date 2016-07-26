@@ -464,11 +464,11 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return Lazy(allTargets).filter(entry => regex.test(entry.targetName)).take(SHOW_MAX_HIT_SEARCH).toArray();
+  return Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(SHOW_MAX_HIT_SEARCH).toArray();
 }
 
 function getSuggestionValue(suggestion) {
-  return suggestion.targetName;
+  return suggestion.methodFullName;
 }
 
 let useShortTypeName = false;
@@ -481,13 +481,13 @@ function getShortTypeName(type) {
   }
 }
 
-function extractMethodInfo(methodLongName) {
-  let startParen = methodLongName.indexOf('(');
-  let classAndMethod = methodLongName.substring(0, startParen);
+function extractMethodInfo(methodFullName) {
+  let startParen = methodFullName.indexOf('(');
+  let classAndMethod = methodFullName.substring(0, startParen);
   let lastDotBeforeParen = classAndMethod.lastIndexOf('.');
   let className = classAndMethod.substring(0, lastDotBeforeParen);
   let methodName = classAndMethod.substring(lastDotBeforeParen + 1, startParen);
-  let methodArgsList = methodLongName.substring(startParen + 1, methodLongName.length - 1);
+  let methodArgsList = methodFullName.substring(startParen + 1, methodFullName.length - 1);
 
   return {
     className: className,
@@ -561,7 +561,7 @@ function highlightMethodName(search, methodName) {
 }
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
-  let methodInfo = extractMethodInfo(suggestion.targetName);
+  let methodInfo = extractMethodInfo(suggestion.methodFullName);
   let className = methodInfo.className;
   let methodName = methodInfo.methodName;
   let methodArgsList = methodInfo.methodArgsList;
@@ -734,11 +734,11 @@ let PlayBook = React.createClass({
     let removeClass = this.props.removeClass;
     let programList = Object.keys(program).map(function (genre) {
       let classList = Object.keys(program[genre]).map(function (clsName) {
-        let methodList = Object.keys(program[genre][clsName]).map(function (methodLongName) {
-          let methodInfo = extractMethodInfo(methodLongName);
+        let methodList = Object.keys(program[genre][clsName]).map(function (methodFullName) {
+          let methodInfo = extractMethodInfo(methodFullName);
           return (
             <li style={{marginLeft: '-38px', fontSize: '14px'}}>
-              <button className='removePlayTarget' onClick={() => removeMethod(genre, methodLongName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+              <button className='removePlayTarget' onClick={() => removeMethod(genre, methodFullName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
               <span style={{marginLeft: '4px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
             </li>
           )
@@ -1046,7 +1046,7 @@ let JackPlay = React.createClass({
     let loadedTargets = this.state.loadedTargets;
     let currentLookup = this.state.autoClassLookupState.value;
     for (let target of loadedTargets) {
-      if (target.targetName == currentLookup) return target.returnType;
+      if (target.methodFullName == currentLookup) return target.returnType;
     }
 
     return '';
@@ -1056,10 +1056,10 @@ let JackPlay = React.createClass({
     this.setState(Object.assign(this.state, {autoClassLookupState: Object.assign(newState, {returnType: returnTypeOfCurrentLookup})}));
 
   },
-  removeMethod: function(genre, methodLongName) {
+  removeMethod: function(genre, methodFullName) {
     $.ajax({
       url: '/removeMethod',
-        data: 'longMethodName=' + encodeURIComponent(methodLongName) + '&genre=' + encodeURIComponent(genre),
+        data: 'methodFullName=' + encodeURIComponent(methodFullName) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();
       }.bind(this),
@@ -1071,7 +1071,7 @@ let JackPlay = React.createClass({
   removeClass: function(genre, className) {
     $.ajax({
       url: '/removeClass',
-        data: 'className=' + encodeURIComponent(className) + '&genre=' + encodeURIComponent(genre),
+        data: 'classFullName=' + encodeURIComponent(className) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();
       }.bind(this),

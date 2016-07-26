@@ -22,12 +22,12 @@ public class RemoveMethodHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange http) throws IOException {
         Map<String, String> params = WebUtils.parseParams(http.getRequestURI());
-        String longMethodName = params.get("longMethodName");
+        String methodFullName = params.get("methodFullName");
         String genre = params.get("genre");
 
         try {
             Genre g = Genre.valueOf(genre);
-            pm.removeProgrammedMethod(g, longMethodName);
+            pm.removeProgrammedMethod(g, methodFullName);
             CommonHandling.serveStringBody(http, 200, "OK");
         } catch (Exception e) {
             Logger.error(e);

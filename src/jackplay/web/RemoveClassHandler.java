@@ -22,7 +22,7 @@ public class RemoveClassHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange http) throws IOException {
         Map<String, String> params = WebUtils.parseParams(http.getRequestURI());
-        String className = params.get("className");
+        String className = params.get("classFullName");
         String genre = params.get("genre");
 
         try {

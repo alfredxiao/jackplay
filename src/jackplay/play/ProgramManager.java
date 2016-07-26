@@ -12,25 +12,25 @@ public class ProgramManager {
     Composer composer;
     Map<Genre, Map<String, Map<String, jackplay.play.performers.Performer>>> program;
 
-    public void init(Opera opera) {
+    public void init(Theatre theatre) {
         program = new HashMap<Genre, Map<String, Map<String, Performer>>>();
-        this.composer = opera.getComposer();
+        this.composer = theatre.getComposer();
     }
 
-    public void addPlayAsTracing(String methodLongName) throws Exception {
-       this.addPlay(methodLongName, Genre.METHOD_LOGGING, null);
+    public void addPlayAsTracing(String methodFullName) throws Exception {
+       this.addPlay(methodFullName, Genre.METHOD_LOGGING, null);
     }
 
-    public void addPlayAsRedefinition(String methodLongName, String src) throws Exception {
-        this.addPlay(methodLongName, Genre.METHOD_REDEFINE, src);
+    public void addPlayAsRedefinition(String methodFullName, String src) throws Exception {
+        this.addPlay(methodFullName, Genre.METHOD_REDEFINE, src);
     }
 
-    private void addPlay(String methodLongName, Genre genre, String src) throws Exception {
-        PlayGround pg = new PlayGround(methodLongName);     // basic format validation
+    private void addPlay(String methodFullName, Genre genre, String src) throws Exception {
+        PlayGround pg = new PlayGround(methodFullName);     // basic format validation
         validateMethodLocation(pg);                         // validate method existence
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addToProgram(pg, genre, src);
-            composer.performPlay(pg.className);
+            composer.performPlay(pg.classFullName);
         }
     }
 
@@ -38,20 +38,20 @@ public class ProgramManager {
         pg.locateMethod();
     }
 
-    public void removeRedefinition(String className, String methodLongName) {
-        program.get(Genre.METHOD_REDEFINE).get(className).remove(methodLongName);
+    public void removeRedefinition(String className, String methodFullName) {
+        program.get(Genre.METHOD_REDEFINE).get(className).remove(methodFullName);
     }
 
-    public void removeProgrammedMethod(Genre genre, String methodLongName) throws Exception {
-        PlayGround pg = new PlayGround(methodLongName);
-        program.get(genre).get(pg.className).remove(methodLongName);
-        if (program.get(genre).get(pg.className).isEmpty()) {
-            program.get(genre).remove(pg.className);
+    public void removeProgrammedMethod(Genre genre, String methodFullName) throws Exception {
+        PlayGround pg = new PlayGround(methodFullName);
+        program.get(genre).get(pg.classFullName).remove(methodFullName);
+        if (program.get(genre).get(pg.classFullName).isEmpty()) {
+            program.get(genre).remove(pg.classFullName);
             if (program.get(genre).isEmpty()) {
                 program.remove(genre);
             }
         }
-        composer.performPlay(pg.className);
+        composer.performPlay(pg.classFullName);
     }
 
     public void removeProgrammedClass(Genre genre, String className) throws Exception {
@@ -67,16 +67,16 @@ public class ProgramManager {
 
     private boolean existsPlay(PlayGround pg, Genre genre) throws NotFoundException {
         try {
-            return program.get(genre).get(pg.className).containsKey(pg.methodLongName);
+            return program.get(genre).get(pg.classFullName).containsKey(pg.methodFullName);
         } catch(NullPointerException npe) {
             return false;
         }
     }
 
     private synchronized void addToProgram(PlayGround pg, Genre genre, String methodSource) {
-        prepareProgram(genre, pg.className);
+        prepareProgram(genre, pg.classFullName);
         Performer performer = createPerformer(pg, genre, methodSource);
-        program.get(genre).get(pg.className).put(pg.methodLongName, performer);
+        program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
     }
 
     private synchronized void prepareProgram(Genre genre, String className) {

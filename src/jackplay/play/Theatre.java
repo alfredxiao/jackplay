@@ -5,7 +5,7 @@ import jackplay.play.performers.LeadPerformer;
 
 import java.lang.instrument.Instrumentation;
 
-public interface Opera {
+public interface Theatre {
     Options getOptions();
     Instrumentation getInstrumentation();
     Composer getComposer();

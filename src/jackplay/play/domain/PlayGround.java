@@ -8,53 +8,48 @@ import javassist.NotFoundException;
 import java.util.Objects;
 
 public class PlayGround {
-    public final String className;
-    public final String methodLongName;
-    public final String methodShortName;
+    public final String classFullName;      // com.abc.MyService
+    public final String methodFullName;     // com.abc.MyService.myfunction(java.lang.String)
+    public final String methodLongName;     // com.abc.MyService.myfunction
+    public final String methodShortName;    // myfunction
 
     final static String INVALID_MESSAGE = "invalid format, correct format is className.methodName()";
 
-    public PlayGround(String methodLongName) {
-        if (null == methodLongName
-                || methodLongName.length() < 5
-                || !methodLongName.endsWith(")")
-                || methodLongName.indexOf(' ') >= 0) {
-            throwInvalidFormatMessage(methodLongName);
+    public PlayGround(String methodFullName) {
+        if (null == methodFullName
+                || methodFullName.length() < 5
+                || !methodFullName.endsWith(")")
+                || methodFullName.indexOf(' ') >= 0) {
+            throwInvalidFormatMessage(methodFullName);
         }
 
-        int lastDot = methodLongName.lastIndexOf('.');
-        if (lastDot <= 1 || methodLongName.endsWith(".")) throwInvalidFormatMessage(methodLongName);
+        int lastDot = methodFullName.lastIndexOf('.');
+        if (lastDot <= 1 || methodFullName.endsWith(".")) throwInvalidFormatMessage(methodFullName);
 
-        int firstParen = methodLongName.indexOf('(');
-        if (firstParen <= 0) throwInvalidFormatMessage(methodLongName);
+        int firstParen = methodFullName.indexOf('(');
+        if (firstParen <= 0) throwInvalidFormatMessage(methodFullName);
 
-        int dotBeforeMethodName = methodLongName.substring(0, firstParen).lastIndexOf('.');
+        int dotBeforeMethodName = methodFullName.substring(0, firstParen).lastIndexOf('.');
 
-        this.className = methodLongName.substring(0, dotBeforeMethodName);
-        this.methodLongName = methodLongName;
-        this.methodShortName = findMethodShortName(methodLongName);
+        this.classFullName = methodFullName.substring(0, dotBeforeMethodName);
+        this.methodFullName = methodFullName;
+        this.methodLongName = methodFullName.substring(0, firstParen);
+        this.methodShortName = methodFullName.substring(dotBeforeMethodName + 1, firstParen);
     }
 
-    private void throwInvalidFormatMessage(String methodLongName) {
-        throw new RuntimeException("[" + methodLongName + "] is " + INVALID_MESSAGE);
+    private void throwInvalidFormatMessage(String methodFullName) {
+        throw new RuntimeException("[" + methodFullName + "] is " + INVALID_MESSAGE);
     }
-
-    private static String findMethodShortName(String methodLongName) {
-        int firstParen = methodLongName.indexOf('(');
-        int dotBeforeMethodName = methodLongName.substring(0, firstParen).lastIndexOf('.');
-        return methodLongName.substring(dotBeforeMethodName + 1, firstParen);
-    }
-
 
     public CtMethod locateMethod() throws NotFoundException {
         ClassPool cp = ClassPool.getDefault();
         CtMethod found = null;
         try {
-            CtClass cc = cp.get(this.className);
+            CtClass cc = cp.get(this.classFullName);
 
             CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
             for (CtMethod m : methods) {
-                if (m.getLongName().equals(methodLongName)) {
+                if (m.getLongName().equals(methodFullName)) {
                     found = m;
                 }
             }
@@ -62,7 +57,7 @@ public class PlayGround {
         }
 
         if (null == found) {
-            throw new NotFoundException(this.methodLongName + " not found!");
+            throw new NotFoundException(this.methodFullName + " not found!");
         } else {
             return found;
         }
@@ -73,17 +68,22 @@ public class PlayGround {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayGround playGround = (PlayGround) o;
-        return Objects.equals(className, playGround.className) &&
-                Objects.equals(methodLongName, playGround.methodLongName);
+        return Objects.equals(classFullName, playGround.classFullName) &&
+                Objects.equals(methodFullName, playGround.methodFullName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(className, methodLongName);
+        return Objects.hash(methodFullName);
     }
 
     @Override
     public String toString() {
-        return "methodLongName";
+        return "PlayGround{" +
+                "classFullName='" + classFullName + '\'' +
+                ", methodFullName='" + methodFullName + '\'' +
+                ", methodLongName='" + methodLongName + '\'' +
+                ", methodShortName='" + methodShortName + '\'' +
+                '}';
     }
 }

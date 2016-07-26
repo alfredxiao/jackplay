@@ -1,6 +1,7 @@
 package jackplay.play;
 
 import jackplay.play.domain.Genre;
+import jackplay.play.domain.PlayGround;
 import jackplay.play.performers.Performer;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -40,11 +41,11 @@ public class InformationCenter {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
                 && !clazz.isArray()
-                && !clazz.getName().startsWith("java.")
-                && !clazz.getName().startsWith("jdk.internal.")
-                && !clazz.getName().startsWith("sun.")
-                && !clazz.getName().startsWith("com.sun.")
-                && !clazz.getName().startsWith("javassist.")
+//                && !clazz.getName().startsWith("java.")
+//                && !clazz.getName().startsWith("jdk.internal.")
+//                && !clazz.getName().startsWith("sun.")
+//                && !clazz.getName().startsWith("com.sun.")
+//                && !clazz.getName().startsWith("javassist.")
                 && !clazz.getName().startsWith("jackplay.");
     }
 
@@ -59,9 +60,14 @@ public class InformationCenter {
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
                 if (!isFirst) builder.append(',');
-                builder.append("{\"targetName\":\"").append(m.getLongName()).append("\"");
-                builder.append(",\"returnType\":\"").append(m.getReturnType().getName()).append("\"");
-                builder.append(",\"signature\":\"").append(m.getSignature()).append("\"}");
+
+                PlayGround pg = new PlayGround(m.getLongName());
+                builder.append("{");
+                builder.append("\"classFullName\":\"").append(pg.classFullName).append("\"").append(",");
+                builder.append("\"methodLongName\":\"").append(pg.methodLongName).append("\"").append(",");
+                builder.append("\"methodFullName\":\"").append(pg.methodFullName).append("\"").append(",");
+                builder.append("\"returnType\":\"").append(m.getReturnType().getName()).append("\"");
+                builder.append("}");
                 isFirst = false;
             }
         }

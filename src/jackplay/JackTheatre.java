@@ -6,8 +6,8 @@ import jackplay.web.BoxOffice;
 
 import java.lang.instrument.*;
 
-public class JackOpera implements Opera {
-    static JackOpera jackOpera;
+public class JackTheatre implements Theatre {
+    static JackTheatre jackTheatre;
 
     Options options;
     Instrumentation inst;
@@ -16,7 +16,7 @@ public class JackOpera implements Opera {
     LeadPerformer leader;
     BoxOffice boxOffice;
 
-    public JackOpera(Options options, Instrumentation inst, Composer composer, ProgramManager pm, LeadPerformer leader, BoxOffice boxOffice) {
+    public JackTheatre(Options options, Instrumentation inst, Composer composer, ProgramManager pm, LeadPerformer leader, BoxOffice boxOffice) {
         this.options = options;
         this.inst = inst;
         this.composer = composer;
@@ -26,7 +26,7 @@ public class JackOpera implements Opera {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        Logger.info("running JackOpera with arguments:" + agentArgs);
+        Logger.info("running JackPlay with arguments:" + (agentArgs == null ? "(no args, resort to default)" : agentArgs));
         Logger.debug("Instrumentation.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
         Logger.debug("Instrumentation.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
 
@@ -41,9 +41,9 @@ public class JackOpera implements Opera {
         LeadPerformer leader = new LeadPerformer();
         BoxOffice boxOffice = new BoxOffice();
 
-        jackOpera = new JackOpera(options, inst, composer, pm, leader, boxOffice);
+        jackTheatre = new JackTheatre(options, inst, composer, pm, leader, boxOffice);
 
-        jackOpera.start();
+        jackTheatre.start();
     }
 
     @Override

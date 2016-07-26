@@ -14,11 +14,11 @@ public class Composer {
     ProgramManager pm;
     LeadPerformer leadPerformer;
 
-    public void init(Opera opera) {
-        this.inst = opera.getInstrumentation();
-        this.options = opera.getOptions();
-        this.pm = opera.getProgramManager();
-        this.leadPerformer = opera.getLeadPerformer();
+    public void init(Theatre theatre) {
+        this.inst = theatre.getInstrumentation();
+        this.options = theatre.getOptions();
+        this.pm = theatre.getProgramManager();
+        this.leadPerformer = theatre.getLeadPerformer();
         this.inst.addTransformer(leadPerformer, true);
     }
 
