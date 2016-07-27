@@ -41,11 +41,11 @@ public class InformationCenter {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
                 && !clazz.isArray()
-//                && !clazz.getName().startsWith("java.")
-//                && !clazz.getName().startsWith("jdk.internal.")
-//                && !clazz.getName().startsWith("sun.")
-//                && !clazz.getName().startsWith("com.sun.")
-//                && !clazz.getName().startsWith("javassist.")
+                && !clazz.getName().startsWith("java.")
+                && !clazz.getName().startsWith("jdk.internal.")
+                && !clazz.getName().startsWith("sun.")
+                && !clazz.getName().startsWith("com.sun.")
+                && !clazz.getName().startsWith("javassist.")
                 && !clazz.getName().startsWith("jackplay.");
     }
 

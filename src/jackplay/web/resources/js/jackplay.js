@@ -464,7 +464,9 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  return Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(SHOW_MAX_HIT_SEARCH).toArray();
+  let hitByMethodLongName = Lazy(allTargets).filter(entry => regex.test(entry.methodLongName)).take(SHOW_MAX_HIT_SEARCH).toArray();
+  let hitByMethodFullName = Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(SHOW_MAX_HIT_SEARCH);
+  return hitByMethodLongName.length > 0 ?  hitByMethodLongName : hitByMethodFullName.toArray();
 }
 
 function getSuggestionValue(suggestion) {
@@ -550,17 +552,14 @@ function highlightTermsInText(term, text) {
   )
 }
 
-function highlightClassName(search, className) {
-  let terms = getSearchTerms(search, className);
-  return highlightTermsInText(terms.classTerm, className);
-}
-
-function highlightMethodName(search, methodName) {
-  let terms = getSearchTerms(search);
-  return highlightTermsInText(terms.methodTerm, methodName);
-}
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
+  const query = (valueBeforeUpDown || value).trim();
+  let methodFullName = suggestion.methodFullName;
+
+  let queryStart = methodFullName.toLowerCase().indexOf(query.toLowerCase());
+  if (queryStart < 0) return null;
+
   let methodInfo = extractMethodInfo(suggestion.methodFullName);
   let className = methodInfo.className;
   let methodName = methodInfo.methodName;
@@ -568,17 +567,77 @@ function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
   if (methodArgsList) {
     methodArgsList = methodArgsList.split(',').map(argType => useShortTypeName ? getShortTypeName(argType) : argType).join(', ');
   }
-  const query = (valueBeforeUpDown || value).trim();
+
+  let styleArray = new Array(methodFullName.length);
+  for (let i = 0; i<styleArray.length; i++) styleArray[i] = 0;
+
+  // index in below array is inclusive
+  let segmentsIndexArray = [{start: 0,
+                             end: className.length,
+                             style: 1},                                 // this covers abc.MyService.
+                            {start: className.length + 1,
+                             end: className.length + methodName.length, // this covers myfunc1
+                             style: 2},
+                            {start: className.length + methodName.length + 1,
+                             end: methodFullName.length - 1,            // this covers (int,boolean)
+                             style: 4},
+                            {start: queryStart,
+                             end: queryStart + query.length - 1,
+                             style: 8}];
+  // set the style array with those segments
+  //    abc.MyService. | func1 | (java.lang.String)
+  //    11111111111111   22222   444444444444444444
+  //                88   88                         // if search query is: `e.fu`
+  for (let i1=0; i1<segmentsIndexArray.length; i1++) {
+    let segIndex = segmentsIndexArray[i1];
+    for (let i2=segIndex.start; i2<=segIndex.end; i2++) {
+      styleArray[i2] += segIndex.style;
+    }
+  }
+
+  // time to collect segments.
+  var segments = new Array();
+  const NO_PREVIOUS_SEG = 'NO_PREVIOUS_SEG';
+  const HAS_PREVIOUS_SEG = 'HAS_PREVIOUS_SEG';
+  let status = NO_PREVIOUS_SEG;
+  let currentSegmentIndex = -1;
+  var previousStyle = -1;
+  let createNewSeg = function (i) {
+        currentSegmentIndex++;
+        segments[currentSegmentIndex] = {start: i, style: styleArray[i]};
+        previousStyle = styleArray[i];
+  };
+  for (let i=0; i<styleArray.length; i++) {
+    if (NO_PREVIOUS_SEG == status) {
+      status = HAS_PREVIOUS_SEG;
+      createNewSeg(i);
+    } else {
+        if (previousStyle != styleArray[i]) {
+          // should start a new segment after finishing previous segment
+          segments[currentSegmentIndex].end = i - 1;
+
+          // and start a new segment
+          createNewSeg(i);
+        }
+    }
+  }
+
+  // finish the last segment
+  segments[currentSegmentIndex].end = styleArray.length - 1;
+
+  let methodLongNameWithQueryHighlighted = segments.map(function (segment) {
+    let clsNames = '';
+    if (segment.style & 1)  clsNames += ' suggestion_classname';
+    if (segment.style & 2)  clsNames += ' suggestion_method_name';
+    if (segment.style & 4)  clsNames += ' suggestion_method_args_list';
+    if (segment.style & 8)  clsNames += ' highlight';
+
+    return (<span className={clsNames}>{methodFullName.substring(segment.start, segment.end + 1)}</span>);
+  });
 
   return (
     <span>
-      <span className='suggestion_classname'>{highlightClassName(query, className)}.</span>
-      <span className='suggestion_method_name'>{highlightMethodName(query, methodName)}</span>
-      <span className='suggestion_method_signature'>
-          <span className='suggestion_method_paren'>(</span>
-          <span className='suggestion_method_args_list'>{methodArgsList}</span>
-          <span className='suggestion_method_paren'>)</span>
-      </span>
+      {methodLongNameWithQueryHighlighted}
     </span>
   );
 }
