@@ -892,22 +892,22 @@ let PlayPanel = React.createClass({
     this.setState(Object.assign(this.state, {MethodRedefineIsShow: false}));
   },
   validatePlayTarget: function() {
-    let longMethodName = this.props.autoClassLookupState.value;  //$("div#content input[type=text]")[0].value.trim();
-    if (!longMethodName) {
+    let methodFullName = this.props.autoClassLookupState.value;  //$("div#content input[type=text]")[0].value.trim();
+    if (!methodFullName) {
       this.props.setGlobalMessage(ERROR, 'Please type in a valid classname.methodname!');
       $("div#content input[type=text]")[0].focus();
     }
 
-    return longMethodName;
+    return methodFullName;
   },
   submitMethodTrace: function() {
-    let longMethodName = this.validatePlayTarget();
+    let methodFullName = this.validatePlayTarget();
 
-    if (longMethodName) {
+    if (methodFullName) {
       this.props.setTraceStarted(true);
       $.ajax({
         url: '/logMethod',
-        data: 'longMethodName=' + encodeURIComponent(longMethodName),
+        data: { methodFullName: methodFullName },
         success: function(data) {
           this.props.setGlobalMessage(INFO, data);
         }.bind(this),
@@ -928,7 +928,8 @@ let PlayPanel = React.createClass({
           method: 'post',
           url: '/redefineMethod',
           contentType: "application/x-www-form-urlencoded",
-          data: 'longMethodName=' + encodeURIComponent(longMethodName) + "&src=" + encodeURIComponent(src),
+          data: { longMethodName: longMethodName,
+                  src: src},
           success: function(data) {
             this.props.setGlobalMessage(INFO, data);
           }.bind(this),

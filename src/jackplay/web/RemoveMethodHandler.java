@@ -20,10 +20,11 @@ public class RemoveMethodHandler implements HttpHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void handle(HttpExchange http) throws IOException {
-        Map<String, String> params = WebUtils.parseParams(http.getRequestURI());
-        String methodFullName = params.get("methodFullName");
-        String genre = params.get("genre");
+        Map<String, Object> params = (Map<String, Object>) http.getAttribute("parameters");
+        String methodFullName = (String) params.get("methodFullName");
+        String genre = (String) params.get("genre");
 
         try {
             Genre g = Genre.valueOf(genre);
