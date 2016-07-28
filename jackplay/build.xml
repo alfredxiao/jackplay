@@ -1,0 +1,43 @@
+<project name="jackplay" default="dist" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="version" value="0.5-SNAPSHOT"/>
+
+  <path id="project.classpath" cache="true">
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="build"/>
+    <mkdir dir="build/classes"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source">
+    <javac srcdir="src" destdir="build/classes" includeantruntime="false">
+      <classpath refid="project.classpath"/>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <mkdir dir="dist"/>
+
+    <jar jarfile="dist/jackplay-${version}.jar">
+      <fileset dir="build/classes"/>
+      <fileset dir="resources"/>
+      <manifest>
+        <attribute name="Premain-Class" value="jackplay.JackTheatre"/>
+        <attribute name="Agent-Class" value="jackplay.JackTheatre"/>
+        <attribute name="Can-Redefine-Classes" value="true"/>
+        <attribute name="Can-Retransform-Classes" value="true"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean" description="clean up">
+    <delete dir="build"/>
+    <delete dir="dist"/>
+  </target>
+</project>
