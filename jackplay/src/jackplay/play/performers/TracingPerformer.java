@@ -2,9 +2,9 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.play.domain.PlayGround;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import jackplay.javassist.ClassPool;
+import jackplay.javassist.CtClass;
+import jackplay.javassist.CtMethod;
 
 public class TracingPerformer implements Performer {
     String methodFullName;

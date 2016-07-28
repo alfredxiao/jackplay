@@ -1,7 +1,7 @@
 package jackplay.play.performers;
 
 
-import javassist.CtClass;
+import jackplay.javassist.CtClass;
 
 public interface Performer {
     CtClass perform(CtClass aClass) throws Exception;

@@ -4,8 +4,8 @@ import jackplay.play.Composer;
 import jackplay.play.Theatre;
 import jackplay.play.ProgramManager;
 import jackplay.play.domain.Genre;
-import javassist.ClassPool;
-import javassist.CtClass;
+import jackplay.javassist.ClassPool;
+import jackplay.javassist.CtClass;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;

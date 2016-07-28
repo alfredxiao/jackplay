@@ -21,10 +21,20 @@
     </javac>
   </target>
 
+  <!--<target name="rename-javassist" description="rename javassist library package names">-->
+    <!--<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="lib/jarjar.jar"/>-->
+    <!--<jarjar jarfile="lib/javassist-3.20.0-GA.jar">-->
+      <!--<fileset dir="build/main"/>-->
+      <!--<zipfileset src="lib/jaxen.jar"/>-->
+      <!--<rule pattern="org.jaxen.**" result="org.example.@1"/>-->
+    <!--</jarjar>-->
+  <!--</target>-->
+
   <target name="dist" depends="compile" description="generate the distribution">
     <mkdir dir="dist"/>
 
     <jar jarfile="dist/jackplay-${version}.jar">
+      <zipfileset src="lib/javassist-3.20.0-GA-jackplay.jar"/>
       <fileset dir="build/classes"/>
       <fileset dir="resources"/>
       <manifest>

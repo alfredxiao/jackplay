@@ -3,10 +3,10 @@ package jackplay.play;
 import jackplay.play.domain.Genre;
 import jackplay.play.domain.PlayGround;
 import jackplay.play.performers.Performer;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import jackplay.javassist.ClassPool;
+import jackplay.javassist.CtClass;
+import jackplay.javassist.CtMethod;
+import jackplay.javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
 import java.util.*;
@@ -45,7 +45,7 @@ public class InformationCenter {
                 && !clazz.getName().startsWith("jdk.internal.")
                 && !clazz.getName().startsWith("sun.")
                 && !clazz.getName().startsWith("com.sun.")
-                && !clazz.getName().startsWith("javassist.")
+                && !clazz.getName().startsWith("jackplay.javassist.")
                 && !clazz.getName().startsWith("jackplay.");
     }
 

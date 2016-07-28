@@ -2,8 +2,8 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.play.domain.PlayGround;
-import javassist.CtClass;
-import javassist.CtMethod;
+import jackplay.javassist.CtClass;
+import jackplay.javassist.CtMethod;
 
 public class RedefinePerformer implements jackplay.play.performers.Performer {
     String methodFullName;

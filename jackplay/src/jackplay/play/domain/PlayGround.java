@@ -1,9 +1,9 @@
 package jackplay.play.domain;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import jackplay.javassist.ClassPool;
+import jackplay.javassist.CtClass;
+import jackplay.javassist.CtMethod;
+import jackplay.javassist.NotFoundException;
 
 import java.util.Objects;
 

@@ -1,0 +1,1 @@
+rule javassist.** jackplay.javassist.@1

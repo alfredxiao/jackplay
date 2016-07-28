@@ -4,7 +4,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 1. **DONE** serve static html/js
 2. **DONE** global log appender/viewer
 3. **DONE** clear global log
-4. reset all changed code
+4. **DONE** reset all changed code
 5. Tracing
  - **DONE** method logging
  - across all classes from invocation triggered from specified package/class/method

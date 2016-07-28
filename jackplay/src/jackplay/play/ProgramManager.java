@@ -4,7 +4,7 @@ import jackplay.play.domain.Genre;
 import jackplay.play.domain.PlayGround;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
-import javassist.NotFoundException;
+import jackplay.javassist.NotFoundException;
 
 import java.util.*;
 
