@@ -28,8 +28,8 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 17. **DONE** Display current scripts, allow disable/remove one/multiple of them
 18. **DONE** auto refresh, and load only updated log history
 19. **DONE** in UI,Filter log messages
-20. merge javassist lib with agent lib
-21. change javassist package name such that we don't fight with app code that references javassist
+20. **DONE** merge javassist lib with agent lib
+21. **DONE** change javassist package name such that we don't fight with app code that references javassist
 22. **DONE** stop refresh log history
 23. Intercept interface?
 24. allow the use of wildcard such that we can trace all methods in a class without having to input all method names.

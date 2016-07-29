@@ -2,6 +2,18 @@
 let alertGlobal = {};
 let ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
+let toMessage = function(obj) {
+  return JSON.stringify(obj);
+}
+
+let toErrorMessage = function(obj) {
+  if (obj.responseText) {
+    return obj.responseText;
+  } else {
+    return toMessage(obj);
+  }
+}
+
 // the alert notification is based on http://schiehll.github.io/react-alert/
 // highlight is based on https://github.com/moroshko/react-autosuggest
 // modal dialog is based on https://github.com/sergiodxa/react-simple-modal
@@ -909,10 +921,11 @@ let PlayPanel = React.createClass({
         url: '/logMethod',
         data: { methodFullName: methodFullName },
         success: function(data) {
-          this.props.setGlobalMessage(INFO, data);
+          this.props.setGlobalMessage(INFO, toMessage(data));
         }.bind(this),
         error: function(data) {
-          this.props.setGlobalMessage(ERROR, data.statusText + " : " + data.responseText);
+          console.log('error-data', data);
+          this.props.setGlobalMessage(ERROR, toErrorMessage(data));
         }.bind(this)
       });
     };
@@ -931,10 +944,10 @@ let PlayPanel = React.createClass({
           data: { longMethodName: longMethodName,
                   src: src},
           success: function(data) {
-            this.props.setGlobalMessage(INFO, data);
+            this.props.setGlobalMessage(INFO, toMessage(data));
           }.bind(this),
           error: function(data) {
-            this.props.setGlobalMessage(ERROR, data.statusText + " : " + data.responseText);
+            this.props.setGlobalMessage(ERROR, toErrorMessage(data));
           }.bind(this)
         });
     }
@@ -1091,12 +1104,21 @@ let JackPlay = React.createClass({
     this.updateFilter();
   },
   setGlobalMessage: function(level, msg) {
-//    this.setState(Object.assign(this.state, {globalMessage: {level: level, message: msg}}));
-    this.msg.show(msg, {
-                   time: 50000,
-                   type: 'success',
-                   icon: <span className="fa fa-info-circle" aria-hidden="true"></span>
-                 })
+    switch(level) {
+      case INFO: this.msg.show(msg, {
+                                    time: 5000,
+                                    type: 'info',
+                                    icon: <span className="fa fa-info-circle" aria-hidden="true"></span>
+                                  });
+                 break;
+      case ERROR: this.msg.show(msg, {
+                                    time: 10000,
+                                    type: 'error',
+                                    icon: <span className="fa fa-question" aria-hidden="true"></span>
+                                     });
+                  break;
+    }
+
   },
   clearGlobalMessage: function() {
     this.setState(Object.assign(this.state, {globalMessage: null}));

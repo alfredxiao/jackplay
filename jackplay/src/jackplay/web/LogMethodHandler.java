@@ -24,7 +24,6 @@ public class LogMethodHandler implements HttpHandler {
     public void handle(HttpExchange http) throws IOException {
         Map<String, Object> params = (Map<String, Object>) http.getAttribute("parameters");
         String methodFullName = (String) params.get("methodFullName");
-        Logger.info("methodFullName:" + methodFullName);
 
         try {
             pm.addPlayAsTracing(methodFullName);
