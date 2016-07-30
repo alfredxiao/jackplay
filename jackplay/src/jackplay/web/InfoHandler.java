@@ -2,7 +2,7 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.play.InfoCenter;
-import jackplay.play.PlayKeeper;
+import jackplay.play.TraceKeeper;
 
 import java.util.Map;
 
@@ -18,14 +18,14 @@ public class InfoHandler extends BaseHandler {
         switch (getUriPath(uri)) {
             case "/info/traceLogs":
                 http.getResponseHeaders().add("Content-Type", "application/json");
-                CommonHandling.serveStringBody(http, 200, PlayKeeper.getLogHistoryAsJson());
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getTraceLogs()));
                 break;
             case "/info/loadedMethods":
                 http.getResponseHeaders().add("Content-Type", "application/json");
-                CommonHandling.serveStringBody(http, 200, infoCenter.loadedMethodsAsJson());
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getLoadedMethods()));
                 break;
             case "/info/clearTraceLogs":
-                PlayKeeper.clearLogHistory();
+                TraceKeeper.clearLogHistory();
                 CommonHandling.serveStringBody(http, 200, "OK");
                 break;
             default:

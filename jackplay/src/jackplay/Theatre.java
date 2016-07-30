@@ -37,7 +37,7 @@ public class Theatre {
         Logger.info("open your browser and point to http://localhost:" + options.port());
 
         Logger.init(options);
-        PlayKeeper.init(options);
+        TraceKeeper.init(options);
 
         Composer composer = new Composer();
         ProgramManager pm = new ProgramManager();

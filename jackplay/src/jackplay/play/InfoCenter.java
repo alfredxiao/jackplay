@@ -2,50 +2,57 @@ package jackplay.play;
 
 import jackplay.play.domain.Genre;
 import jackplay.play.domain.PlayGround;
-import jackplay.play.performers.Performer;
+import jackplay.play.domain.TraceLog;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
 import jackplay.javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class InfoCenter {
+
+    static class ClassComparator implements Comparator<Class> {
+        public int compare(Class o1, Class o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    static class MethodComparator implements Comparator<CtMethod> {
+        public int compare(CtMethod o1, CtMethod o2) {
+            return o1.getLongName().compareTo(o2.getLongName());
+        }
+    }
+
     Instrumentation inst;
     ProgramManager pm;
     final static ClassComparator classComparator = new ClassComparator();
     final static MethodComparator methodComparator = new MethodComparator();
 
-    public String loadedMethodsAsJson() throws Exception {
+    public List<Map<String, String>> getLoadedMethods() throws Exception {
+        List<Map<String, String>> loadedMethods = new ArrayList<>();
         List<CtClass> classes = modifiableClasses();
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        boolean isFirst = true;
 
         for (CtClass clazz : classes) {
             CtMethod[] methods = clazz.getDeclaredMethods();
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
-                if (!isFirst) builder.append(',');
-
                 PlayGround pg = new PlayGround(m.getLongName());
-                builder.append("{");
-                builder.append("\"classFullName\":\"").append(pg.classFullName).append("\"").append(",");
-                builder.append("\"methodLongName\":\"").append(pg.methodLongName).append("\"").append(",");
-                builder.append("\"methodFullName\":\"").append(pg.methodFullName).append("\"").append(",");
-                builder.append("\"returnType\":\"").append(m.getReturnType().getName()).append("\"");
-                builder.append("}");
-                isFirst = false;
+                Map<String, String> loadedMethod = new HashMap<>();
+                loadedMethod.put("classFullName", pg.classFullName);
+                loadedMethod.put("methodFullName", pg.methodFullName);
+                loadedMethod.put("methodLongName", pg.methodLongName);
+                loadedMethod.put("returnType", m.getReturnType().getName());
+
+                loadedMethods.add(loadedMethod);
             }
         }
-        builder.append("]");
-        return builder.toString();
+
+        return loadedMethods;
     }
 
-    public String programAsJson() {
-        return ObjectAsJson(pm.program);
-    }
 
     private List<CtClass> modifiableClasses() throws Exception {
         List<CtClass> modifiableClasses = new ArrayList<CtClass>();
@@ -80,62 +87,33 @@ public class InfoCenter {
                 && !clazz.getName().startsWith("jackplay.");
     }
 
-    private static String ObjectAsJson(Map<Genre, Map<String, Map<String, Performer>>> program) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-
-        Set<Genre> genres = program.keySet();
-        boolean isFirstGenre = true;
-        for (Genre genre : genres) {
-            if (!isFirstGenre) builder.append(",");
-            builder.append("\"").append(genre.toString()).append("\":{");
-
-            Map<String, Map<String, Performer>> classMap = program.get(genre);
-            Set<String> classes = classMap.keySet();
-            boolean isFirstClass = true;
-            for (String cls : classes) {
-                if (!isFirstClass) builder.append(",");
-                builder.append("\"").append(cls).append("\":{");
-
-                Map<String, Performer> methodMap = classMap.get(cls);
-                Set<String> methods = methodMap.keySet();
-                boolean isFirstMethod = true;
-                for (String m : methods) {
-                    if (!isFirstMethod) builder.append(",");
-                    builder.append("\"").append(m).append("\":");
-                    builder.append("\"").append(methodMap.get(m)).append("\"");
-                    isFirstMethod = false;
-                }
-                builder.append("}");
-                isFirstClass = false;
-            }
-
-            builder.append("}");
-            isFirstGenre = false;
-        }
-
-        builder.append("}");
-        return builder.toString();
-    }
-
     public void wireUp(Instrumentation inst, ProgramManager pm) {
         this.inst = inst;
         this.pm = pm;
     }
-}
 
-class ClassComparator implements Comparator<Class> {
+    public List<Map<String, Object>> getTraceLogs() {
+        Iterator<TraceLog> it = TraceKeeper.logHistory.iterator();
+        List<Map<String, Object>> listOfLogs = new ArrayList<>();
 
-    @Override
-    public int compare(Class o1, Class o2) {
-        return o1.getName().compareTo(o2.getName());
+        while (it.hasNext()) {
+            TraceLog traceLog = it.next();
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("when", formatDate(traceLog.when));
+            map.put("triggerPoint", traceLog.triggerPoint.toString());
+            map.put("log", traceLog.log);
+            map.put("elapsed", traceLog.elapsed);
+
+            listOfLogs.add(map);
+        }
+
+        return listOfLogs;
     }
-}
 
-class MethodComparator implements Comparator<CtMethod> {
-
-    @Override
-    public int compare(CtMethod o1, CtMethod o2) {
-        return o1.getLongName().compareTo(o2.getLongName());
+    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static String formatDate(Date when) {
+        return formatter.format(when);
     }
+
 }

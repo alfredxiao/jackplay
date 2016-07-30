@@ -6,14 +6,16 @@ import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
 import jackplay.javassist.NotFoundException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ProgramManager {
     Composer composer;
-    Map<Genre, Map<String, Map<String, jackplay.play.performers.Performer>>> program;
+    Map<Genre, Map<String, Map<String, Performer>>> program;
 
     public void wireUp(Composer composer) {
-        program = new HashMap<>();
+        program = new ConcurrentHashMap<>();
         this.composer = composer;
     }
 
@@ -85,11 +87,11 @@ public class ProgramManager {
     }
 
     private void prepareGenreMap(Genre genre) {
-        if (!program.containsKey(genre))  program.put(genre, new HashMap<String, Map<String, jackplay.play.performers.Performer>>());
+        if (!program.containsKey(genre))  program.put(genre, new ConcurrentHashMap<String, Map<String, jackplay.play.performers.Performer>>());
     }
 
     private void prepareClassMap(Genre genre, String className) {
-        if (!program.get(genre).containsKey(className)) program.get(genre).put(className, new HashMap<String, jackplay.play.performers.Performer>());
+        if (!program.get(genre).containsKey(className)) program.get(genre).put(className, new ConcurrentHashMap<String, jackplay.play.performers.Performer>());
     }
 
     private Performer createPerformer(PlayGround pg, Genre genre, String methodSource) {
@@ -111,4 +113,7 @@ public class ProgramManager {
         }
     }
 
+    public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
+        return this.program;
+    }
 }

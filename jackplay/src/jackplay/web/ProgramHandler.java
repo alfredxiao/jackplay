@@ -34,7 +34,7 @@ public class ProgramHandler extends BaseHandler {
                 break;
             case "/program/currentProgram":
                 http.getResponseHeaders().add("Content-Type", "application/json");
-                CommonHandling.serveStringBody(http, 200, infoCenter.programAsJson());
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(pm.getCurrentProgram()));
                 break;
             default:
                 CommonHandling.error_404(http);

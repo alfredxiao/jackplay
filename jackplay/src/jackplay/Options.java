@@ -11,7 +11,7 @@ public class Options {
     static {
         DEFAULTS.put("port", "8080");
         DEFAULTS.put("logLevel", "info");
-        DEFAULTS.put("playBookSize", "200");
+        DEFAULTS.put("traceLogLimit", "200");
     }
 
     public static boolean isEmpty(String s) {
@@ -60,7 +60,7 @@ public class Options {
         return options.get("logLevel");
     }
 
-    public int playBookSize() {
-        return Integer.parseInt(options.get("playBookSize"));
+    public int traceLogLimit() {
+        return Integer.parseInt(options.get("traceLogLimit"));
     }
 }

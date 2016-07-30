@@ -5,7 +5,7 @@
 
   <path id="project.classpath" cache="true">
     <fileset dir="lib">
-      <include name="**/*.jar"/>
+      <include name="javassist-3.20.0-GA-jackplay.jar"/>
     </fileset>
   </path>
 
