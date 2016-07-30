@@ -153,3 +153,35 @@ legend {
   font-size:90%;
   text-align: center;
 }
+
+.traceLogRecord {
+  display: table;
+  table-layout: fixed;
+}
+
+.traceLogRecord span {
+  display: table-cell;
+  padding: 0px 2px 1px 2px;
+}
+
+.traceLogWhen {
+  font-size: 13px;
+  font-style: italic;
+  color: #333;
+}
+
+.traceLogIcon {
+  width: 18px;
+}
+
+.traceLogMethodShortName {
+  color: green;
+  font-style: italic;
+  padding-right: 0px !important;
+}
+
+.traceLogElapsedTime {
+  font-size: 13px;
+  font-style: italic;
+  color: #333;
+}

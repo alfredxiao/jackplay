@@ -462,6 +462,9 @@ const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
 const METHOD_LOGGING = 'METHOD_LOGGING';
 const SHOW_MAX_HIT_SEARCH = 25;
+const TRIGGER_POINT_ENTER = 'MethodEntry';
+const TRIGGER_POINT_RETURNS = 'MethodReturns';
+const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -988,17 +991,40 @@ let LogHistory = React.createClass({
     let filter = this.props.filter;
     let regex = new RegExp(filter, 'i');
     let logList = this.props.logHistory.map(function(entry) {
-        if (!filter || regex.test(entry.log)) {
-          return (
-               <div>
-                 <span title={entry.type}>{entry.when}</span>
-                 <span> | </span>
-                 <span title={entry.type} className={entry.type}>{highlightTermsInText(filter, entry.log)}</span>
-               </div>
-          )
-        } else {
-          return null;
-        };
+      if (!filter || regex.test(entry.log)) {
+        let elapsedTime = (TRIGGER_POINT_RETURNS == entry.triggerPoint)
+                          ? <span className='traceLogElapsedTime' title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
+                          : <span className='traceLogElapsedTime'></span>;
+
+        let icon = null;
+        let message = null;
+        switch (entry.triggerPoint) {
+          case TRIGGER_POINT_ENTER:
+            icon = <span className='traceLogIcon'><i className="fa fa-sign-in"></i></span>;
+            message = <span title={entry.type} className={entry.type}>({entry.log})</span>
+            break;
+          case TRIGGER_POINT_RETURNS:
+            icon = <span className='traceLogIcon'><i className="fa fa-reply"></i></span>;
+            message = <span title={entry.type} className={entry.type}>(...) {RETURNS_ARROW} {entry.log}</span>
+            break;
+          case TRIGGER_POINT_THROWS_EXCEPTION:
+            icon = <span className='traceLogIcon'><i className="fa fa-exclamation-triangle"></i></span>;
+            message = <span title={entry.type} className={entry.type}>(...) {entry.log}</span>
+            break;
+        }
+
+        return (
+          <div className='traceLogRecord' title={entry.triggerPoint}>
+            {icon}
+            <span title={entry.triggerPoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}}>{entry.when}</span>
+            <span className='traceLogMethodShortName'>{entry.methodShortName}</span>
+            {message}
+            {elapsedTime}
+          </div>
+        )
+      } else {
+        return null;
+      };
     });
     return (
       <div className='logHistoryContainer'>

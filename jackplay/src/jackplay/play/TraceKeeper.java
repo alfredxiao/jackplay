@@ -31,7 +31,8 @@ public class TraceKeeper {
     }
 
     public static void enterMethod(String methodFullName, Object[] args) {
-        addToHistory(TraceTriggerPoint.MethodEntry, methodFullName, objectToString(args));
+        String str = (args == null || args.length == 0) ? "" : ((args.length == 1) ? objectToString(args[0]) : objectToString(args, false));
+        addToHistory(TraceTriggerPoint.MethodEntry, methodFullName, str);
     }
 
     public static void returnsVoid(String methodFullName, long elapsed) {
@@ -87,6 +88,10 @@ public class TraceKeeper {
     }
 
     private static String objectToString(Object obj) {
+        return objectToString(obj, true);
+    }
+
+    private static String objectToString(Object obj, boolean squareBracket) {
         if (null == obj) return "null";
 
         StringBuilder builder = new StringBuilder();
@@ -96,16 +101,16 @@ public class TraceKeeper {
         } else if (obj.getClass().equals(Character.class)) {
             builder.append("\'").append(obj).append("\'");
         } else if (obj.getClass().isArray()) {
-            builder.append("[");
+            builder.append(squareBracket ? "[" : "(");
 
             boolean isFirst = true;
             Object[] values = (Object[]) obj;
             for (Object value : values) {
                 if (!isFirst) builder.append(",");
-                builder.append(objectToString(value));
+                builder.append(objectToString(value, squareBracket));
                 isFirst = false;
             }
-            builder.append("]");
+            builder.append(squareBracket ? "]" : ")");
         } else if (obj instanceof Throwable) {
             StringWriter stackTrace = new StringWriter();
             ((Throwable) obj).printStackTrace(new PrintWriter(stackTrace));

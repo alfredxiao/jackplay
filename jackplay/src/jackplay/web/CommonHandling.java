@@ -36,8 +36,8 @@ public class CommonHandling {
     }
 
     private static InputStream loadResource(String resourcePath) throws IOException {
-        InputStream resourceStream = CommonHandling.class.getResourceAsStream("/web" + resourcePath);
-//        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/jackplay/resources/web" + resourcePath);
+//        InputStream resourceStream = CommonHandling.class.getResourceAsStream("/web" + resourcePath);
+        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/jackplay/resources/web" + resourcePath);
 
         if (null == resourceStream) {
             resourceStream = CommonHandling.class.getResourceAsStream("/web/404.html");
