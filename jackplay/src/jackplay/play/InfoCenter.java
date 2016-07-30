@@ -104,6 +104,7 @@ public class InfoCenter {
             map.put("triggerPoint", traceLog.triggerPoint.toString());
             map.put("methodFullName", traceLog.pg.methodFullName);
             map.put("methodShortName", traceLog.pg.methodShortName);
+            map.put("uuid", traceLog.uuid);
             map.put("log", traceLog.log);
             map.put("elapsed", traceLog.elapsed);
 

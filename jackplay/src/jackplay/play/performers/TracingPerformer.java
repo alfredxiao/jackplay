@@ -23,16 +23,17 @@ public class TracingPerformer implements Performer {
         CtMethod method = playGround.locateMethod();
 
         method.addLocalVariable("_elapsed$", CtClass.longType);
-        method.insertBefore(logMethodStarting(method));
+        method.addLocalVariable("_uuid$", ClassPool.getDefault().get("java.lang.String"));
+        method.insertBefore(traceMethodEntry(method));
 
         CtClass throwableType = ClassPool.getDefault().get("java.lang.Throwable");
-        method.addCatch(logMethodException(method), throwableType);
+        method.addCatch(traceMethodThrowingException(method), throwableType);
 
         boolean isVoid = "void".equals(method.getReturnType().getName());
         if (isVoid) {
-            method.insertAfter(logMethodReturn(method));
+            method.insertAfter(traceMethodReturningVoid(method));
         } else {
-            method.insertAfter(logMethodResult(method));
+            method.insertAfter(traceMethodReturningResult(method));
         }
         return aClass;
 
@@ -42,22 +43,23 @@ public class TracingPerformer implements Performer {
     }
 
     private static String ELAPSED_TIME_START = "_elapsed$ = System.currentTimeMillis();";
-    private static String logMethodStarting(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.TraceKeeper.enterMethod(\"%2$s\", $args);",
-                             ELAPSED_TIME_START, m.getLongName());
+    private static String DECLARE_UUID = "_uuid$ = java.util.UUID.randomUUID().toString();";
+    private static String traceMethodEntry(CtMethod m) {
+        return String.format("%1$s ; %2$s; jackplay.play.TraceKeeper.enterMethod(\"%3$s\", $args, _uuid$);",
+                             ELAPSED_TIME_START, DECLARE_UUID, m.getLongName());
     }
 
     private static String ELAPSED_TIME_END = "_elapsed$ = System.currentTimeMillis() - _elapsed$;";
-    private static String logMethodReturn(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsVoid(\"%2$s\", _elapsed$);",
+    private static String traceMethodReturningVoid(CtMethod m) {
+        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsVoid(\"%2$s\", _elapsed$, _uuid$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
-    private static String logMethodResult(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsResult(\"%2$s\", $_, _elapsed$);",
+    private static String traceMethodReturningResult(CtMethod m) {
+        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsResult(\"%2$s\", $_, _elapsed$, _uuid$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
 
-    private static String logMethodException(CtMethod m) {
+    private static String traceMethodThrowingException(CtMethod m) {
         return String.format("{ jackplay.play.TraceKeeper.throwsException(\"%1$s\", $e); throw $e; }",
                              m.getLongName());
     }

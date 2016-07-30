@@ -1,15 +1,19 @@
 package myapp.greeter;
 
 
+import myapp.Demo;
+
 import java.util.Calendar;
 
 public class NiceGreeter implements Greeter {
 
     public String greet(String name) {
+        Demo.sleepSmallRandom();
         return genWelcomeWords() + " " + name;
     }
 
     public String genWelcomeWords() {
+        Demo.sleepSmallRandom();
         int hourOfNow = getHourOfNow();
 
         if (hourOfNow >= 6 && hourOfNow <= 11) {
@@ -26,6 +30,7 @@ public class NiceGreeter implements Greeter {
     }
 
     public int getHourOfNow() {
+        Demo.sleepSmallRandom();
         Calendar rightNow = Calendar.getInstance();
         return rightNow.get(Calendar.HOUR_OF_DAY);
     }

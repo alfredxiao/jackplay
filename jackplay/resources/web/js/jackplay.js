@@ -990,6 +990,9 @@ let LogHistory = React.createClass({
 
     let filter = this.props.filter;
     let regex = new RegExp(filter, 'i');
+    let ho = this.props.hoverTraceLog;
+    let uuidHovered = this.props.traceLogHovered;
+    console.log(ho);
     let logList = this.props.logHistory.map(function(entry) {
       if (!filter || regex.test(entry.log)) {
         let elapsedTime = (TRIGGER_POINT_RETURNS == entry.triggerPoint)
@@ -1013,8 +1016,10 @@ let LogHistory = React.createClass({
             break;
         }
 
+        let clsNames = 'traceLogRecord';
+        if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
         return (
-          <div className='traceLogRecord' title={entry.triggerPoint}>
+          <div className={clsNames} title={entry.triggerPoint} onMouseOver={() => ho(entry.uuid)}>
             {icon}
             <span title={entry.triggerPoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}}>{entry.when}</span>
             <span className='traceLogMethodShortName'>{entry.methodShortName}</span>
@@ -1071,6 +1076,7 @@ let JackPlay = React.createClass({
             loadedTargets: [],
             traceStarted: false,
             globalMessage: null,
+            traceLogHovered: '',
             isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
@@ -1188,6 +1194,9 @@ let JackPlay = React.createClass({
       }
     });
   },
+  hoverTraceLog: function(uuid) {
+    this.setState(Object.assign(this.state, {traceLogHovered: uuid}));
+  },
   render: function() {
     return (
     <div>
@@ -1208,7 +1217,9 @@ let JackPlay = React.createClass({
       <GlobalMessage globalMessage={this.state.globalMessage} clearGlobalMessage={this.clearGlobalMessage} />
       <LogHistory logHistory={this.state.logHistory}
                   traceStarted={this.state.traceStarted}
-                  filter={this.state.filter}/>
+                  filter={this.state.filter}
+                  hoverTraceLog={this.hoverTraceLog}
+                  traceLogHovered={this.state.traceLogHovered}/>
       <AlertContainer ref={itself => this.msg = itself} {...this.alertOptions} />
     </div>
     );

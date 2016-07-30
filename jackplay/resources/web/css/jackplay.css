@@ -159,6 +159,10 @@ legend {
   table-layout: fixed;
 }
 
+.traceLogRecord:hover {
+  cursor: default;
+}
+
 .traceLogRecord span {
   display: table-cell;
   padding: 0px 2px 1px 2px;
@@ -184,4 +188,8 @@ legend {
   font-size: 13px;
   font-style: italic;
   color: #333;
+}
+
+.sameUuidHighlight {
+  background-color: yellow;
 }

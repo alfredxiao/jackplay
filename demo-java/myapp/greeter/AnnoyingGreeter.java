@@ -1,10 +1,14 @@
 package myapp.greeter;
 
+import myapp.Demo;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AnnoyingGreeter implements Greeter {
 
     public String greet(String name) {
+        Demo.sleepSmallRandom();
+
         int mood = ThreadLocalRandom.current().nextInt(0, 10);
         if (mood < 2) {
             return "Hi buddy";

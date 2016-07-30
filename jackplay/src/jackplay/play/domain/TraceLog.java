@@ -8,16 +8,18 @@ public class TraceLog {
     public PlayGround pg;
     public String log;
     public long elapsed;
+    public String uuid;
 
-    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log) {
-        this(triggerPoint, pg, log, 0);
+    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log, String uuid) {
+        this(triggerPoint, pg, log, uuid, 0);
     }
 
-    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log, long elapsed) {
+    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log, String uuid, long elapsed) {
         this.when = new Date();
         this.triggerPoint = triggerPoint;
         this.pg = pg;
         this.log = log;
         this.elapsed = elapsed;
+        this.uuid = uuid;
     }
 }
