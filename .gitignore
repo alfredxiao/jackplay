@@ -1,2 +1,3 @@
 *.class
 *.iml
+demo-clojure/target

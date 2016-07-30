@@ -1,7 +1,7 @@
 <project name="jackplay" default="dist" basedir=".">
 
   <!-- set global properties for this build -->
-  <property name="version" value="0.5-SNAPSHOT"/>
+  <property name="version" value="0.6-SNAPSHOT"/>
 
   <path id="project.classpath" cache="true">
     <fileset dir="lib">
@@ -16,19 +16,10 @@
   </target>
 
   <target name="compile" depends="init" description="compile the source">
-    <javac srcdir="src" destdir="build/classes" includeantruntime="false">
+    <javac srcdir="src" destdir="build/classes" includeantruntime="false" debug="yes">
       <classpath refid="project.classpath"/>
     </javac>
   </target>
-
-  <!--<target name="rename-javassist" description="rename javassist library package names">-->
-    <!--<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="lib/jarjar.jar"/>-->
-    <!--<jarjar jarfile="lib/javassist-3.20.0-GA.jar">-->
-      <!--<fileset dir="build/main"/>-->
-      <!--<zipfileset src="lib/jaxen.jar"/>-->
-      <!--<rule pattern="org.jaxen.**" result="org.example.@1"/>-->
-    <!--</jarjar>-->
-  <!--</target>-->
 
   <target name="dist" depends="compile" description="generate the distribution">
     <mkdir dir="dist"/>
@@ -38,8 +29,8 @@
       <fileset dir="build/classes"/>
       <fileset dir="resources"/>
       <manifest>
-        <attribute name="Premain-Class" value="jackplay.JackTheatre"/>
-        <attribute name="Agent-Class" value="jackplay.JackTheatre"/>
+        <attribute name="Premain-Class" value="jackplay.Theatre"/>
+        <attribute name="Agent-Class" value="jackplay.Theatre"/>
         <attribute name="Can-Redefine-Classes" value="true"/>
         <attribute name="Can-Retransform-Classes" value="true"/>
       </manifest>

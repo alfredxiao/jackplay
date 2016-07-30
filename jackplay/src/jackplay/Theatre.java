@@ -6,23 +6,26 @@ import jackplay.web.BoxOffice;
 
 import java.lang.instrument.*;
 
-public class JackTheatre implements Theatre {
-    static JackTheatre jackTheatre;
+public class Theatre {
+    static Theatre theatre;
 
     Options options;
     Instrumentation inst;
     Composer composer;
     ProgramManager pm;
-    LeadPerformer leader;
+    LeadPerformer leadPerformer;
     BoxOffice boxOffice;
+    InfoCenter infoCenter;
 
-    public JackTheatre(Options options, Instrumentation inst, Composer composer, ProgramManager pm, LeadPerformer leader, BoxOffice boxOffice) {
+    public Theatre(Options options, Instrumentation inst, Composer composer, ProgramManager pm,
+                   LeadPerformer leadPerformer, BoxOffice boxOffice, InfoCenter infoCenter) {
         this.options = options;
         this.inst = inst;
         this.composer = composer;
         this.pm = pm;
-        this.leader = leader;
+        this.leadPerformer = leadPerformer;
         this.boxOffice = boxOffice;
+        this.infoCenter = infoCenter;
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
@@ -40,41 +43,22 @@ public class JackTheatre implements Theatre {
         ProgramManager pm = new ProgramManager();
         LeadPerformer leader = new LeadPerformer();
         BoxOffice boxOffice = new BoxOffice();
+        InfoCenter infoCenter = new InfoCenter();
 
-        jackTheatre = new JackTheatre(options, inst, composer, pm, leader, boxOffice);
-
-        jackTheatre.start();
+        theatre = new Theatre(options, inst, composer, pm, leader, boxOffice, infoCenter);
+        theatre.init();
+        theatre.start();
     }
 
-    @Override
-    public Options getOptions() {
-        return this.options;
-    }
-
-    @Override
-    public Instrumentation getInstrumentation() {
-        return this.inst;
-    }
-
-    public Composer getComposer() {
-        return this.composer;
-    }
-
-    public ProgramManager getProgramManager() {
-        return this.pm;
-    }
-
-    public LeadPerformer getLeadPerformer() {
-        return this.leader;
+    public void init() {
+        composer.wireUp(options, inst, pm, leadPerformer);
+        pm.wireUp(composer);
+        leadPerformer.wireUp(composer, pm);
+        boxOffice.wireUp(options, pm, infoCenter);
+        infoCenter.wireUp(inst, pm);
     }
 
     public void start() {
-        composer.init(this);
-        pm.init(this);
-        leader.init(this);
-        boxOffice.init(this);
-        InformationCenter.init(pm);
-
         this.boxOffice.start();
     }
 }

@@ -1,7 +1,6 @@
 package jackplay.play.performers;
 
 import jackplay.play.Composer;
-import jackplay.play.Theatre;
 import jackplay.play.ProgramManager;
 import jackplay.play.domain.Genre;
 import jackplay.javassist.ClassPool;
@@ -20,9 +19,9 @@ public class LeadPerformer implements ClassFileTransformer {
     private Class classToPlay;
     private List<Exception> exceptionsDuringPerformance;
 
-    public void init(Theatre theatre) {
-        this.composer = theatre.getComposer();
-        this.pm = theatre.getProgramManager();
+    public void wireUp(Composer composer, ProgramManager pm) {
+        this.composer = composer;
+        this.pm = pm;
     }
 
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,

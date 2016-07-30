@@ -12,9 +12,9 @@ public class ProgramManager {
     Composer composer;
     Map<Genre, Map<String, Map<String, jackplay.play.performers.Performer>>> program;
 
-    public void init(Theatre theatre) {
-        program = new HashMap<Genre, Map<String, Map<String, Performer>>>();
-        this.composer = theatre.getComposer();
+    public void wireUp(Composer composer) {
+        program = new HashMap<>();
+        this.composer = composer;
     }
 
     public void addPlayAsTracing(String methodFullName) throws Exception {

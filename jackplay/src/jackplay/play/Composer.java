@@ -14,12 +14,12 @@ public class Composer {
     ProgramManager pm;
     LeadPerformer leadPerformer;
 
-    public void init(Theatre theatre) {
-        this.inst = theatre.getInstrumentation();
-        this.options = theatre.getOptions();
-        this.pm = theatre.getProgramManager();
-        this.leadPerformer = theatre.getLeadPerformer();
-        this.inst.addTransformer(leadPerformer, true);
+    public void wireUp(Options options, Instrumentation inst, ProgramManager pm, LeadPerformer leadPerformer) {
+        this.inst = inst;
+        this.options = options;
+        this.pm = pm;
+        this.leadPerformer = leadPerformer;
+        this.inst.addTransformer(this.leadPerformer, true);
     }
 
     void performPlay(String className) throws Exception {

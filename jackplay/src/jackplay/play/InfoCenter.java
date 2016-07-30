@@ -11,46 +11,14 @@ import jackplay.javassist.NotFoundException;
 import java.lang.instrument.Instrumentation;
 import java.util.*;
 
-public class InformationCenter {
-    static ProgramManager pm;
+public class InfoCenter {
+    Instrumentation inst;
+    ProgramManager pm;
     final static ClassComparator classComparator = new ClassComparator();
     final static MethodComparator methodComparator = new MethodComparator();
 
-    private static List<CtClass> modifiableClasses(Instrumentation inst) throws Exception {
-        List<CtClass> modifiableClasses = new ArrayList<CtClass>();
-        Class[] classes = inst.getAllLoadedClasses();
-        Arrays.sort(classes, classComparator);
-
-        ClassPool cp = ClassPool.getDefault();
-
-        for (Class clazz : classes) {
-            if (inst.isModifiableClass(clazz) && isClassOfInterest(clazz)) {
-
-                try {
-                    CtClass cc = cp.get(clazz.getName());
-                    modifiableClasses.add(cc);
-                } catch(NotFoundException nfe) {
-                }
-            }
-        }
-
-        return modifiableClasses;
-    }
-
-    private static boolean isClassOfInterest(Class clazz) {
-        return !clazz.isInterface()
-                && !clazz.isAnnotation()
-                && !clazz.isArray()
-                && !clazz.getName().startsWith("java.")
-                && !clazz.getName().startsWith("jdk.internal.")
-                && !clazz.getName().startsWith("sun.")
-                && !clazz.getName().startsWith("com.sun.")
-                && !clazz.getName().startsWith("jackplay.javassist.")
-                && !clazz.getName().startsWith("jackplay.");
-    }
-
-    public static String loadedClassesAsJson(Instrumentation inst) throws Exception {
-        List<CtClass> classes = modifiableClasses(inst);
+    public String loadedMethodsAsJson() throws Exception {
+        List<CtClass> classes = modifiableClasses();
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         boolean isFirst = true;
@@ -75,8 +43,41 @@ public class InformationCenter {
         return builder.toString();
     }
 
-    public static String programAsJson(Instrumentation inst) {
+    public String programAsJson() {
         return ObjectAsJson(pm.program);
+    }
+
+    private List<CtClass> modifiableClasses() throws Exception {
+        List<CtClass> modifiableClasses = new ArrayList<CtClass>();
+        Class[] classes = inst.getAllLoadedClasses();
+        Arrays.sort(classes, classComparator);
+
+        ClassPool cp = ClassPool.getDefault();
+
+        for (Class clazz : classes) {
+            if (inst.isModifiableClass(clazz) && isClassOfInterest(clazz)) {
+
+                try {
+                    CtClass cc = cp.get(clazz.getName());
+                    modifiableClasses.add(cc);
+                } catch(NotFoundException nfe) {
+                }
+            }
+        }
+
+        return modifiableClasses;
+    }
+
+    private boolean isClassOfInterest(Class clazz) {
+        return !clazz.isInterface()
+                && !clazz.isAnnotation()
+                && !clazz.isArray()
+                && !clazz.getName().startsWith("java.")
+                && !clazz.getName().startsWith("jdk.internal.")
+                && !clazz.getName().startsWith("sun.")
+                && !clazz.getName().startsWith("com.sun.")
+                && !clazz.getName().startsWith("jackplay.javassist.")
+                && !clazz.getName().startsWith("jackplay.");
     }
 
     private static String ObjectAsJson(Map<Genre, Map<String, Map<String, Performer>>> program) {
@@ -117,8 +118,9 @@ public class InformationCenter {
         return builder.toString();
     }
 
-    public static void init(ProgramManager pm1) {
-        pm = pm1;
+    public void wireUp(Instrumentation inst, ProgramManager pm) {
+        this.inst = inst;
+        this.pm = pm;
     }
 }
 

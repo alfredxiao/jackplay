@@ -864,7 +864,7 @@ let PlayBook = React.createClass({
 let LogControl = React.createClass({
   requestToClearLogHistory: function() {
     $.ajax({
-          url: '/clearLogHistory',
+          url: '/info/clearTraceLogs',
     });
     this.props.clearLogHistory();
   },
@@ -918,7 +918,7 @@ let PlayPanel = React.createClass({
     if (methodFullName) {
       this.props.setTraceStarted(true);
       $.ajax({
-        url: '/logMethod',
+        url: '/program/addTrace',
         data: { methodFullName: methodFullName },
         success: function(data) {
           this.props.setGlobalMessage(INFO, toMessage(data));
@@ -939,7 +939,7 @@ let PlayPanel = React.createClass({
     if (longMethodName && src) {
         $.ajax({
           method: 'post',
-          url: '/redefineMethod',
+          url: '/program/redefine',
           contentType: "application/x-www-form-urlencoded",
           data: { longMethodName: longMethodName,
                   src: src},
@@ -1053,7 +1053,7 @@ let JackPlay = React.createClass({
   },
   syncDataWithServer: function() {
     $.ajax({
-      url: '/logHistory',
+      url: '/info/traceLogs',
       success: function(history) {
         this.setState(Object.assign(this.state, {logHistory: history,
                                                  traceStarted: history.length > 0 || this.state.traceStarted }));
@@ -1063,7 +1063,7 @@ let JackPlay = React.createClass({
       }
     });
     $.ajax({
-      url: '/loadedTargets',
+      url: '/info/loadedMethods',
       success: function(targets) {
         this.setState(Object.assign(this.state, {loadedTargets: targets}));
       }.bind(this),
@@ -1074,7 +1074,7 @@ let JackPlay = React.createClass({
   },
   loadProgram: function() {
     $.ajax({
-      url: '/program',
+      url: '/program/currentProgram',
       success: function(program) {
         this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
@@ -1140,7 +1140,7 @@ let JackPlay = React.createClass({
   },
   removeMethod: function(genre, methodFullName) {
     $.ajax({
-      url: '/removeMethod',
+      url: '/program/undoMethod',
         data: 'methodFullName=' + encodeURIComponent(methodFullName) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();
@@ -1152,7 +1152,7 @@ let JackPlay = React.createClass({
   },
   removeClass: function(genre, className) {
     $.ajax({
-      url: '/removeClass',
+      url: '/program/undoClass',
         data: 'classFullName=' + encodeURIComponent(className) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
         this.loadProgram();

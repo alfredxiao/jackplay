@@ -1,6 +1,7 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
+import jackplay.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,16 +37,16 @@ public class CommonHandling {
 
     private static InputStream loadResource(String resourcePath) throws IOException {
         InputStream resourceStream = CommonHandling.class.getResourceAsStream("/web" + resourcePath);
-//        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/src/jackplay/web/resources" + resourcePath);
+//        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/jackplay/resources/web" + resourcePath);
 
         if (null == resourceStream) {
-            resourceStream = CommonHandling.class.getResourceAsStream("/resources/404.html");
+            resourceStream = CommonHandling.class.getResourceAsStream("/web/404.html");
         }
 
         return resourceStream;
     }
 
     static void error_404(HttpExchange exchange) throws IOException {
-        serveStaticResource(exchange, 404, "/web/resources/404.html");
+        serveStaticResource(exchange, 404, "/web/404.html");
     }
 }
