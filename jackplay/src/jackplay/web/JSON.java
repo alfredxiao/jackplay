@@ -1,5 +1,6 @@
 package jackplay.web;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,10 +10,12 @@ public class JSON {
     public static String objectToJson(Object obj) {
         if (obj instanceof Map) {
             return mapToJson((Map) obj);
-        } else if (obj instanceof List) {
-            return listToJson((List) obj);
+        } else if (obj instanceof Object[]) {
+            return iterableToJson(Arrays.asList((Object[]) obj));
+        } else if (obj instanceof Iterable) {
+            return iterableToJson((List) obj);
         } else {
-            return escape(obj.toString());
+            return obj == null ? "null" : escape(obj.toString());
         }
     }
 
@@ -31,12 +34,12 @@ public class JSON {
         return builder.toString();
     }
 
-    public static String listToJson(List list) {
+    public static String iterableToJson(Iterable it) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         boolean isFirst = true;
 
-        for (Object obj : list) {
+        for (Object obj : it) {
             if (!isFirst) builder.append(',');
             builder.append(objectToJson(obj));
             isFirst = false;

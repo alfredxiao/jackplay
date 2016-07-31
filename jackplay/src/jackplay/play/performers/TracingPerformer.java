@@ -51,16 +51,16 @@ public class TracingPerformer implements Performer {
 
     private static String ELAPSED_TIME_END = "_elapsed$ = System.currentTimeMillis() - _elapsed$;";
     private static String traceMethodReturningVoid(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsVoid(\"%2$s\", _elapsed$, _uuid$);",
+        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsVoid(\"%2$s\", $args.length, _uuid$, _elapsed$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
     private static String traceMethodReturningResult(CtMethod m) {
-        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsResult(\"%2$s\", $_, _elapsed$, _uuid$);",
+        return String.format("%1$s ; jackplay.play.TraceKeeper.returnsResult(\"%2$s\", $args.length, $_, _uuid$, _elapsed$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
 
     private static String traceMethodThrowingException(CtMethod m) {
-        return String.format("{ jackplay.play.TraceKeeper.throwsException(\"%1$s\", $e); throw $e; }",
+        return String.format("{ jackplay.play.TraceKeeper.throwsException(\"%1$s\", $args.length, $e); throw $e; }",
                              m.getLongName());
     }
 }

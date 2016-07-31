@@ -3,80 +3,117 @@ package jackplay.play;
 import jackplay.Options;
 import jackplay.play.domain.PlayGround;
 import jackplay.play.domain.TraceLog;
-import jackplay.play.domain.TraceTriggerPoint;
+import static jackplay.play.domain.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TraceKeeper {
-    static List<TraceLog> logHistory = new CopyOnWriteArrayList<>();
+    static List<TraceLog> traceLogs = new LinkedList<>();
     static int traceLogLimit;
 
-    private static void addToHistory(TraceTriggerPoint type, String methodFullName, String log, String uuid) {
-        addToHistory(type, methodFullName, log, 0, uuid);
-    }
-
-    private synchronized static void addToHistory(TraceTriggerPoint type, String methodFullName, String log, long elapsed, String uuid) {
-        while (logHistory.size() >= traceLogLimit) {
-            logHistory.remove(logHistory.size() - 1);
+    private synchronized static void addTraceLog(TraceLog entry) {
+        while (traceLogs.size() >= traceLogLimit) {
+            traceLogs.remove(traceLogs.size() - 1);
         }
 
-        TraceLog entry = new TraceLog(type, new PlayGround(methodFullName), log, uuid, elapsed);
-        logHistory.add(0, entry);
+        traceLogs.add(0, entry);
     }
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {
-        String argsAsString = (args == null || args.length == 0) ? "" : ((args.length == 1) ? objectToString(args[0]) : objectToString(args, false));
-        addToHistory(TraceTriggerPoint.MethodEntry, methodFullName, argsAsString, uuid);
+        TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        if (null == args || args.length == 0) {
+            entry.arguments = null;
+        } else {
+            entry.arguments = new String[args.length];
+            for (int i=0; i<args.length; i++) {
+                entry.arguments[i] = objectToString(args[i]);
+            }
+        }
+
+        addTraceLog(entry);
     }
 
-    public static void returnsVoid(String methodFullName, long elapsed, String uuid) {
-        addToHistory(TraceTriggerPoint.MethodReturns, methodFullName, "returns", elapsed, uuid);
+    public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
+        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        entry.elapsed = elapsed;
+        entry.argsLen = argsLen;
+
+        addTraceLog(entry);
     }
 
-    public static void returnsResult(String methodFullName, Object result, long elapsed, String uuid) {
-        addToHistory(TraceTriggerPoint.MethodReturns, methodFullName, objectToString(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
+        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        entry.elapsed = elapsed;
+        entry.argsLen = argsLen;
+        entry.returnedValue = objectToString(result);
+
+        addTraceLog(entry);
     }
 
-    public static void returnsResult(String methodFullName, boolean result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Boolean.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, boolean result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Boolean.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, byte result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Byte.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, byte result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Byte.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, short result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Short.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, short result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Short.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, int result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Integer.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, int result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Integer.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, long result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Long.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, long result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Long.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, float result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Float.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, float result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Float.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, char result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Character.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, char result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Character.valueOf(result), uuid, elapsed);
     }
 
-    public static void returnsResult(String methodFullName, double result, long elapsed, String uuid) {
-        returnsResult(methodFullName, Double.valueOf(result), elapsed, uuid);
+    public static void returnsResult(String methodFullName, int argsLen, double result, String uuid, long elapsed) {
+        returnsResult(methodFullName, argsLen, Double.valueOf(result), uuid, elapsed);
     }
 
-    public static void throwsException(String methodFullName, Throwable t) {
-        addToHistory(TraceTriggerPoint.MethodThrowsException, methodFullName, objectToString(t), 0, null);
+    public static void throwsException(String methodFullName, int argsLen, Throwable t) {
+        TraceLog correspondingMethodEntryLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
+
+        long elapsed = -1;
+        String uuid = null;
+        if (correspondingMethodEntryLog != null) {
+            elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenTimeMs;
+            uuid = correspondingMethodEntryLog.uuid;
+        }
+
+        TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        entry.elapsed = elapsed;
+        entry.argsLen = argsLen;
+        entry.exceptionStackTrace = throwableToString(t);
+
+        addTraceLog(entry);
+    }
+
+    private static TraceLog findCorrespondingEntryLog(String methodFullName, long threadId) {
+        try {
+            for (TraceLog entry : traceLogs) {
+                if (entry.threadId == threadId && entry.pg.methodFullName.equals(methodFullName)) {
+                    return entry;
+                }
+            }
+        } catch(ConcurrentModificationException cme) {}
+
+        return null;
     }
 
     public static void init(Options options) {
@@ -84,7 +121,7 @@ public class TraceKeeper {
     }
 
     public synchronized static void clearLogHistory() {
-        logHistory.clear();
+        traceLogs.clear();
     }
 
     private static String objectToString(Object obj) {
@@ -92,7 +129,7 @@ public class TraceKeeper {
     }
 
     private static String objectToString(Object obj, boolean squareBracket) {
-        if (null == obj) return "null";
+        if (null == obj) return null;
 
         StringBuilder builder = new StringBuilder();
 
@@ -111,15 +148,21 @@ public class TraceKeeper {
                 isFirst = false;
             }
             builder.append(squareBracket ? "]" : ")");
-        } else if (obj instanceof Throwable) {
-            StringWriter stackTrace = new StringWriter();
-            ((Throwable) obj).printStackTrace(new PrintWriter(stackTrace));
-            builder.append(stackTrace);
         } else {
             builder.append(obj);
         }
 
         return builder.toString();
+    }
+
+    private static String throwableToString(Throwable t) {
+        if (null == t) {
+            return null;
+        } else {
+            StringWriter stackTrace = new StringWriter();
+            t.printStackTrace(new PrintWriter(stackTrace));
+            return stackTrace.toString();
+        }
     }
 }
 

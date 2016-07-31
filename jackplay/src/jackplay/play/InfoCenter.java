@@ -1,6 +1,5 @@
 package jackplay.play;
 
-import jackplay.play.domain.Genre;
 import jackplay.play.domain.PlayGround;
 import jackplay.play.domain.TraceLog;
 import jackplay.javassist.ClassPool;
@@ -93,22 +92,27 @@ public class InfoCenter {
     }
 
     public List<Map<String, Object>> getTraceLogs() {
-        Iterator<TraceLog> it = TraceKeeper.logHistory.iterator();
+        Iterator<TraceLog> it = TraceKeeper.traceLogs.iterator();
         List<Map<String, Object>> listOfLogs = new ArrayList<>();
 
         while (it.hasNext()) {
-            TraceLog traceLog = it.next();
+            try {
+                TraceLog traceLog = it.next();
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("when", formatDate(traceLog.when));
-            map.put("triggerPoint", traceLog.triggerPoint.toString());
-            map.put("methodFullName", traceLog.pg.methodFullName);
-            map.put("methodShortName", traceLog.pg.methodShortName);
-            map.put("uuid", traceLog.uuid);
-            map.put("log", traceLog.log);
-            map.put("elapsed", traceLog.elapsed);
+                Map<String, Object> map = new HashMap<>();
+                map.put("when", formatDate(traceLog.when));
+                map.put("tracePoint", traceLog.tracePoint.toString());
+                map.put("classFullName", traceLog.pg.classFullName);
+                map.put("methodShortName", traceLog.pg.methodShortName);
+                map.put("uuid", traceLog.uuid);
+                map.put("arguments", traceLog.arguments);
+                map.put("returnedValue", traceLog.returnedValue);
+                map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
+                map.put("elapsed", traceLog.elapsed);
+                map.put("argsLen", traceLog.argsLen);
 
-            listOfLogs.add(map);
+                listOfLogs.add(map);
+            } catch(ConcurrentModificationException e) {}
         }
 
         return listOfLogs;

@@ -4,22 +4,29 @@ import java.util.Date;
 
 public class TraceLog {
     public Date when;
-    public TraceTriggerPoint triggerPoint;
+    public long whenTimeMs;
+
+    // mandatory for all entries
+    public TracePoint tracePoint;
     public PlayGround pg;
-    public String log;
-    public long elapsed;
+    public long threadId;
     public String uuid;
 
-    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log, String uuid) {
-        this(triggerPoint, pg, log, uuid, 0);
-    }
+    // for method entrance
+    public String[] arguments;
 
-    public TraceLog(TraceTriggerPoint triggerPoint, PlayGround pg, String log, String uuid, long elapsed) {
+    // for method return or exception
+    public long elapsed = -1;
+    public int argsLen;
+    public String returnedValue;        // return only
+    public String exceptionStackTrace;  // exception only
+
+    public TraceLog(TracePoint tracePoint, PlayGround pg, long threadId, String uuid) {
         this.when = new Date();
-        this.triggerPoint = triggerPoint;
+        this.whenTimeMs = System.currentTimeMillis();
+        this.tracePoint = tracePoint;
         this.pg = pg;
-        this.log = log;
-        this.elapsed = elapsed;
+        this.threadId = threadId;
         this.uuid = uuid;
     }
 }

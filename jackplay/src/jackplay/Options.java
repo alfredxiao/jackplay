@@ -11,7 +11,7 @@ public class Options {
     static {
         DEFAULTS.put("port", "8080");
         DEFAULTS.put("logLevel", "info");
-        DEFAULTS.put("traceLogLimit", "200");
+        DEFAULTS.put("traceLogLimit", "100");
     }
 
     public static boolean isEmpty(String s) {

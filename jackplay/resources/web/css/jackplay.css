@@ -178,9 +178,14 @@ legend {
   width: 18px;
 }
 
+.traceLogClassFullName {
+  padding-right: 0px !important;
+}
+
 .traceLogMethodShortName {
   color: green;
   font-style: italic;
+  padding-left: 0px !important;
   padding-right: 0px !important;
 }
 

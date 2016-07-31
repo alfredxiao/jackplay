@@ -1,6 +1,6 @@
 package jackplay.play.domain;
 
-public enum TraceTriggerPoint {
+public enum TracePoint {
     MethodEntry,
     MethodReturns,
     MethodThrowsException

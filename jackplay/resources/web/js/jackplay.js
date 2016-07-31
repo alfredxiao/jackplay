@@ -983,54 +983,66 @@ let PlayPanel = React.createClass({
 });
 
 let LogHistory = React.createClass({
+  entryFilter: function(filter, entry) {
+    let regex = new RegExp(filter, 'i');
+    return true;
+  },
   render: function() {
     if (!this.props.traceStarted) {
       return null;
     }
 
-    let filter = this.props.filter;
-    let regex = new RegExp(filter, 'i');
-    let ho = this.props.hoverTraceLog;
+    let hover = this.props.hoverTraceLog;
     let uuidHovered = this.props.traceLogHovered;
-    console.log(ho);
     let logList = this.props.logHistory.map(function(entry) {
-      if (!filter || regex.test(entry.log)) {
-        let elapsedTime = (TRIGGER_POINT_RETURNS == entry.triggerPoint)
-                          ? <span className='traceLogElapsedTime' title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
-                          : <span className='traceLogElapsedTime'></span>;
-
-        let icon = null;
+      if (this.entryFilter(this.props.filter, entry)) {
+        let iconClass = null;
+        let methodArgs = null;
         let message = null;
-        switch (entry.triggerPoint) {
+        let hasElapsedTime = false;
+        let dots = '';
+        for (let i=0; i<entry.argsLen; i++) dots += '.';
+        switch (entry.tracePoint) {
           case TRIGGER_POINT_ENTER:
-            icon = <span className='traceLogIcon'><i className="fa fa-sign-in"></i></span>;
-            message = <span title={entry.type} className={entry.type}>({entry.log})</span>
+            iconClass = 'fa fa-sign-in';
+            methodArgs = <span title={entry.type} className={entry.type}>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
             break;
           case TRIGGER_POINT_RETURNS:
-            icon = <span className='traceLogIcon'><i className="fa fa-reply"></i></span>;
-            message = <span title={entry.type} className={entry.type}>(...) {RETURNS_ARROW} {entry.log}</span>
+            iconClass = 'fa fa-reply';
+            hasElapsedTime = true;
+            methodArgs = <span>({dots})</span>;
+            message = <span title={entry.type} className={entry.type}> {RETURNS_ARROW} {entry.returnedValue}</span>
             break;
           case TRIGGER_POINT_THROWS_EXCEPTION:
-            icon = <span className='traceLogIcon'><i className="fa fa-exclamation-triangle"></i></span>;
-            message = <span title={entry.type} className={entry.type}>(...) {entry.log}</span>
+            iconClass = 'fa fa-exclamation-triangle';
+            hasElapsedTime = true;
+            methodArgs = <span>({dots})</span>;
+            message = <span title={entry.type} className={entry.type}>{entry.exceptionStackTrace}</span>
             break;
         }
+
+        let icon = <span className='traceLogIcon'><i className={iconClass}></i></span>;
+        let elapsedTimeMessage = hasElapsedTime
+                                    ? <span className='traceLogElapsedTime' title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
+                                    : <span></span>;
 
         let clsNames = 'traceLogRecord';
         if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
         return (
-          <div className={clsNames} title={entry.triggerPoint} onMouseOver={() => ho(entry.uuid)}>
+          <div className={clsNames} title={entry.tracePoint} onMouseOver={() => hover(entry.uuid)} onMouseOut={() => hover('no_such_id')}>
             {icon}
-            <span title={entry.triggerPoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}}>{entry.when}</span>
+            <span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}}>{entry.when}</span>
+            <span className='traceLogClassFullName'>{entry.classFullName}.</span>
             <span className='traceLogMethodShortName'>{entry.methodShortName}</span>
+            {methodArgs}
             {message}
-            {elapsedTime}
+            {elapsedTimeMessage}
           </div>
         )
       } else {
         return null;
       };
-    });
+    }.bind(this));
     return (
       <div className='logHistoryContainer'>
         {logList}
@@ -1081,7 +1093,7 @@ let JackPlay = React.createClass({
   },
   componentDidMount: function() {
     this.syncDataWithServer();
-    setInterval(this.checkDataSync, 3333);
+    setInterval(this.checkDataSync, 4200);
   },
   syncDataWithServer: function() {
     $.ajax({
