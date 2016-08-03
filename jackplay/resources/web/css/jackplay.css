@@ -33,11 +33,6 @@ button:hover {
   width: 360px;
 }
 
-.logHistoryContainer {
-  /*height: 600px;*/
-  /*overflow: auto; */
-}
-
 .suggestion_classname {
 }
 
@@ -154,18 +149,31 @@ legend {
   text-align: center;
 }
 
-.traceLogRecord {
-  display: table;
-  table-layout: fixed;
+.logHistoryContainer {
+  width: 98%;
+  border-spacing: 0px;
+  font-size: 14px;
+}
+
+.traceLogRecord td {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .traceLogRecord:hover {
   cursor: default;
 }
 
-.traceLogRecord span {
-  display: table-cell;
-  padding: 0px 2px 1px 2px;
+.traceLogOdd {
+  background-color: white; /*#FFFAF0;*/
+}
+
+.traceLogEven {
+  background-color:  #F5F5DC;
+}
+
+.traceLogRecord td {
+  vertical-align: top;
 }
 
 .traceLogWhen {
@@ -179,6 +187,7 @@ legend {
 }
 
 .traceLogClassFullName {
+  text-align: right;
   padding-right: 0px !important;
 }
 
@@ -190,11 +199,22 @@ legend {
 }
 
 .traceLogElapsedTime {
+  width: 20%;
   font-size: 13px;
   font-style: italic;
   color: #333;
+  text-align: right;
+  padding-right: 2px;
 }
 
 .sameUuidHighlight {
-  background-color: yellow;
+  background-color: #FFD700;
+}
+
+.traceLogArgsList {
+}
+.traceLogReturnedValue {
+}
+.traceLogExceptionStackTrace {
+  white-space: pre;
 }

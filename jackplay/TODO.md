@@ -53,3 +53,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 33. **DONE** refactor the redefine pane (not to confuse with drop down list)
 34. **DONE** when redefine... pane is closed with currentTarget(method input box) changed, the outer input box doesn't reflect this
 35. Since using custom highlight, delete old one?
+36. trace log display, highlight each row as width=100%
+37. filter and highlight matched text
+38. whitelisting and balcklisting (allow/deply some package/classes/methods)
+39. have top panel as in a fixed position while scrolling the page up/down

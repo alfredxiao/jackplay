@@ -1,8 +1,8 @@
 .fadein {
-    animation: fadein 6s;
-    -moz-animation: fadein 6s; /* Firefox */
-    -webkit-animation: fadein 6s; /* Safari and Chrome */
-    -o-animation: fadein 6s; /* Opera */
+    animation: fadein 16s;
+    -moz-animation: fadein 16s; /* Firefox */
+    -webkit-animation: fadein 16s; /* Safari and Chrome */
+    -o-animation: fadein 16s; /* Opera */
 }
 @keyframes fadein {
     from {

@@ -456,6 +456,7 @@ const uTriangle = '\u25B4';
 const CROSS = '\u2717';
 const STAR = '\u2605';
 const RETURNS_ARROW = '\u27F9';
+const THROWS_ARROW = '\u27FF';
 const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
@@ -985,7 +986,11 @@ let PlayPanel = React.createClass({
 let LogHistory = React.createClass({
   entryFilter: function(filter, entry) {
     let regex = new RegExp(filter, 'i');
-    return true;
+    return regex.test(entry.classFullName)
+           || regex.test(entry.methodShortName)
+           || (entry.returnedValue && regex.test(entry.returnedValue))
+           || (entry.exceptionStackTrace && regex.test(entry.exceptionStackTrace))
+           || (entry.arguments && regex.test(entry.arguments.join(',')));
   },
   render: function() {
     if (!this.props.traceStarted) {
@@ -994,10 +999,11 @@ let LogHistory = React.createClass({
 
     let hover = this.props.hoverTraceLog;
     let uuidHovered = this.props.traceLogHovered;
-    let logList = this.props.logHistory.map(function(entry) {
+    let logList = this.props.logHistory.map(function(entry, idx) {
       if (this.entryFilter(this.props.filter, entry)) {
         let iconClass = null;
         let methodArgs = null;
+        let arrow = null;
         let message = null;
         let hasElapsedTime = false;
         let dots = '';
@@ -1005,48 +1011,61 @@ let LogHistory = React.createClass({
         switch (entry.tracePoint) {
           case TRIGGER_POINT_ENTER:
             iconClass = 'fa fa-sign-in';
-            methodArgs = <span title={entry.type} className={entry.type}>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
+            methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
             break;
           case TRIGGER_POINT_RETURNS:
             iconClass = 'fa fa-reply';
             hasElapsedTime = true;
             methodArgs = <span>({dots})</span>;
-            message = <span title={entry.type} className={entry.type}> {RETURNS_ARROW} {entry.returnedValue}</span>
+            arrow = <span> {RETURNS_ARROW} </span>;
+            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
             break;
           case TRIGGER_POINT_THROWS_EXCEPTION:
             iconClass = 'fa fa-exclamation-triangle';
             hasElapsedTime = true;
             methodArgs = <span>({dots})</span>;
-            message = <span title={entry.type} className={entry.type}>{entry.exceptionStackTrace}</span>
+            arrow = <span> {THROWS_ARROW} </span>;
+            console.log(entry.exceptionStackTrace);
+            message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
             break;
         }
 
         let icon = <span className='traceLogIcon'><i className={iconClass}></i></span>;
         let elapsedTimeMessage = hasElapsedTime
-                                    ? <span className='traceLogElapsedTime' title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
+                                    ? <span title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
                                     : <span></span>;
 
         let clsNames = 'traceLogRecord';
+        clsNames += (idx % 2 == 0) ? ' traceLogEven' : ' traceLogOdd'
         if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
         return (
-          <div className={clsNames} title={entry.tracePoint} onMouseOver={() => hover(entry.uuid)} onMouseOut={() => hover('no_such_id')}>
-            {icon}
-            <span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}}>{entry.when}</span>
-            <span className='traceLogClassFullName'>{entry.classFullName}.</span>
-            <span className='traceLogMethodShortName'>{entry.methodShortName}</span>
-            {methodArgs}
-            {message}
-            {elapsedTimeMessage}
-          </div>
+          <tr className={clsNames} title={entry.tracePoint} onMouseOver={() => hover(entry.uuid)} onMouseOut={() => hover('no_such_id')} >
+            <td>{icon}</td>
+            <td><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
+            <td className='traceLogClassFullName' title='class name'><span>{entry.classFullName}.</span></td>
+            <td>
+              <table style={{borderSpacing: '0px'}}>
+                <tr>
+                  <td style={{whiteSpace: 'nowrap'}}>
+                    <span className='traceLogMethodShortName' title='method name'>{entry.methodShortName}</span>
+                    {methodArgs}
+                    {arrow}
+                  </td>
+                  <td>{message}</td>
+                </tr>
+              </table>
+            </td>
+            <td className='traceLogElapsedTime'>{elapsedTimeMessage}</td>
+          </tr>
         )
       } else {
         return null;
       };
     }.bind(this));
     return (
-      <div className='logHistoryContainer'>
+      <table className='logHistoryContainer'>
         {logList}
-      </div>
+      </table>
     );
   }
 });
