@@ -1,16 +1,16 @@
-body * {
+body {
+  margin: 0px;
+  padding: 0px;
   font-family: 'Open Sans', sans-serif;
 }
 
-.MethodEntry {
-}
-
-.MethodThrowsException {
-  color: red
-}
-
-.MethodReturns {
-  color: green
+.jackPlayHeader {
+  color: black;
+  z-index: 10;
+  position: fixed;
+  width: 100%;
+  padding-bottom: 8px;
+  background-color: #E3BA6F;
 }
 
 button {
@@ -34,9 +34,11 @@ button:hover {
 }
 
 .suggestion_classname {
+  color: black;
 }
 
 .suggestion_method_signature {
+  color: black;
 }
 
 .suggestion_method_name {
@@ -149,8 +151,13 @@ legend {
   text-align: center;
 }
 
+.jackPlayTraceLog {
+}
+
 .logHistoryContainer {
-  width: 98%;
+  position: relative;
+  top: 62px;
+  width: 100%;
   border-spacing: 0px;
   font-size: 14px;
 }

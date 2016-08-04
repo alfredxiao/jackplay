@@ -686,10 +686,6 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 
     return (
       <span>
-        <button style={{borderRight: 0, margin: 0, paddingLeft: '6px', width: '20px', borderRadius: '4px 0px 0px 4px', outline:'none'}}
-                id='searchIcon'>
-            <span className="fa fa-search" style={{fontSize:'14px', color: '#666'}}></span>
-        </button>
         <Autosuggest suggestions={suggestions} // eslint-disable-line react/jsx-no-undef
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
@@ -1024,14 +1020,14 @@ let LogHistory = React.createClass({
             break;
           case TRIGGER_POINT_RETURNS:
             iconClass = 'fa fa-reply';
-            hasElapsedTime = true;
+            hasElapsedTime = true && entry.elapsed >= 0;
             methodArgs = <span>({dots})</span>;
             arrow = <span> {RETURNS_ARROW} </span>;
-            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
+            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue == null ? "void" : entry.returnedValue}</span>
             break;
           case TRIGGER_POINT_THROWS_EXCEPTION:
             iconClass = 'fa fa-exclamation-triangle';
-            hasElapsedTime = true;
+            hasElapsedTime = true && entry.elapsed >= 0;
             methodArgs = <span>({dots})</span>;
             arrow = <span> {THROWS_ARROW} </span>;
             message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
@@ -1078,24 +1074,19 @@ let LogHistory = React.createClass({
   }
 });
 
-let GlobalMessage = React.createClass({
+let JackPlayTitle = React.createClass({
   render: function() {
-    let gm = this.props.globalMessage;
-    if (gm) {
-      let icon = (INFO == gm.level) ? SUNG : BULLET;
-      return (
-        <div style={{paddingBottom: '8px'}}>
-          <span className='globalMessage'>
-              <span>
-                <span style={{paddingRight: '5px'}}>{icon}</span>
-                <span className={'msg_' + gm.level}>{gm.message}</span>
-              </span>
-          </span>
-          <button onClick={this.props.clearGlobalMessage} className='light' title='Dismiss this message'>{CROSS}</button>
-        </div>
-      );
-    }
-   return null;
+    return (
+      <div style={{paddingBottom: '6px'}}>
+        <span>
+          <img src="/img/guitar.png" style={{verticalAlign: 'bottom'}}/>
+        </span>
+        <span style={{fontSize:'32px', fontWeight:'bold'}}>Jackplay!</span>
+        <span style={{marginLeft: '15px', color:'#333', fontSize: '16px', fontStyle: 'italic'}} className="fadein">
+          "All work and no play makes Jack a dull boy. &mdash; So, let's have Jack play!"
+        </span>
+      </div>
+    )
   }
 });
 
@@ -1239,7 +1230,9 @@ let JackPlay = React.createClass({
   render: function() {
     return (
     <div>
-      <PlayPanel loadedTargets={this.state.loadedTargets}
+      <div className='jackPlayHeader'>
+        <JackPlayTitle/>
+        <PlayPanel loadedTargets={this.state.loadedTargets}
                  setTraceStarted={this.setTraceStarted}
                  updateFilter={this.updateFilter}
                  clearFilter={this.clearFilter}
@@ -1252,13 +1245,15 @@ let JackPlay = React.createClass({
                  autoClassLookupState={this.state.autoClassLookupState}
                  setAutoClassLookupState={this.setAutoClassLookupState}
                  clearLogHistory={this.clearLogHistory} />
+      </div>
       <br/>
-      <GlobalMessage globalMessage={this.state.globalMessage} clearGlobalMessage={this.clearGlobalMessage} />
-      <LogHistory logHistory={this.state.logHistory}
+      <div className='jackPlayTraceLog'>
+        <LogHistory logHistory={this.state.logHistory}
                   traceStarted={this.state.traceStarted}
                   filter={this.state.filter}
                   hoverTraceLog={this.hoverTraceLog}
                   traceLogHovered={this.state.traceLogHovered}/>
+      </div>
       <AlertContainer ref={itself => this.msg = itself} {...this.alertOptions} />
     </div>
     );
