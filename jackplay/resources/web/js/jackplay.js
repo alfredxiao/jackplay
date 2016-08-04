@@ -1023,7 +1023,7 @@ let LogHistory = React.createClass({
             hasElapsedTime = true && entry.elapsed >= 0;
             methodArgs = <span>({dots})</span>;
             arrow = <span> {RETURNS_ARROW} </span>;
-            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue == null ? "void" : entry.returnedValue}</span>
+            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
             break;
           case TRIGGER_POINT_THROWS_EXCEPTION:
             iconClass = 'fa fa-exclamation-triangle';
@@ -1117,7 +1117,12 @@ let JackPlay = React.createClass({
     $.ajax({
       url: '/info/traceLogs',
       success: function(history) {
-        this.setState(Object.assign(this.state, {logHistory: history,
+        this.setState(Object.assign(this.state, {logHistory: history.map(function(e) {
+                                                   if (e.returnedValue == null && e.tracePoint == TRIGGER_POINT_RETURNS) {
+                                                     e.returnedValue = 'void';
+                                                   }
+                                                   return e;
+                                                 }),
                                                  traceStarted: history.length > 0 || this.state.traceStarted }));
       }.bind(this),
       error: function(res) {
