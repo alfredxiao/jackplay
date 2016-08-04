@@ -959,6 +959,7 @@ let PlayPanel = React.createClass({
   render: function() {
     return (
     <div>
+            <span style={{paddingRight: '5px'}}>Method:</span>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
@@ -985,12 +986,20 @@ let PlayPanel = React.createClass({
 
 let LogHistory = React.createClass({
   entryFilter: function(filter, entry) {
-    let regex = new RegExp(filter, 'i');
-    return regex.test(entry.classFullName)
-           || regex.test(entry.methodShortName)
-           || (entry.returnedValue && regex.test(entry.returnedValue))
-           || (entry.exceptionStackTrace && regex.test(entry.exceptionStackTrace))
-           || (entry.arguments && regex.test(entry.arguments.join(',')));
+    if (!filter || filter == '') {
+      return true;
+    } else {
+      let regex = new RegExp(escapeRegexCharacters(filter.trim()), 'i');
+      let methodFullName = entry.classFullName + '.' + entry.methodShortName + '(';
+      if (entry.tracePoint == TRIGGER_POINT_ENTER && entry.arguments && entry.arguments.length > 0) {
+        methodFullName += entry.arguments.join(',')
+      }
+      methodFullName += ')';
+
+      return regex.test(methodFullName)
+             || (entry.returnedValue && regex.test(entry.returnedValue))
+             || (entry.exceptionStackTrace && regex.test(entry.exceptionStackTrace));
+    }
   },
   render: function() {
     if (!this.props.traceStarted) {
@@ -1025,7 +1034,6 @@ let LogHistory = React.createClass({
             hasElapsedTime = true;
             methodArgs = <span>({dots})</span>;
             arrow = <span> {THROWS_ARROW} </span>;
-            console.log(entry.exceptionStackTrace);
             message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
             break;
         }
@@ -1040,18 +1048,18 @@ let LogHistory = React.createClass({
         if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
         return (
           <tr className={clsNames} title={entry.tracePoint} onMouseOver={() => hover(entry.uuid)} onMouseOut={() => hover('no_such_id')} >
-            <td>{icon}</td>
-            <td><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
-            <td className='traceLogClassFullName' title='class name'><span>{entry.classFullName}.</span></td>
+            <td style={{width: '1%'}}>{icon}</td>
+            <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
+            <td className='traceLogClassFullName' title='class name' style={{width: '180px', paddingLeft: '3px'}}><span>{entry.classFullName}.</span></td>
             <td>
               <table style={{borderSpacing: '0px'}}>
                 <tr>
-                  <td style={{whiteSpace: 'nowrap'}}>
+                  <td style={{whiteSpace: 'nowrap', paddingTop: '0px'}}>
                     <span className='traceLogMethodShortName' title='method name'>{entry.methodShortName}</span>
                     {methodArgs}
                     {arrow}
                   </td>
-                  <td>{message}</td>
+                  <td style={{paddingTop: '0px'}}>{message}</td>
                 </tr>
               </table>
             </td>
