@@ -518,61 +518,6 @@ function extractMethodInfo(methodFullName) {
   }
 }
 
-function getSearchTerms(search, realClassName) {
-  const defaultTerms = {classTerm: '', methodTerm: ''};
-
-  if (!search) {
-    return defaultTerms;
-  } else if (search.indexOf('.') < 0) {     // no dot               e.g. mya or mya(
-    if (search.indexOf('(') < 0) {          // no dot, no (         e.g. mya
-      return {classTerm: search, methodTerm: search}
-    } else {                                // no dot, ( found      e.g. mya(
-      let idx = search.indexOf('(');
-      let methodName = search.substring(0, idx);
-      return { classTerm: '', methodTerm: methodName };
-    }
-  } else if (search.endsWith('.')) {        // ends with .          e.g. myapp. myapp.abc.
-    return {classTerm: search.substring(0, search.length - 1), methodTerm: ''}
-  } else if (search.indexOf('(') < 0) {     // no (, . in the middle e.g. myapp.Gr  or myapp.myapp2.my
-    let lastDot = search.lastIndexOf('.');
-    let lastPart = search.substring(lastDot + 1);
-    let thePartBefore = search.substring(0, lastDot);
-
-    return {classTerm: realClassName ? ((realClassName.toUpperCase().indexOf(search.toUpperCase()) >= 0) ? search
-                                                                                                         : thePartBefore )
-                                     : '',
-            methodTerm: lastPart}
-  } else if (search.indexOf('(') > 0) {     // with (, with . in the middle -> myapp.Greet.main(  or myapp.Greet.main(int
-    let methodInfo = extractMethodInfo(search);
-    return {
-      classTerm: methodInfo.className,
-      methodTerm: methodInfo.methodName
-    }
-  } else {
-    return defaultTerms;
-  }
-}
-
-function highlightTermsInText(term, text) {
-  const matches = AutosuggestHighlight.match(text, term);
-  const parts = AutosuggestHighlight.parse(text, matches);
-
-  return (
-    <span>
-    {
-      parts.map((part, index) => {
-        const className = part.highlight ? 'highlight' : null;
-
-        return (
-          <span className={className} key={index}>{part.text}</span>
-        );
-      })
-    }
-    </span>
-  )
-}
-
-
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
   const query = (valueBeforeUpDown || value).trim();
   let methodFullName = suggestion.methodFullName;
