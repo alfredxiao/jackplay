@@ -251,9 +251,9 @@ legend {
 }
 
 .fontButton {
-  color: SaddleBrown  ;
+  color: #333  ;
 }
 
 .fontButton:hover {
-  color: black;
+  color: SaddleBrown;
 }

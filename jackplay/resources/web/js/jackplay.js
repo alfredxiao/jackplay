@@ -796,12 +796,12 @@ let LogControl = React.createClass({
     }
     return (
         <div style={{display:'inline', paddingRight: '2px', float: 'right'}}>
-          <span style={{marginRight: '0px'}} className='fontButton'>
-            <i className={"fa fa-lg fa-" + nextAction} onClick={this.props.toggleDataSync} title={actionTitle}></i>
+          <span style={{marginRight: '0px'}} className='fontButton' onClick={this.props.toggleDataSync} title={actionTitle}>
+            <i className={"fa fa-lg fa-" + nextAction}></i>
           </span>
-          <span style={{marginLeft: '3px', marginRight: '3px', fontSize: '18px'}} className='fontButton'>
-            <i className="fa fa-lg fa-times" onClick={this.requestToClearLogHistory}
-               title='Clear Trace Logs'></i>
+          <span style={{marginLeft: '11px', marginRight: '11px', fontSize: '18px'}}
+                className='fontButton' onClick={this.requestToClearLogHistory} title='Clear Trace Logs'>
+            <i className="fa fa-lg fa-times"></i>
           </span>
           <span>
             <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
@@ -890,8 +890,8 @@ let PlayPanel = React.createClass({
             <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
-            <span style={{paddingLeft: '8px', fontSize: '18px'}}>
-              <i className="fa fa-cog fa-lg fontButton" onClick={this.showPlayBook} title='Manage Methods'></i>
+            <span style={{paddingLeft: '8px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Manage Methods'>
+              <i className="fa fa-cog fa-lg"></i>
             </span>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
