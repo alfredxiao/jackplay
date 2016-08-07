@@ -1,3 +1,7 @@
+html {
+  overflow-y: scroll;
+}
+
 body {
   background-color: #F5F5F5;
   margin: 0px;
@@ -10,10 +14,10 @@ body {
   z-index: 10;
   position: fixed;
   width: 100%;
-  padding-bottom: 4px;
+  padding-bottom: 0px;
   padding-left: 8px;
   background-color: #E3BA6F;
-  border-bottom: 2px solid #C69549;
+  border-bottom: 3px solid #C69549;
 }
 
 button {
@@ -176,7 +180,7 @@ legend {
 
 .logHistoryContainer {
   position: relative;
-  top: 62px;
+  top: 66px;
   width: 100%;
   border-spacing: 0px;
   font-size: 14px;
@@ -244,4 +248,12 @@ legend {
 }
 .traceLogExceptionStackTrace {
   white-space: pre;
+}
+
+.fontButton {
+  color: SaddleBrown  ;
+}
+
+.fontButton:hover {
+  color: black;
 }

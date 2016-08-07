@@ -788,22 +788,30 @@ let LogControl = React.createClass({
     this.props.clearLogHistory();
   },
   render: function() {
+    let nextAction = 'pause';
+    let actionTitle = 'Pause';
+    if (this.props.isSyncWithServerPaused) {
+      nextAction = 'play';
+      actionTitle = 'Play';
+    }
     return (
-        <div style={{display:'inline', paddingLeft: '15px'}}>
+        <div style={{display:'inline', paddingRight: '2px', float: 'right'}}>
+          <span style={{marginRight: '0px'}} className='fontButton'>
+            <i className={"fa fa-lg fa-" + nextAction} onClick={this.props.toggleDataSync} title={actionTitle}></i>
+          </span>
+          <span style={{marginLeft: '3px', marginRight: '3px', fontSize: '18px'}} className='fontButton'>
+            <i className="fa fa-lg fa-times" onClick={this.requestToClearLogHistory}
+               title='Clear Trace Logs'></i>
+          </span>
           <span>
             <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
                    type='text' style={{width: '108px', paddingRight: '20px'}} />
             <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
                           left: '-20px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
                           borderRadius: '0px 4px 4px 0px'}}>
-              <i className="fa fa-times" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
+              <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
             </span>
           </span>
-          <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
-          <div className='checkboxSwitch' title='Switch data sync' style={{display: 'inline'}}>
-            <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
-            <label htmlFor='autoSync'></label>
-          </div>
         </div>
     )
   }
@@ -882,9 +890,12 @@ let PlayPanel = React.createClass({
             <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
-            <button onClick={this.showPlayBook} title='show/hide information about method being traced'>Manage...</button>
+            <span style={{paddingLeft: '8px', fontSize: '18px'}}>
+              <i className="fa fa-cog fa-lg fontButton" onClick={this.showPlayBook} title='Manage Methods'></i>
+            </span>
             <LogControl updateFilter={this.props.updateFilter}
                         clearFilter={this.props.clearFilter}
+                        isSyncWithServerPaused={this.props.isSyncWithServerPaused}
                         toggleDataSync={this.props.toggleDataSync}
                         clearLogHistory={this.props.clearLogHistory} />
             <MethodRedefine shown={this.state.MethodRedefineIsShow}
@@ -1168,6 +1179,7 @@ let JackPlay = React.createClass({
                  loadProgram={this.loadProgram}
                  removeMethod={this.removeMethod}
                  removeClass={this.removeClass}
+                 isSyncWithServerPaused={this.state.isSyncWithServerPaused}
                  toggleDataSync={this.toggleDataSync}
                  setGlobalMessage={this.setGlobalMessage}
                  autoClassLookupState={this.state.autoClassLookupState}
