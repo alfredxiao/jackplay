@@ -334,38 +334,6 @@ AlertContainer.propTypes = {
   transition: React.PropTypes.oneOf(['scale', 'fade'])
 }
 
-
-
-class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.alertOptions = {
-      offset: 14,
-      position: 'bottom left',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    };
-  }
-
-  showAlert(){
-    this.msg.show('my message....', {
-      time: 3000,
-      type: 'success',
-      icon: <span className="fa fa-info-circle" style={{fontSize:'22px', color: '#666'}} aria-hidden="true"></span>
-    });
-  }
-
-  render(){
-    return(
-      <div>
-        <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-        <button onClick={this.showAlert.bind(this)}>Show Alert</button>
-      </div>
-    );
-  }
-}
-
 class Modal extends React.Component{
 
   constructor(props){
@@ -690,7 +658,7 @@ let MethodRedefine = React.createClass({
   render: function() {
   let returnTypeMessage = ($.isEmptyObject(this.props.autoClassLookupState.returnType))
   ? ''
-  : (<span title='return type of this method' style={{marginLeft: '5px'}}>
+  : (<span title='return type of this method' style={{marginLeft: '63px'}}>
        <span>{RETURNS_ARROW}</span>
        <span style={{ fontFamily: 'Courier New', fontSize: '16px', marginLeft: '5px'}}>{this.props.autoClassLookupState.returnType}</span>
      </span>);
@@ -718,7 +686,7 @@ let MethodRedefine = React.createClass({
                 <div style={{marginTop: '1px'}}>
                   <span style={{display: 'inline-block', verticalAlign: 'top', textAlign: 'right', width: '58px'}}><label htmlFor='newSource'>Code:</label></span>
                   <textarea rows="8" id="newSource" placeholder="type in source: e.g. { return 10; }" className='code'
-                            style={{width: '562px', outline: 'none', display: 'inline', marginLeft: '4px'}} title='type in source for this method'></textarea>
+                            style={{width: '600px', outline: 'none', display: 'inline', marginLeft: '4px'}} title='type in source for this method'></textarea>
                 </div>
                 <div>
                      <span className="tooltip "> An Example
@@ -822,10 +790,15 @@ let LogControl = React.createClass({
   render: function() {
     return (
         <div style={{display:'inline', paddingLeft: '15px'}}>
-          <input name='logFilter' id='logFilter' placeholder='filter logs' onChange={this.props.updateFilter}
-                 style={{borderRadius: '4px 0px 0px 4px', borderRight: '0px', outline: 'none', width: '108px'}} />
-          <button title='Clear filter' onClick={this.props.clearFilter}
-                  style={{borderLeft: 0, margin: 0, width: '23px', borderRadius: '0px 4px 4px 0px', outline:'none'}}>{CROSS}</button>
+          <span>
+            <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
+                   type='text' style={{width: '108px', paddingRight: '20px'}} />
+            <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
+                          left: '-20px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
+                          borderRadius: '0px 4px 4px 0px'}}>
+              <i className="fa fa-times" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
+            </span>
+          </span>
           <button onClick={this.requestToClearLogHistory} title='clear trace log' style={{marginLeft: '5px'}}>Clear All</button>
           <div className='checkboxSwitch' title='Switch data sync' style={{display: 'inline'}}>
             <input id='autoSync' type="checkbox" defaultChecked='true' onChange={this.props.toggleDataSync}/>
