@@ -7,13 +7,21 @@ import static jackplay.play.domain.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class TraceKeeper {
-    static List<TraceLog> traceLogs = new LinkedList<>();
+    private static List<TraceLog> traceLogs = new LinkedList<>();
     static int traceLogLimit;
+
+    public synchronized static List<TraceLog> copyTraceLogs() {
+        List<TraceLog> copyList = new ArrayList<>(traceLogs.size());
+        copyList.addAll(traceLogs);
+
+        return copyList;
+    }
 
     private synchronized static void addTraceLog(TraceLog entry) {
         while (traceLogs.size() >= traceLogLimit) {

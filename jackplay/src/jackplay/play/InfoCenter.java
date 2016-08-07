@@ -92,7 +92,7 @@ public class InfoCenter {
     }
 
     public List<Map<String, Object>> getTraceLogs() {
-        Iterator<TraceLog> it = TraceKeeper.traceLogs.iterator();
+        Iterator<TraceLog> it = TraceKeeper.copyTraceLogs().iterator();
         List<Map<String, Object>> listOfLogs = new ArrayList<>();
 
         while (it.hasNext()) {
