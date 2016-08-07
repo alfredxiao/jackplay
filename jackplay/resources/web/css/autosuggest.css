@@ -13,7 +13,6 @@
   font-size: 16px;
   border: 1px solid #aaa;
   border-radius: 4px 4px 4px 4px;
-  border-left: 0px;
 }
 
 .react-autosuggest__input:focus {
@@ -27,8 +26,9 @@
 
 .react-autosuggest__suggestions-container {
   position: absolute;
+  left: 0px;
   /*top: -1px;*/
-  width: 472px;
+  width: 453px;
   margin: 0;
   padding: 0;
   list-style-type: none;

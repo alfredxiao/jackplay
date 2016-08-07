@@ -12,6 +12,7 @@ body {
   padding-bottom: 4px;
   padding-left: 8px;
   background-color: #E3BA6F;
+  border-bottom: 2px solid #C69549;
 }
 
 button {

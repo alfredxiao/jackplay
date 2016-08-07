@@ -2,6 +2,10 @@
 let alertGlobal = {};
 let ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
+function formatNumber (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}
+
 let toMessage = function(obj) {
   return JSON.stringify(obj);
 }
@@ -686,6 +690,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 
     return (
       <span>
+        <span style={{paddingRight: '5px'}}>Method:</span>
         <Autosuggest suggestions={suggestions} // eslint-disable-line react/jsx-no-undef
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
@@ -955,7 +960,6 @@ let PlayPanel = React.createClass({
   render: function() {
     return (
     <div>
-            <span style={{paddingRight: '5px'}}>Method:</span>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
@@ -1036,7 +1040,7 @@ let LogHistory = React.createClass({
 
         let icon = <span className='traceLogIcon'><i className={iconClass}></i></span>;
         let elapsedTimeMessage = hasElapsedTime
-                                    ? <span title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{entry.elapsed} ms</span>
+                                    ? <span title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{formatNumber(entry.elapsed)} ms</span>
                                     : <span></span>;
 
         let clsNames = 'traceLogRecord';
