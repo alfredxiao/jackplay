@@ -751,10 +751,10 @@ let MethodRedefine = React.createClass({
      </span>);
   return (
     <div>
-        <Modal className="test-class" //this will completely overwrite the default css completely
+        <Modal className="myModalClass" //this will completely overwrite the default css completely
               style={modalDefaultStyle} //overwrites the default background
               containerStyle={containerDefaultStyle} //changes styling on the inner content area
-              containerClassName="test"
+              containerClassName="myModalContainerClass"
               closeOnOuterClick={false}
               show={this.props.shown}
               >
@@ -770,9 +770,10 @@ let MethodRedefine = React.createClass({
                   <br/>
                   {returnTypeMessage}
                 </div>
-                <div>
+                <div style={{marginTop: '1px'}}>
+                  <span style={{display: 'inline-block', verticalAlign: 'top', textAlign: 'right', width: '58px'}}><label htmlFor='newSource'>Code:</label></span>
                   <textarea rows="8" id="newSource" placeholder="type in source: e.g. { return 10; }" className='code'
-                            style={{width: '662px', outline: 'none'}} title='type in source for this method'></textarea>
+                            style={{width: '562px', outline: 'none', display: 'inline', marginLeft: '4px'}} title='type in source for this method'></textarea>
                 </div>
                 <div>
                      <span className="tooltip "> An Example
@@ -842,10 +843,10 @@ let PlayBook = React.createClass({
     });
     return (
       <div>
-        <Modal className="test-class" //this will completely overwrite the default css completely
+        <Modal className="myModalClass" //this will completely overwrite the default css completely
               style={modalDefaultStyle} //overwrites the default background
               containerStyle={containerDefaultStyle} //changes styling on the inner content area
-              containerClassName="test"
+              containerClassName="myModalContainerClass"
               closeOnOuterClick={false}
               show={this.props.playBookBeingShown}
               >

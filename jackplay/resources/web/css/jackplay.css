@@ -82,15 +82,30 @@ pre {
     white-space: pre-wrap;
 }
 
-input {
+
+input[type='text'] {
   padding: 6px 10px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 16px;
   border: 1px solid #aaa;
   border-radius: 4px;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+input[type='text']:focus, input[type='text'].focus {
+  border: solid 1px #707070;
+  box-shadow: 0 0 5px 1px #969696;
 }
 
+textarea {
+  border: 1px sodid #aaa;
+  border-radius: 4px;
+}
+
+textarea:focus, textarea.focus {
+  border: solid 1px #707070;
+  box-shadow: 0 0 5px 1px #969696;
+}
 
 .globalMessage {
   padding: 5px;
