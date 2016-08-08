@@ -840,6 +840,7 @@ let PlayPanel = React.createClass({
                   src: src},
           success: function(data) {
             this.props.setGlobalMessage(INFO, toMessage(data));
+            this.hideMethodRedefine();
           }.bind(this),
           error: function(data) {
             this.props.setGlobalMessage(ERROR, toErrorMessage(data));
