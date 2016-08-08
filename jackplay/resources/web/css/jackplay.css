@@ -162,7 +162,10 @@ button.removePlayTarget:hover {
   color: black;
 }
 
-fieldset { border:1px solid #666 }
+fieldset {
+  border:1px solid #666;
+  border-radius: 4px;
+}
 
 legend {
   padding: 0.2em 0.5em;
@@ -243,14 +246,17 @@ legend {
 }
 
 .traceLogArgsList {
+  white-space: pre;
 }
 .traceLogReturnedValue {
+  white-space: pre;
 }
 .traceLogExceptionStackTrace {
   white-space: pre;
 }
 
 .fontButton {
+  cursor: default;
   color: #333  ;
 }
 

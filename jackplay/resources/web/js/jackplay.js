@@ -255,7 +255,7 @@ class AlertContainer extends React.Component {
       right: position.right,
       bottom: position.bottom,
       left: position.left,
-      position: 'absolute',
+      position: 'fixed',
       zIndex: 99999
     };
   }
@@ -874,7 +874,7 @@ let PlayPanel = React.createClass({
                 <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
                               left: '-23px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
                               borderRadius: '0px 4px 4px 0px'}}>
-                  <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
+                  <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Erase' ></i>
                 </span>
               </span>
               <span style={{marginRight: '0px',display:'inline-block', width:'18px'}} className='fontButton' onClick={this.props.toggleDataSync} title={actionTitle}>
