@@ -1,4 +1,4 @@
-package jackplay.play.domain;
+package jackplay.bootstrap;
 
 public enum TracePoint {
     MethodEntry,

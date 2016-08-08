@@ -1,7 +1,7 @@
 package jackplay.play;
 
-import jackplay.play.domain.Genre;
-import jackplay.play.domain.PlayGround;
+import jackplay.bootstrap.Genre;
+import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
 import jackplay.javassist.NotFoundException;
@@ -32,12 +32,17 @@ public class ProgramManager {
         validateMethodLocation(pg);                         // validate method existence
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addToProgram(pg, genre, src);
-            composer.performPlay(pg.classFullName);
+            try {
+                composer.performPlay(pg.classFullName);
+            } catch(Exception e) {
+                removeProgrammedMethod(genre, pg.methodFullName);
+                throw e;
+            }
         }
     }
 
     private static void validateMethodLocation(PlayGround pg) throws NotFoundException {
-        pg.locateMethod();
+        InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
     }
 
     public void removeRedefinition(String className, String methodFullName) {

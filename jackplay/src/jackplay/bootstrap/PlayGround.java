@@ -1,9 +1,4 @@
-package jackplay.play.domain;
-
-import jackplay.javassist.ClassPool;
-import jackplay.javassist.CtClass;
-import jackplay.javassist.CtMethod;
-import jackplay.javassist.NotFoundException;
+package jackplay.bootstrap;
 
 import java.util.Objects;
 
@@ -39,28 +34,6 @@ public class PlayGround {
 
     private void throwInvalidFormatMessage(String methodFullName) {
         throw new RuntimeException("[" + methodFullName + "] is " + INVALID_MESSAGE);
-    }
-
-    public CtMethod locateMethod() throws NotFoundException {
-        ClassPool cp = ClassPool.getDefault();
-        CtMethod found = null;
-        try {
-            CtClass cc = cp.get(this.classFullName);
-
-            CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
-            for (CtMethod m : methods) {
-                if (m.getLongName().equals(methodFullName)) {
-                    found = m;
-                }
-            }
-        } catch(NotFoundException nfe) {
-        }
-
-        if (null == found) {
-            throw new NotFoundException(this.methodFullName + " not found!");
-        } else {
-            return found;
-        }
     }
 
     @Override

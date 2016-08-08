@@ -780,43 +780,6 @@ let PlayBook = React.createClass({
   }
 });
 
-let LogControl = React.createClass({
-  requestToClearLogHistory: function() {
-    $.ajax({
-          url: '/info/clearTraceLogs',
-    });
-    this.props.clearLogHistory();
-  },
-  render: function() {
-    let nextAction = 'pause';
-    let actionTitle = 'Pause';
-    if (this.props.isSyncWithServerPaused) {
-      nextAction = 'play';
-      actionTitle = 'Play';
-    }
-    return (
-        <div style={{display:'inline', paddingRight: '2px', float: 'right'}}>
-          <span style={{marginRight: '0px'}} className='fontButton' onClick={this.props.toggleDataSync} title={actionTitle}>
-            <i className={"fa fa-lg fa-" + nextAction}></i>
-          </span>
-          <span style={{marginLeft: '11px', marginRight: '11px', fontSize: '18px'}}
-                className='fontButton' onClick={this.requestToClearLogHistory} title='Clear Trace Logs'>
-            <i className="fa fa-lg fa-times"></i>
-          </span>
-          <span>
-            <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
-                   type='text' style={{width: '108px', paddingRight: '20px'}} />
-            <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
-                          left: '-20px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
-                          borderRadius: '0px 4px 4px 0px'}}>
-              <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
-            </span>
-          </span>
-        </div>
-    )
-  }
-});
-
 let PlayPanel = React.createClass({
   getInitialState: function() {
     return {playBookBeingShown: false,
@@ -884,20 +847,46 @@ let PlayPanel = React.createClass({
         });
     }
   },
+  requestToClearLogHistory: function() {
+    $.ajax({
+          url: '/info/clearTraceLogs',
+    });
+    this.props.clearLogHistory();
+  },
   render: function() {
+    let nextAction = 'pause';
+    let actionTitle = 'Pause';
+    if (this.props.isSyncWithServerPaused) {
+      nextAction = 'play';
+      actionTitle = 'Play';
+    }
+
     return (
-    <div>
+        <div>
             <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
-            <span style={{paddingLeft: '8px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Manage Methods'>
-              <i className="fa fa-cog fa-lg"></i>
-            </span>
-            <LogControl updateFilter={this.props.updateFilter}
-                        clearFilter={this.props.clearFilter}
-                        isSyncWithServerPaused={this.props.isSyncWithServerPaused}
-                        toggleDataSync={this.props.toggleDataSync}
-                        clearLogHistory={this.props.clearLogHistory} />
+            <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
+              <span style={{marginRight: '-8px'}}>
+                <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
+                       type='text' style={{width: '128px'}} />
+                <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
+                              left: '-23px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
+                              borderRadius: '0px 4px 4px 0px'}}>
+                  <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
+                </span>
+              </span>
+              <span style={{marginRight: '0px',display:'inline-block', width:'18px'}} className='fontButton' onClick={this.props.toggleDataSync} title={actionTitle}>
+                <i className={"fa fa-lg fa-" + nextAction}></i>
+              </span>
+              <span style={{marginLeft: '12px', fontSize: '18px'}}
+                    className='fontButton' onClick={this.requestToClearLogHistory} title='Clear Trace Logs'>
+                <i className="fa fa-lg fa-times"></i>
+              </span>
+              <span style={{paddingLeft: '12px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Manage Methods'>
+                <i className="fa fa-cog fa-lg"></i>
+              </span>
+            </div>
             <MethodRedefine shown={this.state.MethodRedefineIsShow}
                             hideMethodRedefine={this.hideMethodRedefine}
                             loadedTargets={this.props.loadedTargets}
@@ -909,7 +898,7 @@ let PlayPanel = React.createClass({
                       removeMethod={this.props.removeMethod}
                       removeClass={this.props.removeClass}
                       program={this.props.program}/>
-    </div>
+        </div>
     );
   }
 });

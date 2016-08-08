@@ -3,7 +3,7 @@ package jackplay.web;
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.play.InfoCenter;
 import jackplay.play.ProgramManager;
-import jackplay.play.domain.Genre;
+import jackplay.bootstrap.Genre;
 
 
 import java.util.Map;

@@ -1,7 +1,8 @@
 package jackplay.play;
 
-import jackplay.play.domain.PlayGround;
-import jackplay.play.domain.TraceLog;
+import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.TraceKeeper;
+import jackplay.bootstrap.TraceLog;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
@@ -12,6 +13,28 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class InfoCenter {
+
+    public static CtMethod locateMethod(PlayGround playGround, String methodFullName, String methodShortName) throws NotFoundException {
+        ClassPool cp = ClassPool.getDefault();
+        CtMethod found = null;
+        try {
+            CtClass cc = cp.get(playGround.classFullName);
+
+            CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
+            for (CtMethod m : methods) {
+                if (m.getLongName().equals(methodFullName)) {
+                    found = m;
+                }
+            }
+        } catch(NotFoundException nfe) {
+        }
+
+        if (null == found) {
+            throw new NotFoundException(playGround.methodFullName + " not found!");
+        } else {
+            return found;
+        }
+    }
 
     static class ClassComparator implements Comparator<Class> {
         public int compare(Class o1, Class o2) {

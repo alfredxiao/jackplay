@@ -1,4 +1,4 @@
-package jackplay;
+package jackplay.bootstrap;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 <project name="jackplay" default="dist" basedir=".">
 
   <!-- set global properties for this build -->
-  <property name="version" value="0.6-SNAPSHOT"/>
+  <property name="version" value="0.7-SNAPSHOT"/>
 
   <path id="project.classpath" cache="true">
     <fileset dir="lib">
@@ -24,9 +24,21 @@
   <target name="dist" depends="compile" description="generate the distribution">
     <mkdir dir="dist"/>
 
-    <jar jarfile="dist/jackplay-${version}.jar">
+    <jar jarfile="dist/jackplay-bootstrap-${version}.jar">
+      <fileset dir="build/classes">
+        <include name="jackplay/bootstrap/*"/>
+        <exclude name="javaplay/play/**/*"/>
+        <exclude name="javaplay/web/**/*"/>
+        <exclude name="javaplay/*"/>
+      </fileset>
+    </jar>
+    <copy file="dist/jackplay-bootstrap-${version}.jar" tofile="dist/jackplay-bootstrap-latest.jar"/>
+
+    <jar jarfile="dist/jackplay-agent-${version}.jar">
       <zipfileset src="lib/javassist-3.20.0-GA-jackplay.jar"/>
-      <fileset dir="build/classes"/>
+      <fileset dir="build/classes">
+        <exclude name="jackplay/bootstrap/*"/>
+      </fileset>
       <fileset dir="resources"/>
       <manifest>
         <attribute name="Premain-Class" value="jackplay.Theatre"/>
@@ -35,7 +47,7 @@
         <attribute name="Can-Retransform-Classes" value="true"/>
       </manifest>
     </jar>
-    <copy file="dist/jackplay-${version}.jar" tofile="dist/jackplay-latest.jar"/>
+    <copy file="dist/jackplay-agent-${version}.jar" tofile="dist/jackplay-agent-latest.jar"/>
   </target>
 
   <target name="clean" description="clean up">

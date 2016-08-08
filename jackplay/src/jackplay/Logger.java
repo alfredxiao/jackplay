@@ -1,5 +1,7 @@
 package jackplay;
 
+import jackplay.bootstrap.Options;
+
 public class Logger {
     static String logLevel = "info";
 

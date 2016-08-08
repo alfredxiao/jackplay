@@ -1,4 +1,4 @@
-package jackplay.play.domain;
+package jackplay.bootstrap;
 
 import java.util.Date;
 

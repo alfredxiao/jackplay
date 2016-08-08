@@ -1,7 +1,7 @@
 package jackplay.play;
 
 import jackplay.Logger;
-import jackplay.Options;
+import jackplay.bootstrap.Options;
 import jackplay.play.performers.LeadPerformer;
 
 import java.lang.instrument.Instrumentation;
@@ -38,6 +38,7 @@ public class Composer {
 
                 if (!leadPerformer.getExceptionsDuringPerformance().isEmpty()) {
                     // todo: get all errors and return to client
+                    leadPerformer.getExceptionsDuringPerformance().get(0).printStackTrace();
                     throw new Exception("error in performing class redefinition: " + leadPerformer.getExceptionsDuringPerformance().get(0).getMessage());
                 }
             } else {

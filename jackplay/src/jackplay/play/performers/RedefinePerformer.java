@@ -1,9 +1,11 @@
 package jackplay.play.performers;
 
 import jackplay.Logger;
-import jackplay.play.domain.PlayGround;
+import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
+
+import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public class RedefinePerformer implements jackplay.play.performers.Performer {
     String methodFullName;
@@ -20,6 +22,9 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
     public CtClass perform(CtClass aClass) throws Exception {
         Logger.debug("redefining method:" + methodFullName);
         CtMethod method = findMethodByLongName(aClass);
+        if ((method.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) {
+            throw new Exception("Cannot redefine native method!");
+        }
 
         method.setBody(newSource);
 

@@ -1,9 +1,6 @@
-package jackplay.play;
+package jackplay.bootstrap;
 
-import jackplay.Options;
-import jackplay.play.domain.PlayGround;
-import jackplay.play.domain.TraceLog;
-import static jackplay.play.domain.TracePoint.*;
+import static jackplay.bootstrap.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -1,5 +1,7 @@
 package jackplay;
 
+import jackplay.bootstrap.Options;
+import jackplay.bootstrap.TraceKeeper;
 import jackplay.play.*;
 import jackplay.play.performers.LeadPerformer;
 import jackplay.web.BoxOffice;

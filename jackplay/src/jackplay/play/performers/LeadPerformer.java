@@ -2,7 +2,7 @@ package jackplay.play.performers;
 
 import jackplay.play.Composer;
 import jackplay.play.ProgramManager;
-import jackplay.play.domain.Genre;
+import jackplay.bootstrap.Genre;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 
