@@ -255,7 +255,7 @@ class AlertContainer extends React.Component {
       right: position.right,
       bottom: position.bottom,
       left: position.left,
-      position: 'absolute',
+      position: 'fixed',
       zIndex: 99999
     };
   }
@@ -429,6 +429,7 @@ const CROSS = '\u2717';
 const STAR = '\u2605';
 const RETURNS_ARROW = '\u27F9';
 const THROWS_ARROW = '\u27FF';
+const LONG_DASH = '\u2014';
 const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
@@ -874,7 +875,7 @@ let PlayPanel = React.createClass({
                 <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
                               left: '-23px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
                               borderRadius: '0px 4px 4px 0px'}}>
-                  <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Clear filter' ></i>
+                  <i className="fa fa-eraser" style={{position: 'relative', top: '7px', color: '#555'}} onClick={this.props.clearFilter} title='Erase' ></i>
                 </span>
               </span>
               <span style={{marginRight: '0px',display:'inline-block', width:'18px'}} className='fontButton' onClick={this.props.toggleDataSync} title={actionTitle}>
@@ -1005,8 +1006,9 @@ let JackPlayTitle = React.createClass({
         <span>
           <img src="/img/guitar.png" style={{verticalAlign: 'bottom'}}/>
         </span>
-        <span style={{fontSize:'32px', fontWeight:'bold'}}>Jackplay!</span>
-        <span style={{marginLeft: '15px', color:'#333', fontSize: '16px', fontStyle: 'italic'}} className="fadein">
+        <span style={{fontSize:'32px', fontWeight:'bold', marginLeft: '5px'}}>Jackplay!</span>
+        <span style={{fontSize:'17px', fontStyle:'italic',marginLeft: '18px'}}> {LONG_DASH}{LONG_DASH} A JVM Tracing Tool</span>
+        <span style={{marginRight: '25px', marginTop: '10px', color:'#333', fontSize: '14px', fontStyle: 'italic', float: 'right'}} className="fadein">
           "All work and no play makes Jack a dull boy. &mdash; So, let's have Jack play!"
         </span>
       </div>
