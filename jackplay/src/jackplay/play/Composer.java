@@ -2,10 +2,10 @@ package jackplay.play;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Options;
+import jackplay.bootstrap.TraceKeeper;
 import jackplay.play.performers.LeadPerformer;
 
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 
 // singleton
 public class Composer {
@@ -23,33 +23,40 @@ public class Composer {
     }
 
     synchronized void performPlay(String className) throws Exception {
-        Class c = Class.forName(className);
-        if (c.getName().equals(className)) {
-            if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
-                leadPerformer.setClassToPlay(c);
-                try {
-                    inst.retransformClasses(c);
-                } catch(VerifyError ve) {
-                    Logger.error(ve);
-                    Logger.info("can't verify a class, will reset its method body (while keep tracing if any)");
-                    UndoClassRedefinition(c);
-                    // todo: remove redefine performers of this class
+        Class clazz = Class.forName(className);
+        if (inst.isModifiableClass(clazz) && inst.isRetransformClassesSupported()) {
+            leadPerformer.setClassToPlay(clazz);
+            try {
+                inst.retransformClasses(clazz);
+            } catch(VerifyError ve) {
+                Logger.error(ve);
+                String msg = "can't verify class" + className + ", will reset its method body (while keep tracing if any)";
+                pm.removeRedefinitions(className);
+                inst.retransformClasses(clazz);
+                throw new Exception(msg);
+            }
+
+            if (!leadPerformer.getExceptionsDuringPerformance().isEmpty()) {
+                StringBuilder allMessage = new StringBuilder();
+                StringBuilder allStackTrace = new StringBuilder();
+                boolean isFirst = true;
+                for (Exception e : leadPerformer.getExceptionsDuringPerformance()) {
+                    if (!isFirst) allMessage.append(" | ");
+                    if (!isFirst) allStackTrace.append("\n\n");
+
+                    allMessage.append(e.getMessage());
+                    allStackTrace.append(TraceKeeper.throwableToString(e));
+
+                    isFirst = false;
                 }
 
-                if (!leadPerformer.getExceptionsDuringPerformance().isEmpty()) {
-                    // todo: get all errors and return to client
-                    leadPerformer.getExceptionsDuringPerformance().get(0).printStackTrace();
-                    throw new Exception("error in performing class redefinition: " + leadPerformer.getExceptionsDuringPerformance().get(0).getMessage());
-                }
-            } else {
-                throw new Exception("class not modifiable:" + className);
+                String errorMessage = "error in performing redefinition for class " + className + ": " + allMessage.toString();
+                Logger.error(errorMessage);
+                Logger.error(allStackTrace.toString());
+                throw new Exception(errorMessage);
             }
+        } else {
+            throw new Exception("class not modifiable:" + className);
         }
     }
-
-    private void UndoClassRedefinition(Class c) throws UnmodifiableClassException {
-        pm.removeRedefinitions(c.getName());
-        inst.retransformClasses(c);
-    }
-
 }

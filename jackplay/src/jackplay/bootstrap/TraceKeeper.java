@@ -160,7 +160,7 @@ public class TraceKeeper {
         return builder.toString();
     }
 
-    private static String throwableToString(Throwable t) {
+    public static String throwableToString(Throwable t) {
         if (null == t) {
             return null;
         } else {

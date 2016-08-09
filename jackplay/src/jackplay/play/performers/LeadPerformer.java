@@ -36,7 +36,7 @@ public class LeadPerformer implements ClassFileTransformer {
             List<Performer> allPerformers = findAllPerformers(clsName);
 
             try {
-                List<Exception> exceptions = new LinkedList<Exception>();
+                List<Exception> exceptions = new LinkedList<>();
                 ClassPool cp = ClassPool.getDefault();
                 CtClass cc = cp.get(clsName);
                 for (Performer performer : allPerformers) {
@@ -45,7 +45,7 @@ public class LeadPerformer implements ClassFileTransformer {
                     } catch (Exception e) {
                         // markdown what exception happened and continue with next performer
                         exceptions.add(e);
-                        // tell program manager to remove this performer
+                        // tell program manager to remove this bad performer
                         if (performer instanceof  RedefinePerformer) {
                             RedefinePerformer redefPerf = (RedefinePerformer) performer;
                             pm.removeRedefinition(clsName, redefPerf.methodFullName);

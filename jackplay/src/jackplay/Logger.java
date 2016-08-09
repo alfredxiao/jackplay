@@ -11,6 +11,10 @@ public class Logger {
         }
     }
 
+    public static void error(Object msg) {
+        System.out.println("jackplay[error]: " + ((null == msg) ? "" : msg.toString()));
+    }
+
     public static void error(Throwable t) {
         System.out.println("jackplay[error]: " + ((null == t) ? "NULL Throwable" : ("class: " + t.getClass().getName() + ", message : " + t.getMessage())));
         if (null != t) t.printStackTrace();
