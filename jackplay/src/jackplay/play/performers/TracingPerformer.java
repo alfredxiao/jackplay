@@ -11,19 +11,16 @@ import jackplay.play.InfoCenter;
 import java.rmi.server.ExportException;
 
 public class TracingPerformer implements Performer {
-    String methodFullName;
-    String methodShortName;
-    PlayGround playGround;
+    private final PlayGround playGround;
 
     public TracingPerformer(PlayGround playGround) {
         this.playGround = playGround;
-        this.methodFullName = playGround.methodFullName;
-        this.methodShortName = playGround.methodShortName;
     }
 
     @Override
     public CtClass perform(CtClass aClass) throws Exception {
-        Logger.debug("logging method:" + methodFullName);
+        Logger.debug("performing tracing for method:" + playGround.methodFullName);
+
         CtMethod method = InfoCenter.locateMethod(playGround, playGround.methodFullName, playGround.methodShortName);
         if ((method.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) {
             throw new Exception("Cannot trace native method!");

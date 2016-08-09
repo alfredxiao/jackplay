@@ -31,7 +31,7 @@ public class Composer {
             } catch(VerifyError ve) {
                 Logger.error(ve);
                 String msg = "can't verify class" + className + ", will reset its method body (while keep tracing if any)";
-                pm.removeRedefinitions(className);
+                pm.removeClassRedefinition(className);
                 inst.retransformClasses(clazz);
                 throw new Exception(msg);
             }

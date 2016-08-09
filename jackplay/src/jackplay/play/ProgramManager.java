@@ -45,7 +45,7 @@ public class ProgramManager {
         InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
     }
 
-    public void removeRedefinition(String className, String methodFullName) {
+    public void removeMethodRedefinition(String className, String methodFullName) {
         program.get(Genre.METHOD_REDEFINE).get(className).remove(methodFullName);
     }
 
@@ -68,7 +68,7 @@ public class ProgramManager {
     }
 
     // called when verifier error
-    void removeRedefinitions(String className) {
+    void removeClassRedefinition(String className) {
         program.get(Genre.METHOD_REDEFINE).remove(className);
     }
 

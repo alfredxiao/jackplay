@@ -47,8 +47,8 @@ public class LeadPerformer implements ClassFileTransformer {
                         exceptions.add(e);
                         // tell program manager to remove this bad performer
                         if (performer instanceof  RedefinePerformer) {
-                            RedefinePerformer redefPerf = (RedefinePerformer) performer;
-                            pm.removeRedefinition(clsName, redefPerf.methodFullName);
+                            RedefinePerformer redefPerformer = (RedefinePerformer) performer;
+                            pm.removeMethodRedefinition(clsName, redefPerformer.getPlayGround().methodFullName);
                         }
                     }
                 }
