@@ -12,6 +12,8 @@ import java.lang.instrument.Instrumentation;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
+
 public class InfoCenter {
 
     public static CtMethod locateMethod(PlayGround playGround, String methodFullName, String methodShortName) throws NotFoundException {
@@ -61,6 +63,8 @@ public class InfoCenter {
             CtMethod[] methods = clazz.getDeclaredMethods();
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
+                if ((m.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) continue;
+
                 PlayGround pg = new PlayGround(m.getLongName());
                 Map<String, String> loadedMethod = new HashMap<>();
                 loadedMethod.put("classFullName", pg.classFullName);
