@@ -22,7 +22,7 @@ public class Composer {
         this.inst.addTransformer(this.leadPerformer, true);
     }
 
-    void performPlay(String className) throws Exception {
+    synchronized void performPlay(String className) throws Exception {
         Class c = Class.forName(className);
         if (c.getName().equals(className)) {
             if (inst.isModifiableClass(c) && inst.isRetransformClassesSupported()) {
