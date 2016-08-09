@@ -2,6 +2,7 @@ package jackplay.play;
 
 import jackplay.bootstrap.Genre;
 import jackplay.bootstrap.PlayGround;
+import jackplay.play.performers.RedefinePerformer;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
 import jackplay.javassist.NotFoundException;
@@ -14,42 +15,48 @@ public class ProgramManager {
     Composer composer;
     Map<Genre, Map<String, Map<String, Performer>>> program;
 
-    public void wireUp(Composer composer) {
+    public void init(Composer composer) {
         program = new ConcurrentHashMap<>();
         this.composer = composer;
     }
 
-    public void addPlayAsTracing(String methodFullName) throws Exception {
-       this.addPlay(methodFullName, Genre.METHOD_TRACE, null);
+    public void submitMethodTrace(String methodFullName) throws Exception {
+       this.submitPlayToProgram(methodFullName, Genre.METHOD_TRACE, null);
     }
 
-    public void addPlayAsRedefinition(String methodFullName, String src) throws Exception {
-        this.addPlay(methodFullName, Genre.METHOD_REDEFINE, src);
+    public void submitMethodRedefinition(String methodFullName, String src) throws Exception {
+        this.submitPlayToProgram(methodFullName, Genre.METHOD_REDEFINE, src);
     }
 
-    private void addPlay(String methodFullName, Genre genre, String src) throws Exception {
+    private void submitPlayToProgram(String methodFullName, Genre genre, String src) throws Exception {
         PlayGround pg = new PlayGround(methodFullName);     // basic format validation
-        validateMethodLocation(pg);                         // validate method existence
+        attemptToLocateMethod(pg);                         // validate method existence
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
-            addToProgram(pg, genre, src);
+            addPlayToProgram(pg, genre, src);
             try {
-                composer.performPlay(pg.classFullName);
+                composer.defineClass(pg.classFullName);
             } catch(Exception e) {
-                removeProgrammedMethod(genre, pg.methodFullName);
+                removeMethodFromProgram(genre, pg.methodFullName);
                 throw e;
             }
         }
     }
 
-    private static void validateMethodLocation(PlayGround pg) throws NotFoundException {
+    private static void attemptToLocateMethod(PlayGround pg) throws NotFoundException {
         InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
     }
 
-    public void removeRedefinition(String className, String methodFullName) {
+    public void removeMethodRedefinition(String className, String methodFullName) {
         program.get(Genre.METHOD_REDEFINE).get(className).remove(methodFullName);
     }
 
-    public void removeProgrammedMethod(Genre genre, String methodFullName) throws Exception {
+    public void removeMethodFromProgramAndReplay(Genre genre, String methodFullName) throws Exception {
+        removeMethodFromProgram(genre, methodFullName);
+
+        composer.defineClass(new PlayGround(methodFullName).classFullName);
+    }
+
+    private void removeMethodFromProgram(Genre genre, String methodFullName) throws Exception {
         PlayGround pg = new PlayGround(methodFullName);
         program.get(genre).get(pg.classFullName).remove(methodFullName);
         if (program.get(genre).get(pg.classFullName).isEmpty()) {
@@ -58,18 +65,17 @@ public class ProgramManager {
                 program.remove(genre);
             }
         }
-        composer.performPlay(pg.classFullName);
     }
 
-    public void removeProgrammedClass(Genre genre, String className) throws Exception {
+    public void removeClassFromProgramAndReplay(Genre genre, String className) throws Exception {
+        removeClassFromProgram(genre, className);
+        composer.defineClass(className);
+    }
+
+    // called when verifier error occurs
+    void removeClassFromProgram(Genre genre, String className) {
         program.get(genre).remove(className);
-        composer.performPlay(className);
         if (program.get(genre).isEmpty()) program.remove(genre);
-    }
-
-    // called when verifier error
-    void removeRedefinitions(String className) {
-        program.get(Genre.METHOD_REDEFINE).remove(className);
     }
 
     private boolean existsPlay(PlayGround pg, Genre genre) throws NotFoundException {
@@ -80,7 +86,7 @@ public class ProgramManager {
         }
     }
 
-    private synchronized void addToProgram(PlayGround pg, Genre genre, String methodSource) {
+    private synchronized void addPlayToProgram(PlayGround pg, Genre genre, String methodSource) {
         prepareProgram(genre, pg.classFullName);
         Performer performer = createPerformer(pg, genre, methodSource);
         program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
@@ -104,7 +110,7 @@ public class ProgramManager {
             case METHOD_TRACE:
                 return new TracingPerformer(pg);
             case METHOD_REDEFINE:
-                return new jackplay.play.performers.RedefinePerformer(pg, methodSource);
+                return new RedefinePerformer(pg, methodSource);
             default:
                 throw new RuntimeException("unknown genre " + genre.toString());
         }

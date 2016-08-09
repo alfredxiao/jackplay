@@ -19,7 +19,7 @@ public class BoxOffice extends Thread {
     InfoCenter infoCenter;
     Map<String, HttpHandler> contextMap;
 
-    public void wireUp(Options options, ProgramManager pm, InfoCenter infoCenter) {
+    public void init(Options options, ProgramManager pm, InfoCenter infoCenter) {
         this.options = options;
         this.pm = pm;
         this.infoCenter = infoCenter;

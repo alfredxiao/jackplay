@@ -53,11 +53,11 @@ public class Theatre {
     }
 
     public void init() {
-        composer.wireUp(options, inst, pm, leadPerformer);
-        pm.wireUp(composer);
-        leadPerformer.wireUp(composer, pm);
-        boxOffice.wireUp(options, pm, infoCenter);
-        infoCenter.wireUp(inst, pm);
+        composer.init(options, inst, pm, leadPerformer);
+        pm.init(composer);
+        leadPerformer.init(composer, pm);
+        boxOffice.init(options, pm, infoCenter);
+        infoCenter.init(inst, pm);
     }
 
     public void start() {

@@ -109,11 +109,10 @@ public class InfoCenter {
                 && !clazz.getName().startsWith("jdk.internal.")
                 && !clazz.getName().startsWith("sun.")
                 && !clazz.getName().startsWith("com.sun.")
-                && !clazz.getName().startsWith("jackplay.javassist.")
                 && !clazz.getName().startsWith("jackplay.");
     }
 
-    public void wireUp(Instrumentation inst, ProgramManager pm) {
+    public void init(Instrumentation inst, ProgramManager pm) {
         this.inst = inst;
         this.pm = pm;
     }

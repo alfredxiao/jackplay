@@ -434,7 +434,7 @@ const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
-const METHOD_LOGGING = 'METHOD_LOGGING';
+const METHOD_TRACE = 'METHOD_TRACE';
 const SHOW_MAX_HIT_SEARCH = 25;
 const TRIGGER_POINT_ENTER = 'MethodEntry';
 const TRIGGER_POINT_RETURNS = 'MethodReturns';
@@ -747,7 +747,7 @@ let PlayBook = React.createClass({
       return (
         <fieldset style={{marginTop: '10px'}}>
           <legend>
-            <span style={{fontSize: '18px', margin: '3px'}}>{genre == METHOD_LOGGING ? 'Traced' : 'Redefined'}</span>
+            <span style={{fontSize: '18px', margin: '3px'}}>{genre == METHOD_TRACE ? 'Traced' : 'Redefined'}</span>
           </legend>
            <ul style={{listStyle: 'none', margin: '0px', padding: '0px'}}>
              {classList}

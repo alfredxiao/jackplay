@@ -4,24 +4,24 @@ import jackplay.Logger;
 import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
+import jackplay.play.InfoCenter;
 
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public class RedefinePerformer implements jackplay.play.performers.Performer {
-    String methodFullName;
-    String methodShortName;
-    String newSource;
+    private final PlayGround playGround;
+    private final String newSource;
 
     public RedefinePerformer(PlayGround playGround, String newSource) {
-        this.methodFullName = playGround.methodFullName;
-        this.methodShortName = playGround.methodShortName;
+        this.playGround = playGround;
         this.newSource = newSource;
     }
 
     @Override
     public CtClass perform(CtClass aClass) throws Exception {
-        Logger.debug("redefining method:" + methodFullName);
-        CtMethod method = findMethodByLongName(aClass);
+        Logger.debug("performing redefinition for method:" + playGround.methodFullName);
+
+        CtMethod method = InfoCenter.locateMethod(playGround, playGround.methodFullName, playGround.methodShortName);
         if ((method.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) {
             throw new Exception("Cannot redefine native method!");
         }
@@ -31,14 +31,7 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
         return aClass;
     }
 
-    private CtMethod findMethodByLongName(CtClass aClass) throws Exception {
-        CtMethod[] methods = aClass.getDeclaredMethods(methodShortName);
-        for (CtMethod m : methods) {
-            if (m.getLongName().equals(methodFullName)) {
-                return m;
-            }
-        }
-
-        throw new RuntimeException("method " + methodFullName + " not found in class " + aClass.getName());
+    public PlayGround getPlayGround() {
+        return playGround;
     }
 }
