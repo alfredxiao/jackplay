@@ -245,6 +245,31 @@ legend {
   background-color: #FFD700;
 }
 
+.shadedTraceLog {
+  opacity: 0.6;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+tr.broughtToFrontTraceLog > td {
+    -moz-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+}
+tr.broughtToFrontTraceLog > td:first-child {
+    -moz-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+}
+tr.broughtToFrontTraceLog > td:last-child {
+    -moz-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.broughtToFrontTraceLog {
+  background-color: #FFD700;
+}
+
 .traceLogArgsList {
   white-space: pre;
 }

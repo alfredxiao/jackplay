@@ -927,8 +927,10 @@ let LogHistory = React.createClass({
       return null;
     }
 
-    let hover = this.props.hoverTraceLog;
+    let highlightLogRecord = this.props.highlightLogRecord;
+    let toggleTraceLogBroughtToFront = this.props.toggleTraceLogBroughtToFront;
     let uuidHovered = this.props.traceLogHovered;
+    let traceLogBroughtToFront = this.props.traceLogBroughtToFront;
     let logList = this.props.logHistory.map(function(entry, idx) {
       if (this.entryFilter(this.props.filter, entry)) {
         let iconClass = null;
@@ -967,8 +969,16 @@ let LogHistory = React.createClass({
         let clsNames = 'traceLogRecord';
         clsNames += (idx % 2 == 0) ? ' traceLogEven' : ' traceLogOdd'
         if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
+        if (traceLogBroughtToFront && traceLogBroughtToFront.length > 0) {
+          if (traceLogBroughtToFront != entry.uuid) {
+            clsNames += ' shadedTraceLog';
+          } else {
+            clsNames += ' broughtToFrontTraceLog';
+          }
+        }
         return (
-          <tr className={clsNames} title={entry.tracePoint} onMouseOver={() => hover(entry.uuid)} onMouseOut={() => hover('no_such_id')} >
+          <tr className={clsNames} title={entry.tracePoint} onClick={() => toggleTraceLogBroughtToFront(entry.uuid)}
+              onMouseOver={() => highlightLogRecord(entry.uuid)} onMouseOut={() => highlightLogRecord('no_such_id')} >
             <td style={{width: '1%'}}>{icon}</td>
             <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
             <td className='traceLogClassFullName' title='class name' style={{width: '180px', paddingLeft: '3px'}}><span>{entry.classFullName}.</span></td>
@@ -1033,6 +1043,7 @@ let JackPlay = React.createClass({
             traceStarted: false,
             globalMessage: null,
             traceLogHovered: '',
+            traceLogBroughtToFront: null,
             isSyncWithServerPaused: false};
   },
   componentDidMount: function() {
@@ -1085,6 +1096,9 @@ let JackPlay = React.createClass({
   },
   toggleDataSync: function() {
     this.setState(Object.assign(this.state, {isSyncWithServerPaused: !this.state.isSyncWithServerPaused}));
+    if (this.state.traceLogBroughtToFront && this.state.traceLogBroughtToFront.length > 0) {
+      this.setState(Object.assign(this.state, {traceLogBroughtToFront: null}));
+    }
   },
   setTraceStarted: function(v) {
     this.setState(Object.assign(this.state, {traceStarted: v}))
@@ -1155,8 +1169,23 @@ let JackPlay = React.createClass({
       }
     });
   },
-  hoverTraceLog: function(uuid) {
+  highlightLogRecord: function(uuid) {
     this.setState(Object.assign(this.state, {traceLogHovered: uuid}));
+  },
+  toggleTraceLogBroughtToFront: function(uuid) {
+    if (this.state.traceLogBroughtToFront && this.state.traceLogBroughtToFront.length > 0 && uuid == this.state.traceLogBroughtToFront) {
+      // second time to click on a row with same uuid, should show all log records
+      this.setState(Object.assign(this.state, {traceLogBroughtToFront: null}));
+      // and restore sync state
+      this.setState(Object.assign(this.state, {isSyncWithServerPaused: this.state.syncStateToRestore}));
+    } else {
+      // first time to click on a row, should show only this uuid records
+      this.setState(Object.assign(this.state, {traceLogBroughtToFront: uuid}));
+      this.setState(Object.assign(this.state, {isSyncWithServerPaused: true}));
+      if ($.isEmptyObject(this.state.traceLogBroughtToFront)) {
+        this.setState(Object.assign(this.state, {syncStateToRestore: this.state.isSyncWithServerPaused}));
+      }
+    }
   },
   render: function() {
     return (
@@ -1183,7 +1212,9 @@ let JackPlay = React.createClass({
         <LogHistory logHistory={this.state.logHistory}
                   traceStarted={this.state.traceStarted}
                   filter={this.state.filter}
-                  hoverTraceLog={this.hoverTraceLog}
+                  highlightLogRecord={this.highlightLogRecord}
+                  toggleTraceLogBroughtToFront={this.toggleTraceLogBroughtToFront}
+                  traceLogBroughtToFront={this.state.traceLogBroughtToFront}
                   traceLogHovered={this.state.traceLogHovered}/>
       </div>
       <AlertContainer ref={itself => this.msg = itself} {...this.alertOptions} />
