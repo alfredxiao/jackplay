@@ -97,7 +97,7 @@ public class TraceKeeper {
         long elapsed = -1;
         String uuid = null;
         if (correspondingMethodEntryLog != null) {
-            elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenTimeMs;
+            elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenAsTimeMs;
             uuid = correspondingMethodEntryLog.uuid;
         } else {
             // this is for the client/browser's purpose

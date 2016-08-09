@@ -70,7 +70,7 @@ public class LeadPerformer implements ClassFileTransformer {
         Collection<Performer> redefiningPerformers = pm.findPerformers(Genre.METHOD_REDEFINE, clsName);
         if (redefiningPerformers != null) allPerformers.addAll(redefiningPerformers);
 
-        Collection<Performer> tracingPerformers = pm.findPerformers(Genre.METHOD_LOGGING, clsName);
+        Collection<Performer> tracingPerformers = pm.findPerformers(Genre.METHOD_TRACE, clsName);
         if (tracingPerformers != null) allPerformers.addAll(tracingPerformers);
 
         return allPerformers;

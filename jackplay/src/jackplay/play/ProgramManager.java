@@ -20,7 +20,7 @@ public class ProgramManager {
     }
 
     public void addPlayAsTracing(String methodFullName) throws Exception {
-       this.addPlay(methodFullName, Genre.METHOD_LOGGING, null);
+       this.addPlay(methodFullName, Genre.METHOD_TRACE, null);
     }
 
     public void addPlayAsRedefinition(String methodFullName, String src) throws Exception {
@@ -101,7 +101,7 @@ public class ProgramManager {
 
     private Performer createPerformer(PlayGround pg, Genre genre, String methodSource) {
         switch (genre) {
-            case METHOD_LOGGING:
+            case METHOD_TRACE:
                 return new TracingPerformer(pg);
             case METHOD_REDEFINE:
                 return new jackplay.play.performers.RedefinePerformer(pg, methodSource);

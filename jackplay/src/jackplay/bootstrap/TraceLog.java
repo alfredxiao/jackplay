@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class TraceLog {
     public Date when;
-    public long whenTimeMs;
+    public long whenAsTimeMs;
 
     // mandatory for all entries
     public TracePoint tracePoint;
@@ -23,7 +23,7 @@ public class TraceLog {
 
     public TraceLog(TracePoint tracePoint, PlayGround pg, long threadId, String uuid) {
         this.when = new Date();
-        this.whenTimeMs = System.currentTimeMillis();
+        this.whenAsTimeMs = System.currentTimeMillis();
         this.tracePoint = tracePoint;
         this.pg = pg;
         this.threadId = threadId;

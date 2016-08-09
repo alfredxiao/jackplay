@@ -9,7 +9,7 @@ public class Options {
     final static Map<String, String> DEFAULTS = new HashMap<String, String>();
 
     static {
-        DEFAULTS.put("port", "8080");
+        DEFAULTS.put("port", "8088");
         DEFAULTS.put("logLevel", "info");
         DEFAULTS.put("traceLogLimit", "100");
     }
@@ -45,7 +45,7 @@ public class Options {
     }
 
     private static Map<String, String> addDefaults(Map<String, String> options) {
-        Map<String, String> merged = new HashMap<String, String>();
+        Map<String, String> merged = new HashMap<>();
         merged.putAll(DEFAULTS);
         merged.putAll(options);
 
