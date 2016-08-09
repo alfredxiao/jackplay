@@ -1060,7 +1060,8 @@ let JackPlay = React.createClass({
                                                    }
                                                    return e;
                                                  }),
-                                                 traceStarted: history.length > 0 || this.state.traceStarted }));
+                                                 traceStarted: history.length > 0 || this.state.traceStarted,
+                                                 traceLogHovered: ''}));
       }.bind(this),
       error: function(res) {
         console.log("ERROR", res);
