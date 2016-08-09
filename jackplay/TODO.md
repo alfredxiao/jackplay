@@ -20,7 +20,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 14. **PART** beautify web style
 15. **DONE** in method logging, log all input arguments, and result value
     and exception if any
-16. in UI, allows users to toggle on/off some aspects of logging data, e.g.
+16. **UNNEEDED** in UI, allows users to toggle on/off some aspects of logging data, e.g.
    - show only arguments
    - show only exception
    - show only return value
@@ -33,9 +33,9 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
 22. **DONE** stop refresh log history
 23. Intercept interface?
 24. allow the use of wildcard such that we can trace all methods in a class without having to input all method names.
-25. improve the display log list in UI such that it becomes easier to identify which method entry correlates to which method return
+25. **DONE** improve the display log list in UI such that it becomes easier to identify which method entry correlates to which method return
     and make it easier to tell which line is of what type, which bit of information is method name, which bit is about elapsed time and which bit is about input/output values.
-26. improve exception logging display in UI (esp. multiple line exception message, or when multiple method redefinition give exception)
+26. **DONE** improve exception logging display in UI (esp. multiple line exception message, or when multiple method redefinition give exception)
 27. **DONE** highlight matched search text in auto suggest list
 28. **DONE** handle exception if a method redefine fails
 29. handle exceptions
@@ -49,7 +49,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
    -> should all method redefinition of a class, keep method tracing
 30. **DONE** refactor web tier, all the handlers
 31. Use jdk logging
-32. refactor project building structure
+32. **DONE** refactor project building structure
 33. **DONE** refactor the redefine pane (not to confuse with drop down list)
 34. **DONE** when redefine... pane is closed with currentTarget(method input box) changed, the outer input box doesn't reflect this
 35. **DONE** Since using custom highlight, delete old one?
@@ -58,3 +58,4 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
   - highlight: not necessary
 38. whitelisting and balcklisting (allow/deply some package/classes/methods)
 39. **DONE** have top panel as in a fixed position while scrolling the page up/down
+40. Support other types of methods: constructor, class static initalizer, native?

@@ -7,6 +7,9 @@ import java.util.Calendar;
 
 public class NiceGreeter implements Greeter {
 
+    public NiceGreeter() {
+    }
+
     public String greet(String name) {
         Demo.sleepSmallRandom();
         return genWelcomeWords() + " " + name;
