@@ -99,6 +99,9 @@ public class TraceKeeper {
         if (correspondingMethodEntryLog != null) {
             elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenTimeMs;
             uuid = correspondingMethodEntryLog.uuid;
+        } else {
+            // this is for the client/browser's purpose
+            uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
         }
 
         TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);

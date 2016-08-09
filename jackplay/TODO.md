@@ -47,13 +47,14 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
    -> added to (since error found when actually performing) and method redefinition should be removed from program
  - **DONE** verifier error (passed compilation, but fail verification)
    -> should all method redefinition of a class, keep method tracing
-30. refactor web tier, all the handlers
+30. **DONE** refactor web tier, all the handlers
 31. Use jdk logging
 32. refactor project building structure
 33. **DONE** refactor the redefine pane (not to confuse with drop down list)
 34. **DONE** when redefine... pane is closed with currentTarget(method input box) changed, the outer input box doesn't reflect this
-35. Since using custom highlight, delete old one?
-36. trace log display, highlight each row as width=100%
-37. filter and highlight matched text
+35. **DONE** Since using custom highlight, delete old one?
+36. **DONE** trace log display, highlight each row as width=100%
+37. **DONE** filter and highlight matched text
+  - highlight: not necessary
 38. whitelisting and balcklisting (allow/deply some package/classes/methods)
-39. have top panel as in a fixed position while scrolling the page up/down
+39. **DONE** have top panel as in a fixed position while scrolling the page up/down
