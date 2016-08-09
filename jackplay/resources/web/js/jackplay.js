@@ -1173,6 +1173,9 @@ let JackPlay = React.createClass({
     this.setState(Object.assign(this.state, {traceLogHovered: uuid}));
   },
   toggleTraceLogBroughtToFront: function(uuid) {
+    let selected = getSelection().toString();
+    if (selected && selected.length > 0) return;
+
     if (this.state.traceLogBroughtToFront && this.state.traceLogBroughtToFront.length > 0 && uuid == this.state.traceLogBroughtToFront) {
       // second time to click on a row with same uuid, should show all log records
       this.setState(Object.assign(this.state, {traceLogBroughtToFront: null}));
