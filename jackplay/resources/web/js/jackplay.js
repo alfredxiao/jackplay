@@ -1107,7 +1107,7 @@ let JackPlay = React.createClass({
       case ERROR: this.msg.show(msg, {
                                     time: 10000,
                                     type: 'error',
-                                    icon: <span className="fa fa-question" aria-hidden="true"></span>
+                                    icon: <span className="fa fa-question" aria-hidden="true" style={{color: 'red'}}></span>
                                      });
                   break;
     }
