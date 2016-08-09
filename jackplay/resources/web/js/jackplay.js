@@ -871,7 +871,7 @@ let PlayPanel = React.createClass({
             <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
               <span style={{marginRight: '-8px'}}>
                 <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
-                       type='text' style={{width: '128px'}} />
+                       type='text' style={{width: '133px', paddingRight: '25px'}} />
                 <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
                               left: '-23px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
                               borderRadius: '0px 4px 4px 0px'}}>
@@ -1008,8 +1008,8 @@ let JackPlayTitle = React.createClass({
         </span>
         <span style={{fontSize:'32px', fontWeight:'bold', marginLeft: '5px'}}>Jackplay!</span>
         <span style={{fontSize:'17px', fontStyle:'italic',marginLeft: '18px'}}> {LONG_DASH}{LONG_DASH} A JVM Tracing Tool</span>
-        <span style={{marginRight: '25px', marginTop: '10px', color:'#333', fontSize: '14px', fontStyle: 'italic', float: 'right'}} className="fadein">
-          "All work and no play makes Jack a dull boy. &mdash; So, let's have Jack play!"
+        <span style={{marginRight: '25px', marginTop: '12px', color:'#333', fontSize: '14px', fontStyle: 'italic', float: 'right'}} className="fadein">
+          "All work and no play makes Jack a dull boy. &mdash;&mdash; So, let's have Jack play!"
         </span>
       </div>
     )
