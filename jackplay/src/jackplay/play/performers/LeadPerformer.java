@@ -1,5 +1,6 @@
 package jackplay.play.performers;
 
+import jackplay.Logger;
 import jackplay.play.Composer;
 import jackplay.play.ProgramManager;
 import jackplay.bootstrap.Genre;
@@ -39,6 +40,8 @@ public class LeadPerformer implements ClassFileTransformer {
                 List<Exception> exceptions = new LinkedList<>();
                 ClassPool cp = ClassPool.getDefault();
                 CtClass cc = cp.get(clsName);
+
+                Logger.debug("leadperformer transforming class:" + clsName);
                 for (Performer performer : allPerformers) {
                     try {
                         cc = performer.perform(cc);

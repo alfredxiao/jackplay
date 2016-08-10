@@ -54,7 +54,7 @@ public class Theatre {
 
     public void init() {
         composer.init(options, inst, pm, leadPerformer);
-        pm.init(composer);
+        pm.init(composer, options);
         leadPerformer.init(composer, pm);
         boxOffice.init(options, pm, infoCenter);
         infoCenter.init(inst, pm);

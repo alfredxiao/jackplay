@@ -2,9 +2,11 @@ package myapp;
 
 import myapp.greeter.Greeter;
 import myapp.greeter.NiceGreeter;
-import myapp.greeter.AnnoyingGreeter;
+import myapp.greeter.RudeGreeter;
 import myapp.greeter.QAGreeter;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,7 +14,7 @@ public class Demo implements Runnable {
   static Greeter[] greeters = new Greeter[3];
   static {
     greeters[0] = new NiceGreeter();
-    greeters[1] = new AnnoyingGreeter();
+    greeters[1] = new RudeGreeter();
     greeters[2] = new QAGreeter();
   }
 

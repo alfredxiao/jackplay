@@ -28,7 +28,9 @@ public class Composer {
         if (inst.isModifiableClass(clazz) && inst.isRetransformClassesSupported()) {
             leadPerformer.setClassToPlay(clazz);
             try {
+                Logger.debug("composer attempting to retransform class:" + className);
                 inst.retransformClasses(clazz);
+                Logger.debug("composer finished retransforming class:" + className);
 
                 if (!leadPerformer.getExceptionsDuringPerformance().isEmpty()) {
                     StringBuilder allMessage = new StringBuilder();

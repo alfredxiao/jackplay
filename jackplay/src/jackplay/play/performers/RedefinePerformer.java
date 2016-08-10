@@ -27,6 +27,7 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
         }
 
         method.setBody(newSource);
+        Logger.debug("performed redefinition for method:" + playGround.methodFullName);
 
         return aClass;
     }

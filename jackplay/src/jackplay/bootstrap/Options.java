@@ -6,12 +6,14 @@ import java.util.*;
 public class Options {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';
-    final static Map<String, String> DEFAULTS = new HashMap<String, String>();
+    final static Map<String, String> DEFAULTS = new HashMap<>();
+    final static Set<String> packageBlacklist = new HashSet<>();
 
     static {
         DEFAULTS.put("port", "8088");
         DEFAULTS.put("logLevel", "info");
         DEFAULTS.put("traceLogLimit", "100");
+        packageBlacklist.add("java.lang");
     }
 
     public static boolean isEmpty(String s) {
@@ -62,5 +64,9 @@ public class Options {
 
     public int traceLogLimit() {
         return Integer.parseInt(options.get("traceLogLimit"));
+    }
+
+    public boolean isPackageBlacklisted(String packageName) {
+        return packageBlacklist.contains(packageName);
     }
 }

@@ -8,8 +8,6 @@ import jackplay.javassist.CtMethod;
 import static jackplay.javassist.bytecode.AccessFlag.*;
 import jackplay.play.InfoCenter;
 
-import java.rmi.server.ExportException;
-
 public class TracingPerformer implements Performer {
     private final PlayGround playGround;
 
@@ -39,6 +37,8 @@ public class TracingPerformer implements Performer {
         } else {
             method.insertAfter(traceMethodReturningResult(method));
         }
+
+        Logger.debug("performed tracing for method:" + playGround.methodFullName);
         return aClass;
 
         // tried to introduce a local variable - TraceKeeper object instead of static invocation
