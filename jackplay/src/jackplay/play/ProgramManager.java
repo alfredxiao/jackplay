@@ -1,22 +1,29 @@
 package jackplay.play;
 
 import jackplay.bootstrap.Genre;
+import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.RedefinePerformer;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
 import jackplay.javassist.NotFoundException;
+import jackplay.javassist.CtClass;
+import jackplay.javassist.ClassPool;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public class ProgramManager {
     Composer composer;
     Map<Genre, Map<String, Map<String, Performer>>> program;
+    private Options options;
 
-    public void init(Composer composer) {
+    public void init(Composer composer, Options options) {
         program = new ConcurrentHashMap<>();
+        this.options = options;
         this.composer = composer;
     }
 
@@ -30,7 +37,7 @@ public class ProgramManager {
 
     private void submitPlayToProgram(String methodFullName, Genre genre, String src) throws Exception {
         PlayGround pg = new PlayGround(methodFullName);     // basic format validation
-        attemptToLocateMethod(pg);                         // validate method existence
+        checkValidity(pg);                         // validate method existence
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addPlayToProgram(pg, genre, src);
             try {
@@ -42,8 +49,43 @@ public class ProgramManager {
         }
     }
 
-    private static void attemptToLocateMethod(PlayGround pg) throws NotFoundException {
+    private void checkValidity(PlayGround pg) throws Exception {
+        if (!this.isPlayGroundAllowed(pg)) {
+            throw new Exception(pg.methodFullName + " is not allowed.");
+        }
+
         InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
+    }
+
+    private boolean isPlayGroundAllowed(PlayGround pg) throws NotFoundException {
+        ClassPool cp = ClassPool.getDefault();
+        CtClass cc = cp.get(pg.classFullName);
+
+        String packageName = cc.getPackageName();
+        if ("java.lang".equals(packageName)) return false;
+
+        Set<String> blacklist = options.blacklist();
+        Set<String> whitelist = options.whitelist();
+
+        if (!blacklist.isEmpty()) {
+            for (String black : blacklist) {
+                if (matches(black, packageName)) return false;
+            }
+
+            return true;
+        } else if (!whitelist.isEmpty()) {
+            for (String white : whitelist) {
+                if (matches(white, packageName)) return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean matches(String pattern, String packageName) {
+        return Pattern.matches(pattern, packageName);
     }
 
     public void removeMethodRedefinition(String className, String methodFullName) {

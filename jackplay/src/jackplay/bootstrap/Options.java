@@ -7,13 +7,13 @@ public class Options {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';
     final static Map<String, String> DEFAULTS = new HashMap<>();
-    final static Set<String> packageBlacklist = new HashSet<>();
+    static Set<String> blacklist;
+    static Set<String> whitelist;
 
     static {
         DEFAULTS.put("port", "8088");
         DEFAULTS.put("logLevel", "info");
         DEFAULTS.put("traceLogLimit", "100");
-        packageBlacklist.add("java.lang");
     }
 
     public static boolean isEmpty(String s) {
@@ -31,7 +31,7 @@ public class Options {
     }
 
     private static Map<String, String> parseArguments(String args) {
-        Map<String, String> options = new HashMap<String, String>();
+        Map<String, String> options = new HashMap<>();
         if (!isEmpty(args)) {
             String[] parts = args.split(OPTION_SPLIT);
             for (String part : parts) {
@@ -41,6 +41,10 @@ public class Options {
 
                 options.put(name, value);
             }
+        }
+
+        if (options.get("blacklist") != null && options.get("whitelist") != null) {
+            throw new RuntimeException("You cannot set both blacklist and whitelist");
         }
 
         return options;
@@ -66,7 +70,29 @@ public class Options {
         return Integer.parseInt(options.get("traceLogLimit"));
     }
 
-    public boolean isPackageBlacklisted(String packageName) {
-        return packageBlacklist.contains(packageName);
+    public Set<String> whitelist() {
+        if (whitelist == null) {
+            whitelist = parseSet(options.get("whitelist"));
+        }
+
+        return whitelist;
+    }
+
+    public Set<String> blacklist() {
+        if (blacklist == null) {
+            blacklist = parseSet(options.get("blacklist"));
+        }
+
+        return blacklist;
+    }
+
+    private Set<String> parseSet(String list) {
+        Set<String> set = new HashSet<>();
+        if (list != null && list.length() > 0) {
+            String[] parts = list.split(":");
+            set.addAll(Arrays.asList(parts));
+        }
+
+        return set;
     }
 }
