@@ -1,7 +1,7 @@
 <project name="jackplay" default="dist" basedir=".">
 
   <!-- set global properties for this build -->
-  <property name="version" value="0.7-SNAPSHOT"/>
+  <property name="version" value="0.8-SNAPSHOT"/>
 
   <path id="project.classpath" cache="true">
     <fileset dir="lib">
