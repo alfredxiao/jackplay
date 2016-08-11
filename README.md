@@ -36,11 +36,11 @@
   Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
 
   Options supported:
-  - port: port number the web server listens on, default is 8088
-  - logLevel: can be either info, debug, or error, default is info
-  - traceLogLimit: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity
-  - blacklist: packages to not allow tracing or redefining, default is only java.lang
-  - whitelist: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined. 
+  - *port*: port number the web server listens on, default is 8088
+  - *logLevel*: can be either info, debug, or error, default is info
+  - *traceLogLimit*: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity
+  - *blacklist*: packages to not allow tracing or redefining, default is only java.lang
+  - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined. 
  ### To open Jackplay control panel
    Open (http://yourserver:8088)
  ### To trace a method
