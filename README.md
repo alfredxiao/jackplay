@@ -25,8 +25,17 @@
   ```
   java -Xbootclasspath/a:jackplay-bootstrap-0.8.0.jar -javaagent:jackplay-agent-0.8.0.jar -cp myapplication.jar myapp.Main
   ```
+
+  To add custom options:
+  e.g. to set logLevel to debug (default is info), and assign blacklist, you append these parameters to -javaagent argument, as follows:
+ 
+  ```
+  -javaagent:jackplay-agent-0.8.0.jar=logLevel=debug,blacklist=java.net:java.nio
+  ```
+
+  Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
  ### To open Jackplay control panel
-   Open http://yourserver:8088
+   Open (http://yourserver:8088)
  ### To trace a method
    Type a class or method name, Jackplay should automatically suggest matching classes/methods. Select one method, then click 'Trace'.
  ### To redefine a method
