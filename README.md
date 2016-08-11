@@ -18,7 +18,7 @@
 
 ## How to use it?
 
- ### Start you application with jackplay
+### Start you application with jackplay
 
   Add the follow two arguments to your JVM startup command line:
 
@@ -48,15 +48,15 @@
   - *blacklist*: packages to not allow tracing or redefining, java.lang is always blacklistedt.
   - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined 
 
- ### Open Jackplay control panel
+### Open Jackplay control panel
 
    Open your [http://yourserver:8088] (http://yourserver:8088)
 
- ### To trace a method
+### To trace a method
 
    Type a class or method name, Jackplay should automatically suggest matching classes/methods. Select one method, then click 'Trace'.
 
- ### To redefine a method
+### To redefine a method
 
    Click 'Redefine...', similarly, choose a method, then key in new method body. The method body can only be written in Java, and must be enclosed with {}.
 
