@@ -17,7 +17,7 @@ It runs as part of the JVM in the form of an agent, and it provides tracing log 
     also display errors when fails to add a script, ie. request to trace a method that does not exist.
 12. can attach to a locally running JVM
 13. can start on a remote machine, and then attach to a 'local' JVM
-14. **PART** beautify web style
+14. **DONE** beautify web style
 15. **DONE** in method logging, log all input arguments, and result value
     and exception if any
 16. **UNNEEDED** in UI, allows users to toggle on/off some aspects of logging data, e.g.

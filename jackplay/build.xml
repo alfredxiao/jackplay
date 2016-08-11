@@ -37,6 +37,7 @@
     <jar jarfile="dist/jackplay-agent-${version}.jar">
       <zipfileset src="lib/javassist-3.20.0-GA-jackplay.jar"/>
       <fileset dir="build/classes">
+        <exclude name="jackplay/bootstrap"/>
         <exclude name="jackplay/bootstrap/*"/>
       </fileset>
       <fileset dir="resources"/>
