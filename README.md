@@ -8,12 +8,11 @@
 
 ## Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
- - Can turn on or off a method being traced or redefined
  - Trace method execution no matter there is exception thrown or not
+ - Can turn on or off a method being traced or redefined
  - Can blacklist or whitelist specified packages
  - No need to change application code
  - No need to restart a JVM
- - Runs an embedded lightweight http server
 
 ## How to use it?
 
