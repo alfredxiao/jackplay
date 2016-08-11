@@ -77,3 +77,7 @@
  - Cannot trace or redefine native method
  - Does not support constructor method yet
  - When redefining a method, you can only use Java. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
+
+## License
+
+  [MIT License](http://choosealicense.com/licenses/mit)
