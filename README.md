@@ -80,4 +80,4 @@
 
 ## License
 
-  [MIT License](http://choosealicense.com/licenses/mit)
+  [MIT License](https://opensource.org/licenses/MIT)
