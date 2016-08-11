@@ -19,6 +19,7 @@
 ## How to use it?
 
  ### Start you application with jackplay
+
   Add the follow two arguments to your JVM startup command line:
 
   ```
@@ -48,10 +49,15 @@
   - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined 
 
  ### Open Jackplay control panel
+
    Open your [http://yourserver:8088] (http://yourserver:8088)
+
  ### To trace a method
+
    Type a class or method name, Jackplay should automatically suggest matching classes/methods. Select one method, then click 'Trace'.
+
  ### To redefine a method
+
    Click 'Redefine...', similarly, choose a method, then key in new method body. The method body can only be written in Java, and must be enclosed with {}.
 
    Example:
@@ -67,6 +73,7 @@
    ```
 
 ## Limitations
+
  - Cannot trace or redefine native method
  - Does not support constructor method yet
  - When redefining a method, you can only use Java. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
