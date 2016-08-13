@@ -12,9 +12,7 @@ import jackplay.javassist.ClassPool;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 public class ProgramManager {
     Composer composer;
@@ -50,42 +48,19 @@ public class ProgramManager {
     }
 
     private void checkValidity(PlayGround pg) throws Exception {
-        if (!this.isPlayGroundAllowed(pg)) {
+        if (!this.canPlayOn(pg)) {
             throw new Exception(pg.methodFullName + " is not allowed.");
         }
 
         InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
     }
 
-    private boolean isPlayGroundAllowed(PlayGround pg) throws NotFoundException {
+    private boolean canPlayOn(PlayGround pg) throws NotFoundException {
         ClassPool cp = ClassPool.getDefault();
         CtClass cc = cp.get(pg.classFullName);
 
         String packageName = cc.getPackageName();
-        if ("java.lang".equals(packageName)) return false;
-
-        Set<String> blacklist = options.blacklist();
-        Set<String> whitelist = options.whitelist();
-
-        if (!blacklist.isEmpty()) {
-            for (String black : blacklist) {
-                if (matches(black, packageName)) return false;
-            }
-
-            return true;
-        } else if (!whitelist.isEmpty()) {
-            for (String white : whitelist) {
-                if (matches(white, packageName)) return true;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean matches(String pattern, String packageName) {
-        return Pattern.matches(pattern, packageName);
+        return options.canPlayPackage(packageName);
     }
 
     public void removeMethodRedefinition(String className, String methodFullName) {

@@ -1,6 +1,7 @@
 package jackplay.bootstrap;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 // singleton
 public class Options {
@@ -94,5 +95,34 @@ public class Options {
         }
 
         return set;
+    }
+
+    private static boolean matchesPackageName(String pattern, String packageName) {
+        return Pattern.matches(pattern, packageName);
+    }
+
+    public boolean canPlayPackage(String packageName) {
+        if ("java.lang".equals(packageName) ||
+                "jackplay".equals(packageName) ||
+                packageName.startsWith("jackplay.")) return false;
+
+        Set<String> blacklist = this.blacklist();
+        Set<String> whitelist = this.whitelist();
+
+        if (!blacklist.isEmpty()) {
+            for (String black : blacklist) {
+                if (matchesPackageName(black, packageName)) return false;
+            }
+
+            return true;
+        } else if (!whitelist.isEmpty()) {
+            for (String white : whitelist) {
+                if (matchesPackageName(white, packageName)) return true;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

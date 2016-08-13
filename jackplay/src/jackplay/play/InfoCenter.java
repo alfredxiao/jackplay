@@ -1,5 +1,6 @@
 package jackplay.play;
 
+import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.bootstrap.TraceLog;
@@ -15,6 +16,12 @@ import java.util.*;
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public class InfoCenter {
+
+    Instrumentation inst;
+    ProgramManager pm;
+    final static ClassComparator classComparator = new ClassComparator();
+    final static MethodComparator methodComparator = new MethodComparator();
+    private Options options;
 
     public static CtMethod locateMethod(PlayGround playGround, String methodFullName, String methodShortName) throws NotFoundException {
         ClassPool cp = ClassPool.getDefault();
@@ -50,11 +57,6 @@ public class InfoCenter {
         }
     }
 
-    Instrumentation inst;
-    ProgramManager pm;
-    final static ClassComparator classComparator = new ClassComparator();
-    final static MethodComparator methodComparator = new MethodComparator();
-
     public List<Map<String, String>> getLoadedMethods() throws Exception {
         List<Map<String, String>> loadedMethods = new ArrayList<>();
         List<CtClass> classes = modifiableClasses();
@@ -88,7 +90,15 @@ public class InfoCenter {
         ClassPool cp = ClassPool.getDefault();
 
         for (Class clazz : classes) {
-            if (inst.isModifiableClass(clazz) && isClassOfInterest(clazz)) {
+            String packageName = (clazz.getPackage() == null) ? "" : clazz.getPackage().getName();
+
+            if (clazz.getName().equals("jackplay.Logger")) {
+                int c = 2;
+            }
+
+            if (inst.isModifiableClass(clazz) &&
+                    this.isClassTypeSupported(clazz) &&
+                    options.canPlayPackage(packageName)) {
 
                 try {
                     CtClass cc = cp.get(clazz.getName());
@@ -101,20 +111,16 @@ public class InfoCenter {
         return modifiableClasses;
     }
 
-    private boolean isClassOfInterest(Class clazz) {
+    private boolean isClassTypeSupported(Class clazz) {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
-                && !clazz.isArray()
-                && !clazz.getName().startsWith("java.")
-                && !clazz.getName().startsWith("jdk.internal.")
-                && !clazz.getName().startsWith("sun.")
-                && !clazz.getName().startsWith("com.sun.")
-                && !clazz.getName().startsWith("jackplay.");
+                && !clazz.isArray();
     }
 
-    public void init(Instrumentation inst, ProgramManager pm) {
+    public void init(Instrumentation inst, ProgramManager pm, Options options) {
         this.inst = inst;
         this.pm = pm;
+        this.options = options;
     }
 
     public List<Map<String, Object>> getTraceLogs() {

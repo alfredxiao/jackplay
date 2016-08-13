@@ -43,23 +43,23 @@ public class ProgramHandler extends BaseHandler {
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
         pm.submitMethodRedefinition(params.get("longMethodName"), params.get("src"));
-        CommonHandling.serveStringBody(http, 200, "OK");
+        CommonHandling.serveStringBody(http, 200, "Method Redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
         pm.submitMethodTrace(params.get("methodFullName"));
-        CommonHandling.serveStringBody(http, 200, "OK");
+        CommonHandling.serveStringBody(http, 200, "Trace Added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         pm.removeMethodFromProgramAndReplay(g,  params.get("methodFullName"));
-        CommonHandling.serveStringBody(http, 200, "OK");
+        CommonHandling.serveStringBody(http, 200, "Method Undone");
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf( params.get("genre"));
         pm.removeClassFromProgramAndReplay(g,  params.get("classFullName"));
-        CommonHandling.serveStringBody(http, 200, "OK");
+        CommonHandling.serveStringBody(http, 200, "class undone");
     }
 }

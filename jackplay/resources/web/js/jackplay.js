@@ -455,7 +455,13 @@ function getSuggestions(allTargets, inputValue) {
 
   let hitByMethodLongName = Lazy(allTargets).filter(entry => regex.test(entry.methodLongName)).take(SHOW_MAX_HIT_SEARCH).toArray();
   let hitByMethodFullName = Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(SHOW_MAX_HIT_SEARCH);
-  return hitByMethodLongName.length > 0 ?  hitByMethodLongName : hitByMethodFullName.toArray();
+  let hit = hitByMethodLongName.length > 0 ?  hitByMethodLongName : hitByMethodFullName.toArray();
+  if (hit.length == SHOW_MAX_HIT_SEARCH) {
+    hit[SHOW_MAX_HIT_SEARCH] = {indicatorForMore: true,
+                                methodFullName: inputValue};
+  }
+
+  return hit;
 }
 
 function getSuggestionValue(suggestion) {
@@ -488,6 +494,8 @@ function extractMethodInfo(methodFullName) {
 }
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
+  if (suggestion.indicatorForMore === true) return <span title='please enter more to narrow down selections' style={{display:'block', width:'450px', paddingLeft: '10px'}}>...more...</span>;
+
   const query = (valueBeforeUpDown || value).trim();
   let methodFullName = suggestion.methodFullName;
 
@@ -1122,7 +1130,7 @@ let JackPlay = React.createClass({
       case ERROR: this.msg.show(msg, {
                                     time: 10000,
                                     type: 'error',
-                                    icon: <span className="fa fa-question" aria-hidden="true" style={{color: 'red'}}></span>
+                                    icon: <span className="fa fa-bolt" aria-hidden="true" style={{color: 'red'}}></span>
                                      });
                   break;
     }
