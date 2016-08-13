@@ -11,9 +11,9 @@ public class Options {
     static Set<String> whitelist;
 
     static {
-        DEFAULTS.put("port", "8088");
+        DEFAULTS.put("port", "8181");
         DEFAULTS.put("logLevel", "info");
-        DEFAULTS.put("traceLogLimit", "100");
+        DEFAULTS.put("traceLogLimit", "200");
     }
 
     public static boolean isEmpty(String s) {

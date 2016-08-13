@@ -6,12 +6,20 @@
 
   <groupId>com.github.alfredxiao</groupId>
   <artifactId>jackplay-agent</artifactId>
-  <version>0.8.1</version>
+  <version>0.8.2</version>
   <packaging>jar</packaging>
 
   <name>jackplay-agent</name>
   <description>Jackplay agent classes</description>
   <url>http://github.com/alfredxiao/jackplay</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.20.0-GA</version>
+    </dependency>
+  </dependencies>
 
   <licenses>
     <license>
