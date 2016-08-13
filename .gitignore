@@ -1,3 +1,4 @@
 *.class
 *.iml
 demo-clojure/target
+jackplay/dist

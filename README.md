@@ -6,7 +6,7 @@
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 ## Latest Version
-  ```com.github.alfredxiao/jackplay 0.8.0```
+  ```com.github.alfredxiao/jackplay 0.8.2```
 
 ## Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
@@ -23,20 +23,20 @@
   Add the follow two arguments to your JVM startup command line:
 
   ```
-  -Xbootclasspath/a:jackplay-bootstrap-0.8.0.jar -javaagent:jackplay-agent-0.8.0.jar
+  -Xbootclasspath/a:jackplay-bootstrap-0.8.2.jar -javaagent:jackplay-agent-0.8.2.jar
   ```
 
   Example:
 
   ```
-  java -Xbootclasspath/a:jackplay-bootstrap-0.8.0.jar -javaagent:jackplay-agent-0.8.0.jar -cp myapplication.jar myapp.Main
+  java -Xbootclasspath/a:jackplay-bootstrap-0.8.2.jar -javaagent:jackplay-agent-0.8.2.jar -cp myapplication.jar myapp.Main
   ```
 
   To add custom options:
   e.g. to set logLevel to debug (default is info), and assign blacklist, you append these parameters to -javaagent argument, as follows:
  
   ```
-  -javaagent:jackplay-agent-0.8.0.jar=logLevel=debug,blacklist=java.net:java.nio
+  -javaagent:jackplay-agent-0.8.2.jar=logLevel=debug,blacklist=java.net:java.nio
   ```
 
   Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
@@ -50,7 +50,7 @@
 
 ### Open Jackplay control panel
 
-   Open your [http://yourserver:8088] (http://yourserver:8088)
+   Open your [http://yourserver:8181] (http://yourserver:8181)
 
 ### To trace a method
 
