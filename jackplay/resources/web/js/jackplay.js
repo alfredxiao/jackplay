@@ -435,6 +435,7 @@ const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
 const METHOD_TRACE = 'METHOD_TRACE';
+const METHOD_REDEFINE = 'METHOD_REDEFINE';
 const SHOW_MAX_HIT_SEARCH = 100;
 const TRIGGER_POINT_ENTER = 'MethodEntry';
 const TRIGGER_POINT_RETURNS = 'MethodReturns';
@@ -726,12 +727,26 @@ let MethodRedefine = React.createClass({
   )}
 });
 
-let PlayBook = React.createClass({
+let SystemSettings = React.createClass({
+  getInitialState: function() {
+    return {currentTab: 'manageTracedMethods'};
+  },
+  showTab: function(tabName) {
+    Object.assign(this.state, {currentTab: tabName});
+    var x = document.getElementsByClassName("settingsTab");
+        for (let i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+    document.getElementById(tabName).style.display = this.displayForTab(tabName);
+  },
+  displayForTab: function(tabName) {
+    return (this.state.currentTab == tabName) ? 'block' : 'none';
+  },
   render: function(){
     let program = this.props.program;
     let removeMethod = this.props.removeMethod;
     let removeClass = this.props.removeClass;
-    let programList = Object.keys(program).map(function (genre) {
+    let programList = function (genre) {
       let classList = Object.keys(program[genre]).map(function (clsName) {
         let methodList = Object.keys(program[genre][clsName]).map(function (methodFullName) {
           let methodInfo = extractMethodInfo(methodFullName);
@@ -753,16 +768,11 @@ let PlayBook = React.createClass({
         )
       });
       return (
-        <fieldset style={{marginTop: '10px'}}>
-          <legend>
-            <span style={{fontSize: '18px', margin: '3px'}}>{genre == METHOD_TRACE ? 'Traced' : 'Redefined'}</span>
-          </legend>
-           <ul style={{listStyle: 'none', margin: '0px', padding: '0px'}}>
-             {classList}
-           </ul>
-        </fieldset>
+        <ul style={{listStyle: 'none', margin: '0px', padding: '0px'}}>
+          {classList}
+        </ul>
       )
-    });
+    };
     return (
       <div>
         <Modal className="myModalClass" //this will completely overwrite the default css completely
@@ -775,12 +785,31 @@ let PlayBook = React.createClass({
 
           <a style={closeDefaultStyle} onClick={this.props.hidePlayBook}>X</a>
           <div style={{display: this.props.show}}>
-            <div style={{fontSize: '22px', textAlign: 'center'}}>Manage Methods</div>
-            <div style={{overflowX: 'auto', marginTop: '5px', maxHeight: '420px'}}>
-              {($.isEmptyObject(program)) ? <p>There are no methods being traced or redefined.</p> : programList}
-            </div>
-            <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
-              <button onClick={this.props.hidePlayBook}>Close</button>
+            <div className='settingsContainer'>
+              <fieldset style={{marginTop: '10px'}}>
+                <legend>
+                  <div>
+                    <span onClick={() => this.showTab('manageTracedMethods')} className='tabMemu'>Tracing</span>
+                    <span onClick={() => this.showTab('manageRedefinedMethods')} className='tabMemu'>Redefinition</span>
+                    <span onClick={() => this.showTab('configurations')} className='tabMemu'>Configuration</span>
+                  </div>
+                </legend>
+                <div className='settingsTabContainer'>
+                  <div className='settingsTab' id='manageTracedMethods'>
+                    {($.isEmptyObject(program.METHOD_TRACE)) ? <p>There are no methods being traced.</p> : programList(METHOD_TRACE)}
+                  </div>
+                  <div className='settingsTab' id='manageRedefinedMethods' style={{display: 'none'}}>
+                    {($.isEmptyObject(program.METHOD_REDEFINE)) ? <p>There are no methods being redefined.</p> : programList(METHOD_REDEFINE)}
+                  </div>
+                  <div className='settingsTab' id='configurations' style={{display: 'none'}}>
+                    {"Max Methods Show in Autosuggest"}
+                    {"Trace log limit"}
+                  </div>
+                </div>
+              </fieldset>
+              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px', float: 'bottom'}}>
+                <button onClick={this.props.hidePlayBook}>Close</button>
+              </div>
             </div>
           </div>
         </Modal>
@@ -903,7 +932,7 @@ let PlayPanel = React.createClass({
                             autoClassLookupState={this.props.autoClassLookupState}
                             setAutoClassLookupState={this.props.setAutoClassLookupState}
                             submitMethodRedefine={this.submitMethodRedefine} />
-            <PlayBook playBookBeingShown={this.state.playBookBeingShown}
+            <SystemSettings playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
                       removeMethod={this.props.removeMethod}
                       removeClass={this.props.removeClass}

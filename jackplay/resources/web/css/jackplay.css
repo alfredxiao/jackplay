@@ -169,7 +169,6 @@ fieldset {
 
 legend {
   padding: 0.2em 0.5em;
-  width: 100px;
   border:1px solid #666;
   border-top: 0px;
   border-bottom: 0px;
@@ -285,4 +284,35 @@ tr.broughtToFrontTraceLog > td:last-child {
 
 .fontButton:hover {
   color: SaddleBrown;
+}
+
+
+.myModalContainerClass {
+  width: 690px;
+}
+
+/*tabs*/
+.tabMemu {
+  padding-left: 20px;
+  padding-right: 20px;
+  display: inline-block;
+  cursor: default;
+}
+
+.settingsContainer > fieldset  {
+  width: 666px;
+  max-width:666px;
+  padding: 0px;
+  padding-top: 5px;
+}
+
+.settingsTabContainer {
+}
+.settingsTab {
+  width: 666px;
+  max-height: 325px;
+  height: 325px;
+  overflow-x: auto;
+  overflow-y: auto;
+  padding-left: 5px;
 }
