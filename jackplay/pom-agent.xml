@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.alfredxiao</groupId>
+  <artifactId>jackplay-agent</artifactId>
+  <version>0.8.1</version>
+  <packaging>jar</packaging>
+
+  <name>jackplay-agent</name>
+  <description>Jackplay agent classes</description>
+  <url>http://github.com/alfredxiao/jackplay</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Alfred Xiao</name>
+      <email>alfred.xiao@outlook.com</email>
+      <organization>Smarties</organization>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/alfredxiao/jackplay.git</connection>
+    <developerConnection>scm:git:ssh://github.com/alfredxiao/jackplay.git</developerConnection>
+    <url>http://github.com/alfredxiao/jackplay/tree/master</url>
+   </scm>
+
+</project>
