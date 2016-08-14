@@ -299,13 +299,13 @@ tr.broughtToFrontTraceLog > td:last-child {
 }
 
 .traceLogArgsList {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 .traceLogReturnedValue {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 .traceLogExceptionStackTrace {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .fontButton {
@@ -338,4 +338,11 @@ tr.broughtToFrontTraceLog > td:last-child {
   overflow-x: auto;
   overflow-y: auto;
   padding-left: 5px;
+}
+
+.executionCount {
+  margin-right: 8px;
+  font-size: 15px;
+  font-style: italic;
+  color: #111;
 }

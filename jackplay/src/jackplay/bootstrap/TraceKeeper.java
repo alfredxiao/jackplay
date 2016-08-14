@@ -45,7 +45,7 @@ public class TraceKeeper {
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
         TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
-        entry.argsLen = argsLen;
+        entry.argumentsCount = argsLen;
 
         addTraceLog(entry);
     }
@@ -53,7 +53,7 @@ public class TraceKeeper {
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
         TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
-        entry.argsLen = argsLen;
+        entry.argumentsCount = argsLen;
         entry.returnedValue = objectToString(result);
 
         addTraceLog(entry);
@@ -106,7 +106,7 @@ public class TraceKeeper {
 
         TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
-        entry.argsLen = argsLen;
+        entry.argumentsCount = argsLen;
         entry.exceptionStackTrace = throwableToString(t);
 
         addTraceLog(entry);

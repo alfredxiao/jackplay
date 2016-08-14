@@ -18,7 +18,7 @@ public class TraceLog {
 
     // for method return or exception
     public long elapsed = -1;
-    public int argsLen;
+    public int argumentsCount;
     public String returnedValue;        // return only
     public String exceptionStackTrace;  // exception only
 

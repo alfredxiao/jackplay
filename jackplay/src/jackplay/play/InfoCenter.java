@@ -156,7 +156,7 @@ public class InfoCenter {
                 map.put("returnedValue", traceLog.returnedValue);
                 map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
                 map.put("elapsed", traceLog.elapsed);
-                map.put("argsLen", traceLog.argsLen);
+                map.put("argumentsCount", traceLog.argumentsCount);
 
                 listOfLogs.add(map);
             } catch(ConcurrentModificationException e) {}

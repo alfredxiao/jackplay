@@ -959,8 +959,9 @@ let PlayPanel = React.createClass({
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
             <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
+              <span className='executionCount' title='Count of matched method execution'>{this.props.executionCount}</span>
               <span style={{marginRight: '-8px'}}>
-                <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateFilter}
+                <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateLogHistoryWithFilter}
                        type='text' style={{width: '133px', paddingRight: '25px'}} />
                 <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
                               left: '-23px', height: '32px', width: '20px', zIndex: 2, cursor: 'default',
@@ -1001,22 +1002,6 @@ let PlayPanel = React.createClass({
 });
 
 let LogHistory = React.createClass({
-  entryFilter: function(filter, entry) {
-    if (!filter || filter == '') {
-      return true;
-    } else {
-      let regex = new RegExp(escapeRegexCharacters(filter.trim()), 'i');
-      let methodFullName = entry.classFullName + '.' + entry.methodShortName + '(';
-      if (entry.tracePoint == TRIGGER_POINT_ENTER && entry.arguments && entry.arguments.length > 0) {
-        methodFullName += entry.arguments.join(',')
-      }
-      methodFullName += ')';
-
-      return regex.test(methodFullName)
-             || (entry.returnedValue && regex.test(entry.returnedValue))
-             || (entry.exceptionStackTrace && regex.test(entry.exceptionStackTrace));
-    }
-  },
   render: function() {
     if (!this.props.traceStarted) {
       return null;
@@ -1026,78 +1011,79 @@ let LogHistory = React.createClass({
     let toggleTraceLogBroughtToFront = this.props.toggleTraceLogBroughtToFront;
     let uuidHovered = this.props.traceLogHovered;
     let traceLogBroughtToFront = this.props.traceLogBroughtToFront;
-    let logList = this.props.logHistory.map(function(entry, idx) {
-      if (this.entryFilter(this.props.filter, entry)) {
-        let iconClass = null;
-        let methodArgs = null;
-        let arrow = null;
-        let message = null;
-        let hasElapsedTime = false;
-        let dots = '';
-        for (let i=0; i<entry.argsLen; i++) dots += '.';
-        switch (entry.tracePoint) {
-          case TRIGGER_POINT_ENTER:
-            iconClass = 'fa fa-sign-in';
-            methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
-            break;
-          case TRIGGER_POINT_RETURNS:
-            iconClass = 'fa fa-reply';
-            hasElapsedTime = true && entry.elapsed >= 0;
-            methodArgs = <span>({dots})</span>;
-            arrow = <span> {RETURNS_ARROW} </span>;
-            message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
-            break;
-          case TRIGGER_POINT_THROWS_EXCEPTION:
-            iconClass = 'fa fa-exclamation-triangle';
-            hasElapsedTime = true && entry.elapsed >= 0;
-            methodArgs = <span>({dots})</span>;
-            arrow = <span> {THROWS_ARROW} </span>;
-            message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
-            break;
-        }
 
-        let icon = <span className='traceLogIcon'><i className={iconClass}></i></span>;
-        let elapsedTimeMessage = hasElapsedTime
-                                    ? <span title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{formatNumber(entry.elapsed)} ms</span>
-                                    : <span></span>;
+    let logList = this.props.filteredLogHistory.map(function(entry, idx) {
+      let iconClass = null;
+      let methodArgs = null;
+      let arrow = null;
+      let message = null;
+      let hasElapsedTime = false;
+      let dots = '';
+      for (let i=0; i<entry.argumentsCount; i++) dots += '.';
 
-        let clsNames = 'traceLogRecord';
-        clsNames += (idx % 2 == 0) ? ' traceLogEven' : ' traceLogOdd'
-        if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
-        if (traceLogBroughtToFront && traceLogBroughtToFront.length > 0) {
-          if (traceLogBroughtToFront != entry.uuid) {
-            clsNames += ' shadedTraceLog';
-          } else {
-            clsNames += ' broughtToFrontTraceLog';
-          }
+      switch (entry.tracePoint) {
+        case TRIGGER_POINT_ENTER:
+          iconClass = 'fa fa-sign-in';
+          methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
+          break;
+        case TRIGGER_POINT_RETURNS:
+          iconClass = 'fa fa-reply';
+          hasElapsedTime = true && entry.elapsed >= 0;
+          methodArgs = <span>({dots})</span>;
+          arrow = <span> {RETURNS_ARROW} </span>;
+          message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
+          break;
+        case TRIGGER_POINT_THROWS_EXCEPTION:
+          iconClass = 'fa fa-exclamation-triangle';
+          hasElapsedTime = true && entry.elapsed >= 0;
+          methodArgs = <span>({dots})</span>;
+          arrow = <span> {THROWS_ARROW} </span>;
+          message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
+          break;
+      }
+
+      let icon = <span className='traceLogIcon'><i className={iconClass}></i></span>;
+      let elapsedTimeMessage = hasElapsedTime
+                                  ? <span title='elapsed time' style={{textAlign: 'right', whiteSpace: 'nowrap'}}>{formatNumber(entry.elapsed)} ms</span>
+                                  : <span></span>;
+
+      let clsNames = 'traceLogRecord';
+      clsNames += (idx % 2 == 0) ? ' traceLogEven' : ' traceLogOdd'
+      if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
+      if (traceLogBroughtToFront && traceLogBroughtToFront.length > 0) {
+        if (traceLogBroughtToFront != entry.uuid) {
+          clsNames += ' shadedTraceLog';
+        } else {
+          clsNames += ' broughtToFrontTraceLog';
         }
-        return (
-          <tr className={clsNames} title={entry.tracePoint} onClick={() => toggleTraceLogBroughtToFront(entry.uuid)}
-              onMouseOver={() => highlightLogRecord(entry.uuid)} onMouseOut={() => highlightLogRecord('no_such_id')} >
-            <td style={{width: '1%'}}>{icon}</td>
-            <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
-            <td style={{width: '1%'}}><span className='traceLogThreadName'>[{entry.threadName}]</span></td>
-            <td title='class name'
-                style={{width: '180px', paddingLeft: '3px', paddingRight: '0px', textAlign: 'right'}}><span className='traceLogClassFullName'>{entry.classFullName}.</span></td>
-            <td style={{width: '80%'}}>
-              <table style={{borderSpacing: '0px'}}>
-                <tr>
-                  <td style={{whiteSpace: 'nowrap', paddingTop: '0px'}}>
-                    <span className='traceLogMethodShortName' title='method name'>{entry.methodShortName}</span>
-                    {methodArgs}
-                    {arrow}
-                  </td>
-                  <td style={{paddingTop: '0px'}}>{message}</td>
-                </tr>
-              </table>
-            </td>
-            <td style={{width: '1%'}}><span className='traceLogElapsedTime'>{elapsedTimeMessage}</span></td>
-          </tr>
-        )
-      } else {
-        return null;
-      };
-    }.bind(this));
+      }
+      return (
+        <tr className={clsNames} title={entry.tracePoint} onClick={() => toggleTraceLogBroughtToFront(entry.uuid)}
+            onMouseOver={() => highlightLogRecord(entry.uuid)} onMouseOut={() => highlightLogRecord('no_such_id')} >
+          <td style={{width: '1%'}}>{icon}</td>
+          <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
+          <td style={{width: '1%'}}><span className='traceLogThreadName'>[{entry.threadName}]</span></td>
+          <td title='class name'
+              style={{width: '180px', paddingLeft: '3px', paddingRight: '0px', textAlign: 'right'}}><span className='traceLogClassFullName'>{entry.classFullName}.</span></td>
+          <td style={{width: '80%'}}>
+            <table style={{borderSpacing: '0px'}}>
+              <tr>
+                <td style={{whiteSpace: 'nowrap', paddingTop: '0px'}}>
+                  <span className='traceLogMethodShortName' title='method name'>{entry.methodShortName}</span>
+                </td>
+                <td style={{whiteSpace: 'nowrap', paddingTop: '0px'}}>
+                  {methodArgs}
+                  {arrow}
+                </td>
+                <td style={{paddingTop: '0px'}}>{message}</td>
+              </tr>
+            </table>
+          </td>
+          <td style={{width: '1%'}}><span className='traceLogElapsedTime'>{elapsedTimeMessage}</span></td>
+        </tr>
+      )
+    });
+
     return (
       <table className='logHistoryContainer'>
         {logList}
@@ -1133,6 +1119,7 @@ let JackPlay = React.createClass({
   },
   getInitialState: function() {
     return {logHistory: [],
+            filteredLogHistory: [],
             program: [],
             filter: '',
             autoClassLookupState: { value: '', suggestions: [], returnType: ''},
@@ -1143,7 +1130,8 @@ let JackPlay = React.createClass({
             traceLogBroughtToFront: null,
             isSyncWithServerPaused: false,
             maxNumberOfAutoSuggest: 100,
-            serverSideSettings: {}
+            serverSideSettings: {},
+            executionCount: null
     };
   },
   componentDidMount: function() {
@@ -1188,6 +1176,7 @@ let JackPlay = React.createClass({
                                                  }),
                                                  traceStarted: history.length > 0 || this.state.traceStarted,
                                                  traceLogHovered: ''}));
+        this.updateLogHistoryWithFilter();
       }.bind(this),
       error: function(res) {
         console.log("Ajax call ERROR", res);
@@ -1228,14 +1217,46 @@ let JackPlay = React.createClass({
     }
   },
   setTraceStarted: function(v) {
-    this.setState(Object.assign(this.state, {traceStarted: v}))
+    this.setState(Object.assign(this.state, {traceStarted: v}));
   },
-  updateFilter: function() {
-    this.setState(Object.assign(this.state, {filter: document.getElementById('logFilter').value.trim()}))
+  entryFilter: function(filter, entry) {
+    if (!filter || filter == '') {
+      return true;
+    } else {
+      let regex = new RegExp(escapeRegexCharacters(filter.trim()), 'i');
+      let methodFullName = entry.classFullName + '.' + entry.methodShortName + '(';
+      if (entry.tracePoint == TRIGGER_POINT_ENTER && entry.arguments && entry.arguments.length > 0) {
+        methodFullName += entry.arguments.join(',')
+      }
+      methodFullName += ')';
+
+      return regex.test(methodFullName)
+             || (entry.returnedValue && regex.test(entry.returnedValue))
+             || (entry.exceptionStackTrace && regex.test(entry.exceptionStackTrace));
+    }
+  },
+  getFilteredLogHistory: function(filter) {
+    let executionUuidSet = new Set();
+    let filteredLogHistory = this.state.logHistory.map(function(entry, idx) {
+      if (this.entryFilter(filter, entry)) {
+        executionUuidSet.add(entry.uuid);
+        return entry;
+      };
+    }.bind(this)).filter(function(entry) {
+      return entry;
+    });
+
+    return {filteredLogHistory: filteredLogHistory,
+            executionCount: executionUuidSet.size};
+  },
+  updateLogHistoryWithFilter: function() {
+    let filter = document.getElementById('logFilter').value.trim();
+    this.setState(Object.assign(this.state, {filter: filter}));
+    this.setState(Object.assign(this.state, this.getFilteredLogHistory(filter)));
   },
   clearFilter: function() {
     document.getElementById('logFilter').value = '';
-    this.updateFilter();
+    this.updateLogHistoryWithFilter();
   },
   setGlobalMessage: function(level, msg) {
     switch(level) {
@@ -1324,7 +1345,7 @@ let JackPlay = React.createClass({
         <JackPlayTitle/>
         <PlayPanel loadedTargets={this.state.loadedTargets}
                  setTraceStarted={this.setTraceStarted}
-                 updateFilter={this.updateFilter}
+                 updateLogHistoryWithFilter={this.updateLogHistoryWithFilter}
                  clearFilter={this.clearFilter}
                  program={this.state.program}
                  loadProgram={this.loadProgram}
@@ -1338,17 +1359,19 @@ let JackPlay = React.createClass({
                  clearLogHistory={this.clearLogHistory}
                  maxNumberOfAutoSuggest={this.state.maxNumberOfAutoSuggest}
                  maxNumberOfTraceLogs={this.state.serverSideSettings.maxNumberOfTraceLogs}
-                 applyConfigurations={this.applyConfigurations}/>
+                 applyConfigurations={this.applyConfigurations}
+                 executionCount={this.state.executionCount}/>
       </div>
       <br/>
       <div className='jackPlayTraceLog'>
-        <LogHistory logHistory={this.state.logHistory}
+        <LogHistory filteredLogHistory={this.state.filteredLogHistory}
                   traceStarted={this.state.traceStarted}
                   filter={this.state.filter}
                   highlightLogRecord={this.highlightLogRecord}
                   toggleTraceLogBroughtToFront={this.toggleTraceLogBroughtToFront}
                   traceLogBroughtToFront={this.state.traceLogBroughtToFront}
-                  traceLogHovered={this.state.traceLogHovered}/>
+                  traceLogHovered={this.state.traceLogHovered}
+                  setExecutionCount={this.setExecutionCount}/>
       </div>
       <AlertContainer ref={itself => this.msg = itself} {...this.alertOptions} />
     </div>
