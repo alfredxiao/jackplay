@@ -959,7 +959,7 @@ let PlayPanel = React.createClass({
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
             <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
-              <span className='executionCount' title='Count of matched method execution'>{this.props.executionCount}</span>
+              <span className='executionCount' title='Count of matched method execution'>{this.props.executionCount > 0 ? this.props.executionCount : ''}</span>
               <span style={{marginRight: '-8px'}}>
                 <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateLogHistoryWithFilter}
                        type='text' style={{width: '133px', paddingRight: '25px'}} />
@@ -1208,6 +1208,7 @@ let JackPlay = React.createClass({
   },
   clearLogHistory: function() {
     this.setState(Object.assign(this.state, {logHistory: []}));
+    this.updateLogHistoryWithFilter();
     this.clearGlobalMessage();
   },
   toggleDataSync: function() {
