@@ -52,6 +52,10 @@ public class InfoCenter {
         return serverSettings;
     }
 
+    public void updateOption(String key, Object value) {
+        options.updateOption(key, value.toString());
+    }
+
     static class ClassComparator implements Comparator<Class> {
         public int compare(Class o1, Class o2) {
             return o1.getName().compareTo(o2.getName());

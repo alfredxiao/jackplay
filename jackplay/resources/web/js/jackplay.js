@@ -727,9 +727,46 @@ let MethodRedefine = React.createClass({
   )}
 });
 
+let Configuration = React.createClass({
+  syncInputWithLabel: function(inputId) {
+    let srcEle = document.getElementById('maxNumberOfAutoSuggest');
+//    let tgtEle = document.getElementById('labelFor_maxNumberOfAutoSuggest');
+    if (srcEle) {
+      return {
+        __html: srcEle.value
+      }
+    }
+  },
+  render: function() {
+    return (
+        <table style={{padding: '8px', fontSize: '85%'}}>
+          <tr>
+            <td>
+              <label title='Max Number of Auto Suggestions being Displayed' htmlFor='maxNumberOfAutoSuggest'>Max Number of Auto Suggest:</label>
+            </td>
+            <td>
+              <input id='maxNumberOfAutoSuggest' size='10' type='number' min='25' max='300' step='25'
+                     defaultValue={this.props.maxNumberOfAutoSuggest}/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label title='Max Number of Trace Logs to Keep' htmlFor='maxNumberOfTraceLogs'>Max Number of Kept Trace Logs:</label>
+            </td>
+            <td>
+              <input id='maxNumberOfTraceLogs' size='10' type='number' min='50' max='500' step='50' defaultValue={this.props.maxNumberOfTraceLogs}/>
+            </td>
+          </tr>
+        </table>
+    )
+  }
+});
+
 let SystemSettings = React.createClass({
   getInitialState: function() {
-    return {currentTab: 'manageTracedMethods'};
+    return {currentTab: 'manageTracedMethods',
+            maxNumberOfAutoSuggest: this.props.maxNumberOfAutoSuggest,
+            maxNumberOfTraceLogs: this.props.maxNumberOfTraceLogs};
   },
   showTab: function(tabName) {
     Object.assign(this.state, {currentTab: tabName});
@@ -740,6 +777,8 @@ let SystemSettings = React.createClass({
     }
     document.getElementById(tabName).style.display = this.displayForTab(tabName);
     document.getElementById('tabMenu_' + tabName).className='tabMenu currentTabMenu';
+
+    document.getElementById('applyConfigurations').style.display = ('configurations' == tabName) ? '' : 'none';
   },
   displayForTab: function(tabName) {
     return (this.state.currentTab == tabName) ? 'block' : 'none';
@@ -750,6 +789,9 @@ let SystemSettings = React.createClass({
     } else {
       return 'tabMenu';
     }
+  },
+  getValue: function(idOfInput) {
+    return document.getElementById(idOfInput).value();
   },
   render: function(){
     let program = this.props.program;
@@ -811,28 +853,13 @@ let SystemSettings = React.createClass({
                     {($.isEmptyObject(program.METHOD_REDEFINE)) ? <p>There are no methods being redefined.</p> : programList(METHOD_REDEFINE)}
                   </div>
                   <div className='settingsTab' id='configurations' style={{display: 'none'}}>
-                    <table style={{padding: '8px', fontSize: '85%'}}>
-                      <tr>
-                        <td>
-                          <label title='Max Number of Auto Suggestions being Displayed' htmlFor='maxNumberOfAutoSuggest'>Max Number of Auto Suggest:</label>
-                        </td>
-                        <td>
-                          <input id='maxNumberOfAutoSuggest' size='10' pattern='1..999' type='text' defaultValue={this.props.maxNumberOfAutoSuggest}/>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label title='Max Number of Trace Logs to Keep' htmlFor='maxNumberOfTraceLogs'>Max Number of Kept Trace Logs:</label>
-                        </td>
-                        <td>
-                          <input id='maxNumberOfTraceLogs' size='10' pattern='1..999' type='text' defaultValue={this.props.maxNumberOfTraceLogs}/>
-                        </td>
-                    </tr>
-                    </table>
+                    <Configuration maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}
+                                   maxNumberOfTraceLogs={this.props.maxNumberOfTraceLogs}/>
                   </div>
                 </div>
               </fieldset>
-              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px', float: 'bottom'}}>
+              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
+                <button id='applyConfigurations' style={{display: 'none'}} onClick={this.props.applyConfigurations}>Apply</button>
                 <button onClick={this.props.hidePlayBook}>Close</button>
               </div>
             </div>
@@ -882,7 +909,7 @@ let PlayPanel = React.createClass({
           this.props.setGlobalMessage(INFO, toMessage(data));
         }.bind(this),
         error: function(data) {
-          console.log('error-data', data);
+          console.log('Ajax call ERROR', data);
           this.props.setGlobalMessage(ERROR, toErrorMessage(data));
         }.bind(this)
       });
@@ -966,7 +993,8 @@ let PlayPanel = React.createClass({
                       SystemSettings={this.props.SystemSettings}
                       program={this.props.program}
                       maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}
-                      maxNumberOfTraceLogs={this.props.maxNumberOfTraceLogs}/>
+                      maxNumberOfTraceLogs={this.props.maxNumberOfTraceLogs}
+                      applyConfigurations={this.props.applyConfigurations}/>
         </div>
     );
   }
@@ -1121,6 +1149,19 @@ let JackPlay = React.createClass({
     this.loadServerSideSettings();
     setInterval(this.checkDataSync, 4200);
   },
+  applyConfigurations: function() {
+    this.setState(Object.assign(this.state, {maxNumberOfAutoSuggest: document.getElementById('maxNumberOfAutoSuggest').value}));
+    $.ajax({
+      url: '/info/updateSettings',
+      data: {maxNumberOfTraceLogs: document.getElementById('maxNumberOfTraceLogs').value},
+      success: function(settings) {
+        this.setState(Object.assign(this.state, {serverSideSettings: settings}));
+      }.bind(this),
+      error: function(res) {
+        console.log("Ajax call ERROR", res);
+      }.bind(this)
+    });
+  },
   loadServerSideSettings: function() {
     $.ajax({
       url: '/info/settings',
@@ -1237,7 +1278,7 @@ let JackPlay = React.createClass({
         this.loadProgram();
       }.bind(this),
       error: function(res) {
-        console.log("ERROR", res);
+        console.log("Ajax call ERROR", res);
       }
     });
   },
@@ -1249,7 +1290,7 @@ let JackPlay = React.createClass({
         this.loadProgram();
       }.bind(this),
       error: function(res) {
-        console.log("ERROR", res);
+        console.log("Ajax call ERROR", res);
       }
     });
   },
@@ -1294,7 +1335,8 @@ let JackPlay = React.createClass({
                  setAutoClassLookupState={this.setAutoClassLookupState}
                  clearLogHistory={this.clearLogHistory}
                  maxNumberOfAutoSuggest={this.state.maxNumberOfAutoSuggest}
-                 maxNumberOfTraceLogs={this.state.serverSideSettings.maxNumberOfTraceLogs}/>
+                 maxNumberOfTraceLogs={this.state.serverSideSettings.maxNumberOfTraceLogs}
+                 applyConfigurations={this.applyConfigurations}/>
       </div>
       <br/>
       <div className='jackPlayTraceLog'>

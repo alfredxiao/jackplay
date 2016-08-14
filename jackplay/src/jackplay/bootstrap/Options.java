@@ -71,6 +71,10 @@ public class Options {
         return Integer.parseInt(options.get("traceLogLimit"));
     }
 
+    public void updateOption(String key, String value) {
+        options.put(key, value);
+    }
+
     public Set<String> whitelist() {
         if (whitelist == null) {
             whitelist = parseSet(options.get("whitelist"));

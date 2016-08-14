@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TraceKeeper {
     private static List<TraceLog> traceLogs = new LinkedList<>();
-    static int traceLogLimit;
+    private static Options options;
 
     public synchronized static List<TraceLog> copyTraceLogs() {
         List<TraceLog> copyList = new ArrayList<>(traceLogs.size());
@@ -21,7 +21,7 @@ public class TraceKeeper {
     }
 
     private synchronized static void addTraceLog(TraceLog entry) {
-        while (traceLogs.size() >= traceLogLimit) {
+        while (traceLogs.size() >= options.traceLogLimit()) {
             traceLogs.remove(traceLogs.size() - 1);
         }
 
@@ -124,8 +124,8 @@ public class TraceKeeper {
         return null;
     }
 
-    public static void init(Options options) {
-        traceLogLimit = options.traceLogLimit();
+    public static void init(Options opts) {
+        options = opts;
     }
 
     public synchronized static void clearLogHistory() {

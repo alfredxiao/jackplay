@@ -58,7 +58,7 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
-        Genre g = Genre.valueOf( params.get("genre"));
+        Genre g = Genre.valueOf(params.get("genre"));
         pm.removeClassFromProgramAndReplay(g,  params.get("classFullName"));
         CommonHandling.serveStringBody(http, 200, "class undone");
     }

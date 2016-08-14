@@ -87,7 +87,7 @@ pre {
 }
 
 
-input[type='text'] {
+input[type='text'],input[type='number'] {
   outline: none;
   padding: 6px 10px;
   font-family: 'Open Sans', sans-serif;
@@ -97,7 +97,8 @@ input[type='text'] {
   border-radius: 4px;
   transition: box-shadow 0.3s, border 0.3s;
 }
-input[type='text']:focus, input[type='text'].focus {
+
+input[type='text']:focus, input[type='text'].focus, input[type='number']:focus, input[type='number'].focus {
   border: solid 1px #707070;
   box-shadow: 0 0 5px 1px #969696;
 }

@@ -32,6 +32,11 @@ public class InfoHandler extends BaseHandler {
                 CommonHandling.willReturnJson(http);
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
                 break;
+            case "/info/updateSettings":
+                CommonHandling.willReturnJson(http);
+                infoCenter.updateOption("traceLogLimit", params.get("maxNumberOfTraceLogs"));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
+                break;
             default:
                 CommonHandling.error_404(http);
         }
