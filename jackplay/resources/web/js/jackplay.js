@@ -734,13 +734,22 @@ let SystemSettings = React.createClass({
   showTab: function(tabName) {
     Object.assign(this.state, {currentTab: tabName});
     var x = document.getElementsByClassName("settingsTab");
-        for (let i = 0; i < x.length; i++) {
-            x[i].style.display = "none";
-        }
+    for (let i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+      document.getElementById('tabMenu_' + x[i].id).className='tabMenu';
+    }
     document.getElementById(tabName).style.display = this.displayForTab(tabName);
+    document.getElementById('tabMenu_' + tabName).className='tabMenu currentTabMenu';
   },
   displayForTab: function(tabName) {
     return (this.state.currentTab == tabName) ? 'block' : 'none';
+  },
+  classNameForMenuItem: function(tabName) {
+    if (tabName == this.state.currentTab) {
+      return 'tabMemu currentTabMenu';
+    } else {
+      return 'tabMenu';
+    }
   },
   render: function(){
     let program = this.props.program;
@@ -768,7 +777,7 @@ let SystemSettings = React.createClass({
         )
       });
       return (
-        <ul style={{listStyle: 'none', margin: '0px', padding: '0px'}}>
+        <ul style={{listStyle: 'none', margin: '0px', padding: '0px', paddingLeft: '5px'}}>
           {classList}
         </ul>
       )
@@ -789,9 +798,9 @@ let SystemSettings = React.createClass({
               <fieldset style={{marginTop: '10px'}}>
                 <legend>
                   <div>
-                    <span onClick={() => this.showTab('manageTracedMethods')} className='tabMemu'>Tracing</span>
-                    <span onClick={() => this.showTab('manageRedefinedMethods')} className='tabMemu'>Redefinition</span>
-                    <span onClick={() => this.showTab('configurations')} className='tabMemu'>Configuration</span>
+                    <span onClick={() => this.showTab('manageTracedMethods')} id='tabMenu_manageTracedMethods' className='tabMenu currentTabMenu'>Tracing</span>
+                    <span onClick={() => this.showTab('manageRedefinedMethods')} id='tabMenu_manageRedefinedMethods'>Redefinition</span>
+                    <span onClick={() => this.showTab('configurations')} id='tabMenu_configurations'>Configuration</span>
                   </div>
                 </legend>
                 <div className='settingsTabContainer'>

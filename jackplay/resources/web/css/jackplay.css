@@ -168,13 +168,52 @@ fieldset {
 }
 
 legend {
-  padding: 0.2em 0.5em;
-  border:1px solid #666;
-  border-top: 0px;
-  border-bottom: 0px;
+  padding: 0px;
+  border: 0px;
   color: black;
   font-size:90%;
   text-align: center;
+  background: #F5F5F5;
+}
+
+legend > div > span {
+  width: 120px;
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-right: 0px;
+  padding: 4px;
+  cursor: default;
+}
+legend > div > span:hover {
+  background: #d9d9d9;
+  box-shadow: 2px 2px 3px 0px #969696;
+}
+
+legend > div > span.currentTabMenu {
+  background: #d9d9d9;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/*
+legend > div > span.currentTabMenu::before {
+  content: "< ";
+}
+
+legend > div > span.currentTabMenu::after {
+  content: " >";
+}
+*/
+
+legend > div > span:last-child {
+  border-right: 1px solid #aaa;
+}
+
+/*tabs*/
+.tabMemu {
+  padding-left: 20px;
+  padding-right: 20px;
+  display: inline-block;
 }
 
 .jackPlayTraceLog {
@@ -289,14 +328,6 @@ tr.broughtToFrontTraceLog > td:last-child {
 
 .myModalContainerClass {
   width: 690px;
-}
-
-/*tabs*/
-.tabMemu {
-  padding-left: 20px;
-  padding-right: 20px;
-  display: inline-block;
-  cursor: default;
 }
 
 .settingsContainer > fieldset  {
