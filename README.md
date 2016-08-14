@@ -33,10 +33,10 @@
   ```
 
   To add custom options:
-  e.g. to set logLevel to debug (default is info), and assign blacklist, you append these parameters to -javaagent argument, as follows:
+  e.g. to set port number for the embedded web server to listen on, and specify blacklist, you append these parameters to -javaagent argument, as follows:
  
   ```
-  -javaagent:jackplay-agent-<version>.jar=logLevel=debug,blacklist=java.net:java.nio
+  -javaagent:jackplay-agent-<version>.jar=port=8282,blacklist=java.net:java.nio
   ```
 
   Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
