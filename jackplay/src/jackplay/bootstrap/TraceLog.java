@@ -10,6 +10,7 @@ public class TraceLog {
     public TracePoint tracePoint;
     public PlayGround pg;
     public long threadId;
+    public String threadName;
     public String uuid;
 
     // for method entrance
@@ -21,12 +22,13 @@ public class TraceLog {
     public String returnedValue;        // return only
     public String exceptionStackTrace;  // exception only
 
-    public TraceLog(TracePoint tracePoint, PlayGround pg, long threadId, String uuid) {
+    public TraceLog(TracePoint tracePoint, PlayGround pg, String uuid) {
         this.when = new Date();
         this.whenAsTimeMs = System.currentTimeMillis();
         this.tracePoint = tracePoint;
         this.pg = pg;
-        this.threadId = threadId;
+        this.threadId = Thread.currentThread().getId();
+        this.threadName = Thread.currentThread().getName();
         this.uuid = uuid;
     }
 }

@@ -150,6 +150,8 @@ public class InfoCenter {
                 map.put("classFullName", traceLog.pg.classFullName);
                 map.put("methodShortName", traceLog.pg.methodShortName);
                 map.put("uuid", traceLog.uuid);
+                map.put("threadId", traceLog.threadId);
+                map.put("threadName", traceLog.threadName);
                 map.put("arguments", traceLog.arguments);
                 map.put("returnedValue", traceLog.returnedValue);
                 map.put("exceptionStackTrace", traceLog.exceptionStackTrace);

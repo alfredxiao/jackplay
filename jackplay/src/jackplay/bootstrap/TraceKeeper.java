@@ -29,7 +29,7 @@ public class TraceKeeper {
     }
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {
-        TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), uuid);
         if (null == args || args.length == 0) {
             entry.arguments = null;
         } else {
@@ -43,7 +43,7 @@ public class TraceKeeper {
     }
 
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
-        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
         entry.argsLen = argsLen;
 
@@ -51,7 +51,7 @@ public class TraceKeeper {
     }
 
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
-        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
         entry.argsLen = argsLen;
         entry.returnedValue = objectToString(result);
@@ -104,7 +104,7 @@ public class TraceKeeper {
             uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
         }
 
-        TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), Thread.currentThread().getId(), uuid);
+        TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
         entry.argsLen = argsLen;
         entry.exceptionStackTrace = throwableToString(t);
