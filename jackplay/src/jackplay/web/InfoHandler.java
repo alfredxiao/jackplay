@@ -17,16 +17,20 @@ public class InfoHandler extends BaseHandler {
     public void process(HttpExchange http, String uri, Map<String, String> params) throws Exception {
         switch (getUriPath(uri)) {
             case "/info/traceLogs":
-                http.getResponseHeaders().add("Content-Type", "application/json");
+                CommonHandling.willReturnJson(http);
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getTraceLogs()));
                 break;
             case "/info/loadedMethods":
-                http.getResponseHeaders().add("Content-Type", "application/json");
+                CommonHandling.willReturnJson(http);
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getLoadedMethods()));
                 break;
             case "/info/clearTraceLogs":
                 TraceKeeper.clearLogHistory();
                 CommonHandling.serveStringBody(http, 200, "OK");
+                break;
+            case "/info/settings":
+                CommonHandling.willReturnJson(http);
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
                 break;
             default:
                 CommonHandling.error_404(http);

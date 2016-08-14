@@ -436,7 +436,6 @@ const CONTROL = 'CONTROL';
 const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
 const METHOD_TRACE = 'METHOD_TRACE';
 const METHOD_REDEFINE = 'METHOD_REDEFINE';
-const SHOW_MAX_HIT_SEARCH = 100;
 const TRIGGER_POINT_ENTER = 'MethodEntry';
 const TRIGGER_POINT_RETURNS = 'MethodReturns';
 const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
@@ -445,7 +444,7 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSuggestions(allTargets, inputValue) {
+function getSuggestions(allTargets, inputValue, limit) {
   const escapedValue = escapeRegexCharacters(inputValue.trim());
 
   if (escapedValue === '') {
@@ -454,11 +453,11 @@ function getSuggestions(allTargets, inputValue) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  let hitByMethodLongName = Lazy(allTargets).filter(entry => regex.test(entry.methodLongName)).take(SHOW_MAX_HIT_SEARCH).toArray();
-  let hitByMethodFullName = Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(SHOW_MAX_HIT_SEARCH);
+  let hitByMethodLongName = Lazy(allTargets).filter(entry => regex.test(entry.methodLongName)).take(limit).toArray();
+  let hitByMethodFullName = Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(limit);
   let hit = hitByMethodLongName.length > 0 ?  hitByMethodLongName : hitByMethodFullName.toArray();
-  if (hit.length == SHOW_MAX_HIT_SEARCH) {
-    hit[SHOW_MAX_HIT_SEARCH] = {indicatorForMore: true,
+  if (hit.length == limit) {
+    hit[limit] = {indicatorForMore: true,
                                 methodFullName: inputValue};
   }
 
@@ -599,7 +598,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 
   onSuggestionsUpdateRequested({ value }) {
     this.props.setAutoClassLookupState(Object.assign(this.props.autoClassLookupState,
-                                                    {suggestions: getSuggestions(this.props.loadedTargets, value)}));
+                                                    {suggestions: getSuggestions(this.props.loadedTargets, value, this.props.maxNumberOfAutoSuggest)}));
   }
 
   render() {
@@ -689,7 +688,8 @@ let MethodRedefine = React.createClass({
                 <div>
                   <AutoClassLookup loadedTargets={this.props.loadedTargets}
                                    setAutoClassLookupState={this.props.setAutoClassLookupState}
-                                   autoClassLookupState={this.props.autoClassLookupState} />
+                                   autoClassLookupState={this.props.autoClassLookupState}
+                                   maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}/>
                   <br/>
                   {returnTypeMessage}
                 </div>
@@ -811,8 +811,24 @@ let SystemSettings = React.createClass({
                     {($.isEmptyObject(program.METHOD_REDEFINE)) ? <p>There are no methods being redefined.</p> : programList(METHOD_REDEFINE)}
                   </div>
                   <div className='settingsTab' id='configurations' style={{display: 'none'}}>
-                    {"Max Methods Show in Autosuggest"}
-                    {"Trace log limit"}
+                    <table style={{padding: '8px', fontSize: '85%'}}>
+                      <tr>
+                        <td>
+                          <label title='Max Number of Auto Suggestions being Displayed' htmlFor='maxNumberOfAutoSuggest'>Max Number of Auto Suggest:</label>
+                        </td>
+                        <td>
+                          <input id='maxNumberOfAutoSuggest' size='10' pattern='1..999' type='text' defaultValue={this.props.maxNumberOfAutoSuggest}/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <label title='Max Number of Trace Logs to Keep' htmlFor='maxNumberOfTraceLogs'>Max Number of Kept Trace Logs:</label>
+                        </td>
+                        <td>
+                          <input id='maxNumberOfTraceLogs' size='10' pattern='1..999' type='text' defaultValue={this.props.maxNumberOfTraceLogs}/>
+                        </td>
+                    </tr>
+                    </table>
                   </div>
                 </div>
               </fieldset>
@@ -911,7 +927,8 @@ let PlayPanel = React.createClass({
 
     return (
         <div>
-            <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState} autoClassLookupState={this.props.autoClassLookupState}/>
+            <AutoClassLookup loadedTargets={this.props.loadedTargets} setAutoClassLookupState={this.props.setAutoClassLookupState}
+                             autoClassLookupState={this.props.autoClassLookupState} maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}/>
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
             <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
@@ -940,12 +957,16 @@ let PlayPanel = React.createClass({
                             loadedTargets={this.props.loadedTargets}
                             autoClassLookupState={this.props.autoClassLookupState}
                             setAutoClassLookupState={this.props.setAutoClassLookupState}
-                            submitMethodRedefine={this.submitMethodRedefine} />
+                            submitMethodRedefine={this.submitMethodRedefine}
+                            maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}/>
             <SystemSettings playBookBeingShown={this.state.playBookBeingShown}
                       hidePlayBook={this.hidePlayBook}
                       removeMethod={this.props.removeMethod}
                       removeClass={this.props.removeClass}
-                      program={this.props.program}/>
+                      SystemSettings={this.props.SystemSettings}
+                      program={this.props.program}
+                      maxNumberOfAutoSuggest={this.props.maxNumberOfAutoSuggest}
+                      maxNumberOfTraceLogs={this.props.maxNumberOfTraceLogs}/>
         </div>
     );
   }
@@ -1090,11 +1111,27 @@ let JackPlay = React.createClass({
             globalMessage: null,
             traceLogHovered: '',
             traceLogBroughtToFront: null,
-            isSyncWithServerPaused: false};
+            isSyncWithServerPaused: false,
+            maxNumberOfAutoSuggest: 100,
+            serverSideSettings: {}
+    };
   },
   componentDidMount: function() {
     this.syncDataWithServer();
+    this.loadServerSideSettings();
     setInterval(this.checkDataSync, 4200);
+  },
+  loadServerSideSettings: function() {
+    $.ajax({
+      url: '/info/settings',
+      success: function(settings) {
+        this.setState(Object.assign(this.state, {serverSideSettings: settings}));
+      }.bind(this),
+      error: function(res) {
+        console.log("Ajax call ERROR", res);
+        this.setState(Object.assign(this.state, {serverSideSettings: {}}));
+      }.bind(this)
+    });
   },
   syncDataWithServer: function() {
     $.ajax({
@@ -1110,7 +1147,7 @@ let JackPlay = React.createClass({
                                                  traceLogHovered: ''}));
       }.bind(this),
       error: function(res) {
-        console.log("ERROR", res);
+        console.log("Ajax call ERROR", res);
       }
     });
     $.ajax({
@@ -1119,7 +1156,7 @@ let JackPlay = React.createClass({
         this.setState(Object.assign(this.state, {loadedTargets: targets}));
       }.bind(this),
       error: function(res) {
-        console.log("ERROR", res);
+        console.log("Ajax call ERROR", res);
       }
     });
   },
@@ -1130,7 +1167,7 @@ let JackPlay = React.createClass({
         this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
       error: function(res) {
-        console.log("ERROR", res);
+        console.log("Ajax call ERROR", res);
       }
     });
   },
@@ -1255,7 +1292,9 @@ let JackPlay = React.createClass({
                  setGlobalMessage={this.setGlobalMessage}
                  autoClassLookupState={this.state.autoClassLookupState}
                  setAutoClassLookupState={this.setAutoClassLookupState}
-                 clearLogHistory={this.clearLogHistory} />
+                 clearLogHistory={this.clearLogHistory}
+                 maxNumberOfAutoSuggest={this.state.maxNumberOfAutoSuggest}
+                 maxNumberOfTraceLogs={this.state.serverSideSettings.maxNumberOfTraceLogs}/>
       </div>
       <br/>
       <div className='jackPlayTraceLog'>

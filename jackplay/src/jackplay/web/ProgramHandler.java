@@ -33,7 +33,7 @@ public class ProgramHandler extends BaseHandler {
                 undoMethod(http, params);
                 break;
             case "/program/currentProgram":
-                http.getResponseHeaders().add("Content-Type", "application/json");
+                CommonHandling.willReturnJson(http);
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(pm.getCurrentProgram()));
                 break;
             default:

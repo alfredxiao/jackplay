@@ -49,4 +49,8 @@ public class CommonHandling {
     static void error_404(HttpExchange exchange) throws IOException {
         serveStaticResource(exchange, 404, "/web/404.html");
     }
+
+    static void willReturnJson(HttpExchange http) {
+        http.getResponseHeaders().add("Content-Type", "application/json");
+    }
 }
