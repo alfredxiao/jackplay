@@ -195,16 +195,6 @@ legend > div > span.currentTabMenu {
   text-decoration: underline;
 }
 
-/*
-legend > div > span.currentTabMenu::before {
-  content: "< ";
-}
-
-legend > div > span.currentTabMenu::after {
-  content: " >";
-}
-*/
-
 legend > div > span:last-child {
   border-right: 1px solid #aaa;
 }
@@ -272,7 +262,6 @@ legend > div > span:last-child {
   width: 20%;
   font-size: 13px;
   font-style: italic;
-  color: #333;
   text-align: right;
   padding-right: 2px;
 }

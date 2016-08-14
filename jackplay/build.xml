@@ -8,7 +8,7 @@
   <property name="groupId" value="com.github.alfredxiao" />
   <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
-  <property name="version" value="0.8.3" />
+  <property name="version" value="0.8.4-SNAPSHOT" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
   <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
@@ -67,7 +67,7 @@
     </jar>
   </target>
 
-  <target name="dist" depends="compile, javadoc-jar, sources-jar" description="generate the distribution">
+  <target name="dist" depends="compile" description="generate the distribution">
     <mkdir dir="dist"/>
 
     <jar jarfile="dist/jackplay-bootstrap-${version}.jar">
@@ -97,7 +97,11 @@
     <copy file="dist/jackplay-agent-${version}.jar" tofile="dist/jackplay-agent-latest.jar"/>
   </target>
 
-  <target name="deploy-snapshot" depends="dist" description="deploy snapshot version to Maven snapshot repository">
+  <target name="dist-all" depends="dist, javadoc-jar, sources-jar">
+
+  </target>
+
+  <target name="deploy-snapshot" depends="dist-all" description="deploy snapshot version to Maven snapshot repository">
     <artifact:mvn>
       <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
       <arg value="-Durl=${ossrh-snapshots-repository-url}" />
@@ -115,7 +119,7 @@
   </target>
 
   <!-- before this, update project version (both build.xml and pom.xml) from SNAPSHOT to RELEASE -->
-  <target name="deploy-stage" depends="dist" description="deploy release version to Maven staging repository">
+  <target name="deploy-stage" depends="dist-all" description="deploy release version to Maven staging repository">
     <!-- sign and deploy the main artifact -->
     <artifact:mvn>
       <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
