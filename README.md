@@ -2,7 +2,7 @@
 
 ## What is Jackplay?
   Jackplay is a **JVM tracing tool** that helps you troubleshoot application behaviour. It works at JVM level and supports languages like Java, Groovy, Clojure, etc.
-  
+
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 ## Latest Version
@@ -22,9 +22,7 @@
 
   Add the follow two arguments to your JVM startup command line:
 
-  ```
-  -Xbootclasspath/a:jackplay-bootstrap-<version>.jar -javaagent:jackplay-agent-<version>.jar
-  ```
+  ```-Xbootclasspath/a:jackplay-bootstrap-<version>.jar -javaagent:jackplay-agent-<version>.jar```
 
   Example:
 
@@ -34,10 +32,8 @@
 
   To add custom options:
   e.g. to set port number for the embedded web server to listen on, and specify blacklist, you append these parameters to -javaagent argument, as follows:
- 
-  ```
-  -javaagent:jackplay-agent-<version>.jar=port=8282,blacklist=java.net:java.nio
-  ```
+
+  ```-javaagent:jackplay-agent-<version>.jar=port=8282,blacklist=java.net:java.nio```
 
   Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
 
@@ -46,7 +42,7 @@
   - *logLevel*: can be either info, debug, or error, default is info
   - *traceLogLimit*: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity, defaults to 200
   - *blacklist*: packages to not allow tracing or redefining, java.lang is always blacklistedt.
-  - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined 
+  - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined
 
 ### Open Jackplay control panel
 
