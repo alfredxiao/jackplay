@@ -18,11 +18,13 @@ public class ProgramManager {
     Composer composer;
     Map<Genre, Map<String, Map<String, Performer>>> program;
     private Options options;
+    private InfoCenter infoCenter;
 
-    public void init(Composer composer, Options options) {
+    public void init(Composer composer, Options options, InfoCenter infoCenter) {
         program = new ConcurrentHashMap<>();
         this.options = options;
         this.composer = composer;
+        this.infoCenter = infoCenter;
     }
 
     public void submitMethodTrace(String methodFullName) throws Exception {
@@ -51,8 +53,6 @@ public class ProgramManager {
         if (!this.canPlayOn(pg)) {
             throw new Exception(pg.methodFullName + " is not allowed.");
         }
-
-        InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName);
     }
 
     private boolean canPlayOn(PlayGround pg) throws NotFoundException {
@@ -60,7 +60,8 @@ public class ProgramManager {
         CtClass cc = cp.get(pg.classFullName);
 
         String packageName = cc.getPackageName();
-        return options.canPlayPackage(packageName);
+        return options.canPlayPackage(packageName) &&
+                infoCenter.canPlayMethod(InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName));
     }
 
     public void removeMethodRedefinition(String className, String methodFullName) {

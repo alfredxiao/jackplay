@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
+import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;
 
 public class InfoCenter {
 
@@ -76,7 +77,7 @@ public class InfoCenter {
             CtMethod[] methods = clazz.getDeclaredMethods();
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
-                if ((m.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) continue;
+                if (!canPlayMethod(m)) continue;;
 
                 PlayGround pg = new PlayGround(m.getLongName());
                 Map<String, String> loadedMethod = new HashMap<>();
@@ -92,6 +93,11 @@ public class InfoCenter {
         return loadedMethods;
     }
 
+    public boolean canPlayMethod(CtMethod method) {
+        int flags = method.getMethodInfo().getAccessFlags();
+        return (flags & NATIVE) == 0
+                && (method.getMethodInfo().getAccessFlags() & ABSTRACT) == 0;
+    }
 
     private List<CtClass> modifiableClasses() throws Exception {
         List<CtClass> modifiableClasses = new ArrayList<CtClass>();
