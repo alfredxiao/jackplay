@@ -975,7 +975,7 @@ let PlayPanel = React.createClass({
                     className='fontButton' onClick={this.requestToClearLogHistory} title='Clear Trace Logs'>
                 <i className="fa fa-lg fa-times"></i>
               </span>
-              <span style={{paddingLeft: '12px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Manage Methods'>
+              <span style={{paddingLeft: '12px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Settings'>
                 <i className="fa fa-cog fa-lg"></i>
               </span>
             </div>
@@ -1076,8 +1076,10 @@ let LogHistory = React.createClass({
               onMouseOver={() => highlightLogRecord(entry.uuid)} onMouseOut={() => highlightLogRecord('no_such_id')} >
             <td style={{width: '1%'}}>{icon}</td>
             <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
-            <td className='traceLogClassFullName' title='class name' style={{width: '180px', paddingLeft: '3px'}}><span>{entry.classFullName}.</span></td>
-            <td>
+            <td style={{width: '1%'}}><span className='traceLogThreadName'>[{entry.threadName}]</span></td>
+            <td title='class name'
+                style={{width: '180px', paddingLeft: '3px', paddingRight: '0px', textAlign: 'right'}}><span className='traceLogClassFullName'>{entry.classFullName}.</span></td>
+            <td style={{width: '80%'}}>
               <table style={{borderSpacing: '0px'}}>
                 <tr>
                   <td style={{whiteSpace: 'nowrap', paddingTop: '0px'}}>
@@ -1089,7 +1091,7 @@ let LogHistory = React.createClass({
                 </tr>
               </table>
             </td>
-            <td className='traceLogElapsedTime'>{elapsedTimeMessage}</td>
+            <td style={{width: '1%'}}><span className='traceLogElapsedTime'>{elapsedTimeMessage}</span></td>
           </tr>
         )
       } else {

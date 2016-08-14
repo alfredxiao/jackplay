@@ -242,13 +242,17 @@ legend > div > span:last-child {
   font-style: italic;
 }
 
+.traceLogThreadName {
+ white-space: nowrap;
+ padding-left: 5px;
+}
+
 .traceLogIcon {
   width: 18px;
 }
 
 .traceLogClassFullName {
-  text-align: right;
-  padding-right: 0px !important;
+  padding-left: 5px;
 }
 
 .traceLogMethodShortName {
@@ -259,7 +263,6 @@ legend > div > span:last-child {
 }
 
 .traceLogElapsedTime {
-  width: 20%;
   font-size: 13px;
   font-style: italic;
   text-align: right;
