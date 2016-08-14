@@ -103,10 +103,6 @@ public class InfoCenter {
         for (Class clazz : classes) {
             String packageName = (clazz.getPackage() == null) ? "" : clazz.getPackage().getName();
 
-            if (clazz.getName().equals("jackplay.Logger")) {
-                int c = 2;
-            }
-
             if (inst.isModifiableClass(clazz) &&
                     this.isClassTypeSupported(clazz) &&
                     options.canPlayPackage(packageName)) {
