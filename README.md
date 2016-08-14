@@ -6,7 +6,7 @@
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 ## Latest Version
-  ```com.github.alfredxiao/jackplay 0.8.2```
+  ```com.github.alfredxiao/jackplay 0.8.3```
 
 ## Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
@@ -23,28 +23,28 @@
   Add the follow two arguments to your JVM startup command line:
 
   ```
-  -Xbootclasspath/a:jackplay-bootstrap-0.8.2.jar -javaagent:jackplay-agent-0.8.2.jar
+  -Xbootclasspath/a:jackplay-bootstrap-<version>.jar -javaagent:jackplay-agent-<version>.jar
   ```
 
   Example:
 
   ```
-  java -Xbootclasspath/a:jackplay-bootstrap-0.8.2.jar -javaagent:jackplay-agent-0.8.2.jar -cp myapplication.jar myapp.Main
+  java -Xbootclasspath/a:jackplay-bootstrap-<version>.jar -javaagent:jackplay-agent-<version>.jar -cp myapplication.jar myapp.Main
   ```
 
   To add custom options:
   e.g. to set logLevel to debug (default is info), and assign blacklist, you append these parameters to -javaagent argument, as follows:
  
   ```
-  -javaagent:jackplay-agent-0.8.2.jar=logLevel=debug,blacklist=java.net:java.nio
+  -javaagent:jackplay-agent-<version>.jar=logLevel=debug,blacklist=java.net:java.nio
   ```
 
   Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
 
   Options supported:
-  - *port*: port number the web server listens on, default is 8088
+  - *port*: port number the web server listens on, default is 8181
   - *logLevel*: can be either info, debug, or error, default is info
-  - *traceLogLimit*: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity
+  - *traceLogLimit*: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity, defaults to 200
   - *blacklist*: packages to not allow tracing or redefining, java.lang is always blacklistedt.
   - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined 
 
@@ -74,7 +74,7 @@
 
 ## Limitations
 
- - Cannot trace or redefine native method
+ - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
  - Does not support constructor method yet
  - When redefining a method, you can only use Java. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
 
