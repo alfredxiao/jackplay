@@ -1351,10 +1351,17 @@ let JackPlay = React.createClass({
       <AlertContainer ref={itself => this.msg = itself} {...this.alertOptions} />
     </div>
     );
-    }
-  });
+  }
+});
 
 ReactDOM.render(
   <JackPlay />,
   document.getElementById('content')
 );
+
+/* react way of doing this kind of focus is via componentDidMount and a ref to the input
+   how to get a ref to the input in Autosuggest?
+ */
+$(function(){
+    $(".react-autosuggest__container > input").focus();
+});
