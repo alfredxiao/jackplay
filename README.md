@@ -43,10 +43,16 @@
 
   Options supported:
   - *port*: port number the web server listens on, default is 8181
+  - *https*: whether to use https, default is false
+  - *keystoreFilepath*: when using https, this is used to set the file path to your keystore file
+  - *keystorePassword*: when using https, this is used to set the password for your keystore file
   - *logLevel*: can be either info, debug, or error, default is info
   - *traceLogLimit*: how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity, defaults to 200
-  - *blacklist*: packages to not allow tracing or redefining, java.lang is always blacklistedt.
+  - *autoSuggestLimit*: specifies the limit of items auto suggestion gives, defaults  to 100
+  - *blacklist*: packages to not allow tracing or redefining, java.lang is always blacklisted.
   - *whitelist*: packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined
+
+  *Note*: When https is set to true, but no password or keystore path provided, a built-in demo self-signed keystore would be used instead.
 
 ### Open Jackplay control panel
 
