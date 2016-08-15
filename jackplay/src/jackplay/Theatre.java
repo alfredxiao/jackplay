@@ -36,7 +36,9 @@ public class Theatre {
         Logger.debug("Instrumentation.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
 
         Options options = Options.optionsMergedWithDefaults(agentArgs);
-        Logger.info("open your browser and point to http://localhost:" + options.port());
+        Logger.info("open your browser and point to " +
+                    (options.https() ? "https" : "http") +
+                    "://yourserver:" + options.port());
 
         Logger.init(options);
         TraceKeeper.init(options);

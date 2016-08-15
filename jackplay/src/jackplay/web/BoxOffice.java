@@ -1,16 +1,18 @@
 package jackplay.web;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 import jackplay.bootstrap.Options;
 import jackplay.play.InfoCenter;
 import jackplay.play.ProgramManager;
+
+import javax.net.ssl.*;
 
 // singleton
 public class BoxOffice extends Thread {
@@ -37,7 +39,8 @@ public class BoxOffice extends Thread {
 
     public void run() {
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(options.port()), 0);
+            HttpServer server = this.createHttpServer();
+
             for (String contextPath : contextMap.keySet()) {
                 HttpContext context = server.createContext(contextPath, contextMap.get(contextPath));
                 context.getFilters().add(new ParameterFilter());
@@ -46,5 +49,60 @@ public class BoxOffice extends Thread {
         } catch(IOException ioe) {
             ioe.printStackTrace(System.err);
         }
+    }
+
+    private HttpServer createHttpServer() throws IOException {
+        if (options.https()) {
+            HttpsServer server = HttpsServer.create(new InetSocketAddress(options.port()), 0);
+            server.setHttpsConfigurator(getHttpsConfigurator(getSSLContext()));
+
+            return server;
+        } else {
+            return HttpServer.create(new InetSocketAddress(options.port()), 0);
+        }
+    }
+
+    private SSLContext getSSLContext() {
+        try{
+            char[] passphrase = options.keystorePassword().toCharArray();
+            KeyStore ks=KeyStore.getInstance("JKS");
+            ks.load(new FileInputStream(options.keystoreFilepath()),
+                    passphrase);
+
+            KeyManagerFactory kmf=KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks,passphrase);
+
+            TrustManagerFactory tmf=TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ks);
+
+            SSLContext ssl=SSLContext.getInstance("TLS");
+            ssl.init(kmf.getKeyManagers(),tmf.getTrustManagers(),null);
+
+            return ssl;
+        } catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private HttpsConfigurator getHttpsConfigurator(SSLContext ssl) {
+        return new HttpsConfigurator(ssl) {
+            public void configure(HttpsParameters params) {
+                try {
+                    // initialise the SSL context
+                    SSLContext c = SSLContext.getDefault();
+                    SSLEngine engine = c.createSSLEngine();
+                    params.setNeedClientAuth(false);
+                    params.setCipherSuites(engine.getEnabledCipherSuites());
+                    params.setProtocols(engine.getEnabledProtocols());
+
+                    // get the default parameters
+                    SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+                    params.setSSLParameters(defaultSSLParameters);
+
+                } catch (Exception ex) {
+                    throw new RuntimeException("Failed to create HTTPS port");
+                }
+            }
+        };
     }
 }

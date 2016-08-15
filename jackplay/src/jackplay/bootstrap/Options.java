@@ -15,6 +15,7 @@ public class Options {
         DEFAULTS.put("port", "8181");
         DEFAULTS.put("logLevel", "info");
         DEFAULTS.put("traceLogLimit", "200");
+        DEFAULTS.put("https", "false");
     }
 
     public static boolean isEmpty(String s) {
@@ -69,6 +70,18 @@ public class Options {
 
     public int traceLogLimit() {
         return Integer.parseInt(options.get("traceLogLimit"));
+    }
+
+    public boolean https() {
+        return Boolean.parseBoolean(options.get("https"));
+    }
+
+    public String keystorePassword() {
+        return options.get("keystorePassword");
+    }
+
+    public String keystoreFilepath() {
+        return options.get("keystoreFilepath");
     }
 
     public void updateOption(String key, String value) {
