@@ -43,23 +43,34 @@ public class ProgramHandler extends BaseHandler {
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
         pm.submitMethodRedefinition(params.get("longMethodName"), params.get("src"));
-        CommonHandling.serveStringBody(http, 200, "Method Redefined");
+        CommonHandling.serveStringBody(http, 200, "Method is redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
         pm.submitMethodTrace(params.get("methodFullName"));
-        CommonHandling.serveStringBody(http, 200, "Trace Added");
+        CommonHandling.serveStringBody(http, 200, "Method trace is added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
-        pm.removeMethodFromProgramAndReplay(g,  params.get("methodFullName"));
-        CommonHandling.serveStringBody(http, 200, "Method Undone");
+        String methodFullName = params.get("methodFullName");
+        pm.removeMethodFromProgramAndReplay(g, methodFullName);
+        CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
-        pm.removeClassFromProgramAndReplay(g,  params.get("classFullName"));
-        CommonHandling.serveStringBody(http, 200, "class undone");
+
+        String className = params.get("classFullName");
+        pm.removeClassFromProgramAndReplay(g, className);
+        CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
+    }
+
+    private static String getGenreDescriptor(Genre genre) {
+        if (genre == Genre.METHOD_TRACE) {
+            return "Traced";
+        } else {
+            return "Redefined";
+        }
     }
 }

@@ -1136,6 +1136,7 @@ let JackPlay = React.createClass({
              autoSuggestLimit: document.getElementById('autoSuggestLimit').value},
       success: function(settings) {
         this.setState(Object.assign(this.state, {serverSideSettings: settings}));
+        this.setGlobalMessage(INFO, 'Settings Updated.');
       }.bind(this),
       error: function(res) {
         console.log("Ajax call ERROR", res);
@@ -1290,6 +1291,7 @@ let JackPlay = React.createClass({
       url: '/program/undoMethod',
         data: 'methodFullName=' + encodeURIComponent(methodFullName) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
+        this.setGlobalMessage(INFO, toMessage(data));
         this.loadProgram();
       }.bind(this),
       error: function(res) {
@@ -1302,6 +1304,7 @@ let JackPlay = React.createClass({
       url: '/program/undoClass',
         data: 'classFullName=' + encodeURIComponent(className) + '&genre=' + encodeURIComponent(genre),
       success: function(data) {
+        this.setGlobalMessage(INFO, toMessage(data));
         this.loadProgram();
       }.bind(this),
       error: function(res) {
