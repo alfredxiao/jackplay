@@ -48,7 +48,8 @@ public class InfoCenter {
 
     public Map<String, Object> getServerSettings() {
         Map<String, Object> serverSettings = new HashMap<>();
-        serverSettings.put("maxNumberOfTraceLogs", options.traceLogLimit());
+        serverSettings.put("traceLogLimit", options.traceLogLimit());
+        serverSettings.put("autoSuggestLimit", options.autoSuggestLimit());
 
         return serverSettings;
     }

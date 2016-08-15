@@ -15,6 +15,7 @@ public class Options {
         DEFAULTS.put("port", "8181");
         DEFAULTS.put("logLevel", "info");
         DEFAULTS.put("traceLogLimit", "200");
+        DEFAULTS.put("autoSuggestLimit", "100");
         DEFAULTS.put("https", "false");
     }
 
@@ -70,6 +71,10 @@ public class Options {
 
     public int traceLogLimit() {
         return Integer.parseInt(options.get("traceLogLimit"));
+    }
+
+    public int autoSuggestLimit() {
+        return Integer.parseInt(options.get("autoSuggestLimit"));
     }
 
     public boolean https() {
