@@ -13,9 +13,11 @@ public class RudeGreeter implements Greeter {
         if (mood < 2) {
             return "Who are you?";
         } else if (mood < 4) {
-            return "What are you doing?" + name;
-        } else if (mood < 8) {
+            return "Where are you from? " + name;
+        } else if (mood < 6) {
             return "Go away, " + name;
+        } else if (mood < 8) {
+            throw new RuntimeException(name + ", you know, life sucks, but I love it.");
         } else {
             throw new RuntimeException(name + ", can you tell me what the hell is cloud computing!");
         }
