@@ -36,7 +36,7 @@ public class Theatre {
         Logger.debug("Instrumentation.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
 
         Options options = Options.optionsMergedWithDefaults(agentArgs);
-        Logger.info("open your browser and point to " +
+        Logger.info("After web server is started, point your browser to " +
                     (options.https() ? "https" : "http") +
                     "://yourserver:" + options.port());
 

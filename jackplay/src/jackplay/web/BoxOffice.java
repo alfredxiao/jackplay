@@ -2,12 +2,14 @@ package jackplay.web;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.security.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.net.httpserver.*;
+import jackplay.Logger;
 import jackplay.bootstrap.Options;
 import jackplay.play.InfoCenter;
 import jackplay.play.ProgramManager;
@@ -20,6 +22,7 @@ public class BoxOffice extends Thread {
     ProgramManager pm;
     InfoCenter infoCenter;
     Map<String, HttpHandler> contextMap;
+    private static int BACKLOG = 50;
 
     public void init(Options options, ProgramManager pm, InfoCenter infoCenter) {
         this.options = options;
@@ -46,28 +49,41 @@ public class BoxOffice extends Thread {
                 context.getFilters().add(new ParameterFilter());
             }
             server.start();
+
+            Logger.info("Jackplay web server has now started.");
         } catch(IOException ioe) {
             ioe.printStackTrace(System.err);
         }
     }
 
     private HttpServer createHttpServer() throws IOException {
+        InetSocketAddress address = new InetSocketAddress(options.port());
         if (options.https()) {
-            HttpsServer server = HttpsServer.create(new InetSocketAddress(options.port()), 0);
+            HttpsServer server = HttpsServer.create(address, BACKLOG);
             server.setHttpsConfigurator(getHttpsConfigurator(getSSLContext()));
 
             return server;
         } else {
-            return HttpServer.create(new InetSocketAddress(options.port()), 0);
+            return HttpServer.create(address, BACKLOG);
         }
     }
 
     private SSLContext getSSLContext() {
+        String optionPassword = options.keystorePassword();
+        String password = (null == optionPassword || optionPassword.length() == 0)
+                          ? "jackplay-demo"
+                          : optionPassword;
+
+        String optionPath = options.keystoreFilepath();
         try{
-            char[] passphrase = options.keystorePassword().toCharArray();
+            char[] passphrase = password.toCharArray();
+
+            InputStream storeStream = (null == optionPath || optionPath.length() == 0)
+                    ? BoxOffice.class.getResourceAsStream("/jackplay-demo.jks")
+                    : new FileInputStream(optionPath);
+
             KeyStore ks=KeyStore.getInstance("JKS");
-            ks.load(new FileInputStream(options.keystoreFilepath()),
-                    passphrase);
+            ks.load(storeStream, passphrase);
 
             KeyManagerFactory kmf=KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks,passphrase);

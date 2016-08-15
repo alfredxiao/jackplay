@@ -736,7 +736,7 @@ let Configuration = React.createClass({
               <label title='Max Number of Auto Suggestions being Displayed' htmlFor='autoSuggestLimit'>Max Number of Auto Suggest:</label>
             </td>
             <td>
-              <input id='autoSuggestLimit' size='10' type='number' min='20' max='300' step='10'
+              <input id='autoSuggestLimit' size='10' type='number' min='10' max='300' step='10'
                      defaultValue={this.props.autoSuggestLimit}/>
             </td>
           </tr>
@@ -758,6 +758,9 @@ let SystemSettings = React.createClass({
     return {currentTab: 'manageTracedMethods',
             autoSuggestLimit: this.props.autoSuggestLimit,
             traceLogLimit: this.props.traceLogLimit};
+  },
+  componentDidMount: function() {
+    this.props.loadServerSideSettings();
   },
   showTab: function(tabName) {
     Object.assign(this.state, {currentTab: tabName});
@@ -900,7 +903,7 @@ let PlayPanel = React.createClass({
           this.props.setGlobalMessage(INFO, toMessage(data));
         }.bind(this),
         error: function(data) {
-          console.log('Ajax call ERROR', data);
+          console.log('Ajax call /program/addTrace with ERROR', data);
           this.props.setGlobalMessage(ERROR, toErrorMessage(data));
         }.bind(this)
       });
@@ -921,9 +924,9 @@ let PlayPanel = React.createClass({
                   src: src},
           success: function(data) {
             this.props.setGlobalMessage(INFO, toMessage(data));
-            this.hideMethodRedefine();
           }.bind(this),
           error: function(data) {
+            console.log('Ajax call /program/redefine with ERROR', data);
             this.props.setGlobalMessage(ERROR, toErrorMessage(data));
           }.bind(this)
         });
@@ -986,7 +989,8 @@ let PlayPanel = React.createClass({
                       program={this.props.program}
                       autoSuggestLimit={this.props.autoSuggestLimit}
                       traceLogLimit={this.props.traceLogLimit}
-                      applyConfigurations={this.props.applyConfigurations}/>
+                      applyConfigurations={this.props.applyConfigurations}
+                      loadServerSideSettings={this.props.loadServerSideSettings}/>
         </div>
     );
   }
@@ -1108,6 +1112,10 @@ let JackPlay = React.createClass({
         time: 5000,
         transition: 'scale'
   },
+  defaultSystemSettings: {
+    traceLogLimit: 200,
+    autoSuggestLimit: 100
+  },
   getInitialState: function() {
     return {logHistory: [],
             filteredLogHistory: [],
@@ -1120,7 +1128,7 @@ let JackPlay = React.createClass({
             traceLogHovered: '',
             traceLogBroughtToFront: null,
             isSyncWithServerPaused: false,
-            serverSideSettings: {},
+            serverSideSettings: this.defaultSystemSettings,
             executionCount: null
     };
   },
@@ -1139,25 +1147,34 @@ let JackPlay = React.createClass({
         this.setGlobalMessage(INFO, 'Settings Updated.');
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        console.log("Ajax call /info/updateSettings with ERROR", res);
       }.bind(this)
     });
   },
   loadServerSideSettings: function() {
     $.ajax({
       url: '/info/settings',
+      tryCount : 0,
+      retryLimit : 3,
       success: function(settings) {
         this.setState(Object.assign(this.state, {serverSideSettings: settings}));
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
-        this.setState(Object.assign(this.state, {serverSideSettings: {}}));
-      }.bind(this)
+        this.tryCount++;
+        if (this.tryCount <= this.retryLimit) {
+          $.ajax(this);
+          return;
+        } else {
+          console.log("Ajax call ERROR", res);
+        }
+      }
     });
   },
   syncDataWithServer: function() {
     $.ajax({
       url: '/info/traceLogs',
+      tryCount : 0,
+      retryLimit : 3,
       success: function(history) {
         this.setState(Object.assign(this.state, {logHistory: history.map(function(e) {
                                                    if (e.returnedValue == null && e.tracePoint == TRIGGER_POINT_RETURNS) {
@@ -1170,16 +1187,30 @@ let JackPlay = React.createClass({
         this.updateLogHistoryWithFilter();
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        this.tryCount++;
+        if (this.tryCount <= this.retryLimit) {
+          $.ajax(this);
+          return;
+        } else {
+          console.log("Ajax call /info/traceLogs with ERROR", res);
+        }
       }
     });
     $.ajax({
       url: '/info/loadedMethods',
+      tryCount : 0,
+      retryLimit : 3,
       success: function(targets) {
         this.setState(Object.assign(this.state, {loadedTargets: targets}));
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        this.tryCount++;
+        if (this.tryCount <= this.retryLimit) {
+          $.ajax(this);
+          return;
+        } else {
+          console.log("Ajax call /info/loadedMethods with ERROR", res);
+        }
       }
     });
   },
@@ -1190,7 +1221,7 @@ let JackPlay = React.createClass({
         this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        console.log("Ajax call /program/currentProgram with ERROR", res);
       }
     });
   },
@@ -1295,7 +1326,7 @@ let JackPlay = React.createClass({
         this.loadProgram();
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        console.log("Ajax call /program/undoMethod with ERROR", res);
       }
     });
   },
@@ -1308,7 +1339,7 @@ let JackPlay = React.createClass({
         this.loadProgram();
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call ERROR", res);
+        console.log("Ajax call /program/undoClass with ERROR", res);
       }
     });
   },
@@ -1355,7 +1386,8 @@ let JackPlay = React.createClass({
                  autoSuggestLimit={this.state.serverSideSettings.autoSuggestLimit}
                  traceLogLimit={this.state.serverSideSettings.traceLogLimit}
                  applyConfigurations={this.applyConfigurations}
-                 executionCount={this.state.executionCount}/>
+                 executionCount={this.state.executionCount}
+                 loadServerSideSettings={this.loadServerSideSettings}/>
       </div>
       <br/>
       <div className='jackPlayTraceLog'>
