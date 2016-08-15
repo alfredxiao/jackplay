@@ -864,10 +864,73 @@ let SystemSettings = React.createClass({
   }
 });
 
+let AboutJackPlay = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <Modal className="myModalClass" //this will completely overwrite the default css completely
+              style={modalDefaultStyle} //overwrites the default background
+              containerStyle={containerDefaultStyle} //changes styling on the inner content area
+              containerClassName="myModalContainerClass"
+              closeOnOuterClick={false}
+              show={this.props.aboutBeingShow}
+              >
+
+          <a style={closeDefaultStyle} onClick={this.props.hideAbout}>X</a>
+          <div style={{display: this.props.show}}>
+            <div>
+              <div className='aboutContainer'>
+                <div className='aboutTitle'>About Jackplay</div>
+                <div className='aboutHeadline'>
+                  To every problem, there is a most simple solution. {LONG_DASH} Agatha Christie
+                </div>
+                <ol className='aboutList'>
+                  <li>
+                    <span className='aboutPoint'>What problem(s) does Jackplay solve?</span>
+                    <ul className='aboutText'>
+                      <li>Developers are not sure where to put log statements and what to log - before running into a problem in an deployed environment.</li>
+                      <li>We are lazy people and do not want to go through the dev/test/deploy cycle again and again, especially in a testing setting.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <span className='aboutPoint'>What can Jackplay do?</span>
+                    <ul className='aboutText'>
+                      <li>Trace your method LIVE.</li>
+                      <li>Redefine your method LIVE.</li>
+                    </ul>
+                  </li>
+                  <li><span className='aboutPoint'>How does Jackplay works?</span>
+                      <ul className='aboutText'>
+                        <li>Java Instrumentation, hence the 'play' part of 'Jackplay'.</li>
+                      </ul>
+                  </li>
+                  <li><span className='aboutPoint'>Who created Jackplay?</span>
+                      <ul className='aboutText'>
+                        <li>Alfred Xiao, Developer, alfred.xiao@outlook.com, code at <a href='https://github.com/alfredxiao/jackplay' title='https://github.com/alfredxiao/jackplay'>github.com</a></li>
+                        <li>Hayden Virtue, Contributor</li>
+                      </ul>
+                  </li>
+                </ol>
+                <div className='aboutBottomline'>
+                  If you find a good solution and become attached to it, the solution may become your next problem. {LONG_DASH} Robert Anthony
+                </div>
+              </div>
+              <div style={{marginTop: '8px', textAlign: 'right', marginRight: '50px'}}>
+                <button onClick={this.props.hideAbout}>Close</button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
+});
+
 let PlayPanel = React.createClass({
   getInitialState: function() {
     return {playBookBeingShown: false,
-            MethodRedefineIsShow: false};
+            methodRedefineBeingShown: false,
+            aboutBeingShow: false};
   },
   showPlayBook: function() {
     this.props.loadProgram();
@@ -876,11 +939,17 @@ let PlayPanel = React.createClass({
   hidePlayBook: function() {
     this.setState(Object.assign(this.state, {playBookBeingShown: false}));
   },
+  showAbout: function() {
+    this.setState(Object.assign(this.state, {aboutBeingShow: true}));
+  },
+  hideAbout: function() {
+    this.setState(Object.assign(this.state, {aboutBeingShow: false}));
+  },
   showMethodRedefine: function() {
-    this.setState(Object.assign(this.state, {MethodRedefineIsShow: true}));
+    this.setState(Object.assign(this.state, {methodRedefineBeingShown: true}));
   },
   hideMethodRedefine: function() {
-    this.setState(Object.assign(this.state, {MethodRedefineIsShow: false}));
+    this.setState(Object.assign(this.state, {methodRedefineBeingShown: false}));
   },
   validatePlayTarget: function() {
     let methodFullName = this.props.autoClassLookupState.value;  //$("div#content input[type=text]")[0].value.trim();
@@ -973,8 +1042,11 @@ let PlayPanel = React.createClass({
               <span style={{paddingLeft: '12px', fontSize: '18px'}} className='fontButton' onClick={this.showPlayBook} title='Settings'>
                 <i className="fa fa-cog fa-lg"></i>
               </span>
+              <span style={{paddingLeft: '12px', fontSize: '18px'}} className='fontButton' onClick={this.showAbout} title='About Jackplay'>
+                <i className="fa fa-info-circle fa-lg"></i>
+              </span>
             </div>
-            <MethodRedefine shown={this.state.MethodRedefineIsShow}
+            <MethodRedefine shown={this.state.methodRedefineBeingShown}
                             hideMethodRedefine={this.hideMethodRedefine}
                             loadedTargets={this.props.loadedTargets}
                             autoClassLookupState={this.props.autoClassLookupState}
@@ -991,6 +1063,8 @@ let PlayPanel = React.createClass({
                       traceLogLimit={this.props.traceLogLimit}
                       applyConfigurations={this.props.applyConfigurations}
                       loadServerSideSettings={this.props.loadServerSideSettings}/>
+            <AboutJackPlay aboutBeingShow={this.state.aboutBeingShow}
+                           hideAbout={this.hideAbout}/>
         </div>
     );
   }

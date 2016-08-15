@@ -346,3 +346,48 @@ tr.broughtToFrontTraceLog > td:last-child {
   font-style: italic;
   color: #111;
 }
+
+.aboutContainer {
+  width: 666px;
+  padding: 0px;
+  padding-top: 5px;
+}
+.aboutTitle {
+  font-size: 22px;
+  text-align: center;
+}
+
+.aboutHeadline, .aboutBottomline {
+  padding: 8px 6px 6px 8px;
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+}
+.aboutHeadline {
+  border-bottom: 1px dotted #333;
+}
+.aboutBottomline {
+  font-size: 12px;
+  border-top: 1px dotted #333;
+}
+ol.aboutList {
+  padding-left: 22px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+ol.aboutList > li {
+  padding-top: 3px;
+  padding-bottom: 5px;
+}
+.aboutPoint {
+  font-style: italic;
+}
+ul.aboutText {
+  font-size: 15px;
+  padding-left: 18px;
+}
+ul.aboutText > li {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
