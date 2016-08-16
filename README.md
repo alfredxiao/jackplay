@@ -95,6 +95,9 @@
   ./run.sh
   ```
 
+3. Open browser and try things
+  Open [http://localhost:8181](http://localhost:8181), and try to play with it.
+
 ## Limitations
 
  - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
