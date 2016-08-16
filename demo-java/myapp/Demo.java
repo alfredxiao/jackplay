@@ -19,16 +19,12 @@ public class Demo implements Runnable {
   }
 
   public static void main(String[] args) throws Exception {
-    visitGreeters();
+    int threadCount = (args.length > 0) ? Integer.parseInt(args[0]) : 3;
 
-    Thread t1 = new Thread(new Demo());
-    t1.start();
-
-    Thread t2 = new Thread(new Demo());
-    t2.start();
-
-    Thread t3 = new Thread(new Demo());
-    t3.start();
+    for (int i=0; i<threadCount; i++) {
+      Thread t = new Thread(new Demo());
+      t.start();
+    }
   }
 
   static void visitGreeters() {

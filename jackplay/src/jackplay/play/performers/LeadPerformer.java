@@ -17,7 +17,7 @@ import java.util.List;
 public class LeadPerformer implements ClassFileTransformer {
     Composer composer;
     ProgramManager pm;
-    private Class classToPlay;
+    private Class classToRetransform;
     private List<Exception> exceptionsDuringPerformance;
 
     public void init(Composer composer, ProgramManager pm) {
@@ -28,8 +28,10 @@ public class LeadPerformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
+        if (null == classBeingRedefined) return classfileBuffer;
+
         String clsName = classBeingRedefined.getName();
-        if (classBeingRedefined != classToPlay) {
+        if (!clsName.equals(classToRetransform.getName())) {
             return classfileBuffer;
         } else {
             byte[] byteCode = classfileBuffer;
@@ -79,8 +81,8 @@ public class LeadPerformer implements ClassFileTransformer {
         return allPerformers;
     }
 
-    public void setClassToPlay(Class classToPlay) {
-        this.classToPlay = classToPlay;
+    public void setClassToRetransform(Class classToPlay) {
+        this.classToRetransform = classToPlay;
     }
 
     public void setExceptionsDuringPerformance(List<Exception> exceptionsDuringPerformance) {

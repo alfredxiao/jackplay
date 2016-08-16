@@ -17,6 +17,7 @@ public class Options {
         DEFAULTS.put("traceLogLimit", "300");
         DEFAULTS.put("autoSuggestLimit", "100");
         DEFAULTS.put("https", "false");
+        DEFAULTS.put("defaultTrace", "");
     }
 
     public static boolean isEmpty(String s) {
@@ -87,6 +88,14 @@ public class Options {
 
     public String keystoreFilepath() {
         return options.get("keystoreFilepath");
+    }
+
+    public String defaultTrace() {
+        return options.get("defaultTrace");
+    }
+
+    public String[] defaultTraceAsArray() {
+        return defaultTrace().split(":");
     }
 
     public void updateOption(String key, String value) {

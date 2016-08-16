@@ -890,6 +890,7 @@ let AboutJackPlay = React.createClass({
                     <ul className='aboutText'>
                       <li>Developers are not sure where to put log statements and what to log - before running into a problem in an deployed environment.</li>
                       <li>We are lazy people and do not want to go through the dev/test/deploy cycle again and again, especially in a testing setting.</li>
+                      <li>Sometimes we need to trace into a library but it is a challenge.</li>
                     </ul>
                   </li>
                   <li>

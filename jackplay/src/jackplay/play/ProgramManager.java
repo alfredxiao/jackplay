@@ -1,5 +1,6 @@
 package jackplay.play;
 
+import jackplay.Logger;
 import jackplay.bootstrap.Genre;
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
@@ -41,7 +42,7 @@ public class ProgramManager {
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addPlayToProgram(pg, genre, src);
             try {
-                composer.defineClass(pg.classFullName);
+                composer.retransformClass(pg.classFullName);
             } catch(Exception e) {
                 removeMethodFromProgram(genre, pg.methodFullName);
                 throw e;
@@ -71,7 +72,7 @@ public class ProgramManager {
     public void removeMethodFromProgramAndReplay(Genre genre, String methodFullName) throws Exception {
         removeMethodFromProgram(genre, methodFullName);
 
-        composer.defineClass(new PlayGround(methodFullName).classFullName);
+        composer.retransformClass(new PlayGround(methodFullName).classFullName);
     }
 
     private void removeMethodFromProgram(Genre genre, String methodFullName) throws Exception {
@@ -87,7 +88,7 @@ public class ProgramManager {
 
     public void removeClassFromProgramAndReplay(Genre genre, String className) throws Exception {
         removeClassFromProgram(genre, className);
-        composer.defineClass(className);
+        composer.retransformClass(className);
     }
 
     // called when verifier error occurs
@@ -144,5 +145,15 @@ public class ProgramManager {
 
     public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
         return this.program;
+    }
+
+    public void submitMethodTraceBatch(String[] methodFullNames) {
+        for (String mfn : methodFullNames) {
+            try {
+                this.submitMethodTrace(mfn);
+            } catch (Exception e) {
+                Logger.error(e);
+            }
+        }
     }
 }

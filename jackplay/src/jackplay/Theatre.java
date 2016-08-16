@@ -51,10 +51,11 @@ public class Theatre {
 
         theatre = new Theatre(options, inst, composer, pm, leader, boxOffice, infoCenter);
         theatre.init();
+        theatre.prepare();
         theatre.start();
     }
 
-    public void init() {
+    private void init() {
         composer.init(options, inst, pm, leadPerformer);
         pm.init(composer, options, infoCenter);
         leadPerformer.init(composer, pm);
@@ -62,7 +63,11 @@ public class Theatre {
         infoCenter.init(inst, pm, options);
     }
 
-    public void start() {
+    private void prepare() {
+        pm.submitMethodTraceBatch(options.defaultTraceAsArray());
+    }
+
+    private void start() {
         this.boxOffice.start();
     }
 }

@@ -23,10 +23,16 @@ public class Composer {
         this.inst.addTransformer(this.leadPerformer, true);
     }
 
-    synchronized void defineClass(String className) throws Exception {
-        Class clazz = Class.forName(className);
+    synchronized void retransformClass(String className) throws Exception {
+        Class clazz;
+        try {
+            clazz = Class.forName(className);
+        } catch(ClassNotFoundException cnfe) {
+            throw new Exception("class not found, can't be retransformed:" + className);
+        }
+
         if (inst.isModifiableClass(clazz) && inst.isRetransformClassesSupported()) {
-            leadPerformer.setClassToPlay(clazz);
+            leadPerformer.setClassToRetransform(clazz);
             try {
                 Logger.debug("composer attempting to retransform class:" + className);
                 inst.retransformClasses(clazz);
@@ -57,6 +63,8 @@ public class Composer {
                 pm.removeClassFromProgram(Genre.METHOD_REDEFINE, className);
                 inst.retransformClasses(clazz);
                 throw new Exception(msg);
+            } finally {
+                leadPerformer.setClassToRetransform(null);
             }
         } else {
             throw new Exception("class not modifiable:" + className);
