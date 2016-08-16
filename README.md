@@ -95,7 +95,8 @@
   ./run.sh
   ```
 
-3. Open browser and try things
+3. Open browser and point to Jackplay page
+
   Open [http://localhost:8181](http://localhost:8181), and try to play with it.
 
 ## Limitations
