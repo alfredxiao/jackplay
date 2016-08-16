@@ -745,7 +745,7 @@ let Configuration = React.createClass({
               <label title='Max Number of Trace Logs to Keep' htmlFor='traceLogLimit'>Max Number of Kept Trace Logs:</label>
             </td>
             <td>
-              <input id='traceLogLimit' size='10' type='number' min='50' max='500' step='50' defaultValue={this.props.traceLogLimit}/>
+              <input id='traceLogLimit' size='10' type='number' min='50' max='800' step='50' defaultValue={this.props.traceLogLimit}/>
             </td>
           </tr>
         </table>

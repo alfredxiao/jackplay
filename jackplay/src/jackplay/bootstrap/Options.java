@@ -14,7 +14,7 @@ public class Options {
     static {
         DEFAULTS.put("port", "8181");
         DEFAULTS.put("logLevel", "info");
-        DEFAULTS.put("traceLogLimit", "200");
+        DEFAULTS.put("traceLogLimit", "300");
         DEFAULTS.put("autoSuggestLimit", "100");
         DEFAULTS.put("https", "false");
     }
