@@ -46,11 +46,11 @@ public class Demo implements Runnable {
   }
 
   public static long getRandomSleep() {
-    return ThreadLocalRandom.current().nextLong(500, 12000);
+    return ThreadLocalRandom.current().nextLong(3000, 12000);
   }
 
   public static void sleepSmallRandom() {
-    long r = ThreadLocalRandom.current().nextLong(50, 500);
+    long r = ThreadLocalRandom.current().nextLong(200, 500);
     try {
       Thread.sleep(r);
     } catch(Exception e) {};
