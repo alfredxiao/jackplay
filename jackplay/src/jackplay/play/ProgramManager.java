@@ -44,8 +44,7 @@ public class ProgramManager {
             try {
                 composer.retransformByClassName(pg.classFullName);
             } catch(Exception e) {
-                // composer removes class if errors happens
-                if (genre == Genre.METHOD_TRACE) removeMethodFromProgram(genre, pg.methodFullName);
+                removeMethodFromProgram(genre, pg.methodFullName);
                 throw e;
             }
         }
@@ -78,11 +77,17 @@ public class ProgramManager {
 
     private void removeMethodFromProgram(Genre genre, String methodFullName) throws Exception {
         PlayGround pg = new PlayGround(methodFullName);
-        program.get(genre).get(pg.classFullName).remove(methodFullName);
-        if (program.get(genre).get(pg.classFullName).isEmpty()) {
-            program.get(genre).remove(pg.classFullName);
-            if (program.get(genre).isEmpty()) {
-                program.remove(genre);
+
+        if (program.containsKey(genre)
+                && program.get(genre).containsKey(pg.classFullName)) {
+            program.get(genre).get(pg.classFullName).remove(methodFullName);
+
+            if (program.get(genre).get(pg.classFullName).isEmpty()) {
+                program.get(genre).remove(pg.classFullName);
+
+                if (program.get(genre).isEmpty()) {
+                    program.remove(genre);
+                }
             }
         }
     }

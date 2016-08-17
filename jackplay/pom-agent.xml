@@ -6,7 +6,7 @@
 
   <groupId>com.github.alfredxiao</groupId>
   <artifactId>jackplay-agent</artifactId>
-  <version>0.8.8-SNAPSHOT</version>
+  <version>0.8.8</version>
   <packaging>jar</packaging>
 
   <name>jackplay-agent</name>
