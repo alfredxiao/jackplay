@@ -1,6 +1,7 @@
 # Jackplay Change Logs
 
 ## 0.8.8 (?)
+- Can trace constructor?
 
 ## 0.8.7-SNAPSHOT (17-Aug-2016)
 - Apply same transformation to all Classes when multiple are found (loaded by different classloader)
