@@ -78,7 +78,7 @@ public class InfoCenter {
             CtMethod[] methods = clazz.getDeclaredMethods();
             Arrays.sort(methods, methodComparator);
             for (CtMethod m : methods) {
-                if (!canPlayMethod(m)) continue;;
+                if (!canPlayMethod(m)) continue;
 
                 PlayGround pg = new PlayGround(m.getLongName());
                 Map<String, String> loadedMethod = new HashMap<>();

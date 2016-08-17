@@ -37,11 +37,12 @@ public class LeadPerformer implements ClassFileTransformer {
             byte[] byteCode = classfileBuffer;
 
             List<Performer> allPerformers = findAllPerformers(clsName);
+            ClassPool cp = ClassPool.getDefault();
+            CtClass cc = null;
 
             try {
+                cc =  cp.get(clsName);
                 List<Exception> exceptions = new LinkedList<>();
-                ClassPool cp = ClassPool.getDefault();
-                CtClass cc = cp.get(clsName);
 
                 Logger.debug("leadperformer transforming class:" + clsName);
                 for (Performer performer : allPerformers) {
@@ -60,9 +61,10 @@ public class LeadPerformer implements ClassFileTransformer {
                 this.setExceptionsDuringPerformance(exceptions);
 
                 byteCode = cc.toBytecode();
-                cc.detach();
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                if (cc != null) cc.detach();
             }
 
             return byteCode;

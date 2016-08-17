@@ -24,12 +24,7 @@ public class Composer {
     }
 
     synchronized void retransformClass(String className) throws Exception {
-        Class clazz;
-        try {
-            clazz = Class.forName(className);
-        } catch(ClassNotFoundException cnfe) {
-            throw new Exception("class not found, can't be retransformed:" + className);
-        }
+        Class clazz = Class.forName(className);
 
         if (inst.isModifiableClass(clazz) && inst.isRetransformClassesSupported()) {
             leadPerformer.setClassToRetransform(clazz);
