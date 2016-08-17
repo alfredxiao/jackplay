@@ -148,9 +148,16 @@ public class ProgramManager {
     }
 
     public void submitMethodTraceBatch(String[] methodFullNames) {
+        if (methodFullNames == null || methodFullNames.length == 0) return;
+
         for (String mfn : methodFullNames) {
+            if (mfn == null) continue;
+
+            String trimmed = mfn.trim();
+            if (trimmed.length() == 0) continue;
+
             try {
-                this.submitMethodTrace(mfn);
+                this.submitMethodTrace(trimmed);
             } catch (Exception e) {
                 Logger.error(e);
             }
