@@ -42,9 +42,10 @@ public class ProgramManager {
         if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
             addPlayToProgram(pg, genre, src);
             try {
-                composer.retransformClass(pg.classFullName);
+                composer.retransformByClassName(pg.classFullName);
             } catch(Exception e) {
-                removeMethodFromProgram(genre, pg.methodFullName);
+                // composer removes class if errors happens
+                if (genre == Genre.METHOD_TRACE) removeMethodFromProgram(genre, pg.methodFullName);
                 throw e;
             }
         }
@@ -72,7 +73,7 @@ public class ProgramManager {
     public void removeMethodFromProgramAndReplay(Genre genre, String methodFullName) throws Exception {
         removeMethodFromProgram(genre, methodFullName);
 
-        composer.retransformClass(new PlayGround(methodFullName).classFullName);
+        composer.retransformByClassName(new PlayGround(methodFullName).classFullName);
     }
 
     private void removeMethodFromProgram(Genre genre, String methodFullName) throws Exception {
@@ -88,7 +89,7 @@ public class ProgramManager {
 
     public void removeClassFromProgramAndReplay(Genre genre, String className) throws Exception {
         removeClassFromProgram(genre, className);
-        composer.retransformClass(className);
+        composer.retransformByClassName(className);
     }
 
     // called when verifier error occurs

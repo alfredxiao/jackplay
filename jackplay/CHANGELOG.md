@@ -1,10 +1,12 @@
 # Jackplay Change Logs
 
-## 0.8.7-SNAPSHOT (?)
-- What if there are two classes with same name but different classloaders
-- Support tracing of constructors
+## 0.8.8 (?)
 
-## 0.8.6-SNAPSHOT (17-Aug-2016)
+## 0.8.7-SNAPSHOT (17-Aug-2016)
+- Apply same transformation to all Classes when multiple are found (loaded by different classloader)
+- Refactoring and bug fix
+
+## 0.8.6 (17-Aug-2016)
 - Refactoring and bug fix
 
 ## 0.8.5 (16-Aug-2016)
