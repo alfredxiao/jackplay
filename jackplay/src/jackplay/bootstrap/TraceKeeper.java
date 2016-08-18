@@ -95,7 +95,7 @@ public class TraceKeeper {
         TraceLog correspondingMethodEntryLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
 
         long elapsed = -1;
-        String uuid = null;
+        String uuid;
         if (correspondingMethodEntryLog != null) {
             elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenAsTimeMs;
             uuid = correspondingMethodEntryLog.uuid;

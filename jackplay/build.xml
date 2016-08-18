@@ -8,7 +8,7 @@
   <property name="groupId" value="com.github.alfredxiao" />
   <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
-  <property name="version" value="0.8.8" />
+  <property name="version" value="0.8.9-SNAPSHOT" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
   <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
@@ -31,16 +31,60 @@
     </fileset>
   </path>
 
+  <path id="test.classpath" cache="true">
+    <fileset dir="lib">
+      <include name="junit-4.12.jar"/>
+      <include name="java-hamcrest-2.0.0.0.jar"/>
+    </fileset>
+    <pathelement location="build/classes"/>
+  </path>
+
   <target name="init">
     <tstamp/>
     <mkdir dir="build"/>
     <mkdir dir="build/classes"/>
+    <mkdir dir="build/test-classes"/>
+    <mkdir dir="build/test-reports"/>
   </target>
 
   <target name="compile" depends="init" description="compile the source">
     <javac srcdir="src" destdir="build/classes" includeantruntime="false" debug="yes">
       <classpath refid="project.classpath"/>
     </javac>
+    <javac srcdir="test" destdir="build/test-classes" includeantruntime="false" debug="yes">
+      <classpath refid="test.classpath"/>
+    </javac>
+  </target>
+
+  <target name="test" depends="compile">
+
+    <junit printsummary="yes" haltonfailure="no">
+
+      <!--
+          <classpath location="lib/junit-4.11.jar" />
+          <classpath location="lib/hamcrest-core-1.3.jar" />
+      -->
+      <classpath refid="project.classpath" />
+      <classpath refid="test.classpath" />
+      <classpath location="build/test-classes" />
+
+      <formatter type="xml" />
+      <formatter type="plain" />
+
+      <batchtest fork="yes" todir="build/test-reports">
+        <fileset dir="test">
+          <include name="**/*Test*.java" />
+        </fileset>
+      </batchtest>
+
+    </junit>
+
+    <junitreport todir="build/test-reports">
+      <fileset dir=".">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="build/test-reports/html"/>
+    </junitreport>
   </target>
 
   <target name="javadoc-jar">

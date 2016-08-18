@@ -33,7 +33,7 @@ public class PlayGround {
     }
 
     private void throwInvalidFormatMessage(String methodFullName) {
-        throw new RuntimeException("[" + methodFullName + "] is " + INVALID_MESSAGE);
+        throw new IllegalArgumentException("[" + methodFullName + "] is " + INVALID_MESSAGE);
     }
 
     @Override

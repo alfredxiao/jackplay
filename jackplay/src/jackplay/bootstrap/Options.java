@@ -8,8 +8,9 @@ public class Options {
     final static String OPTION_SPLIT = ",";
     final static char OPTION_EQ_SIGN = '=';
     final static Map<String, String> DEFAULTS = new HashMap<>();
-    static Set<String> blacklist;
-    static Set<String> whitelist;
+    Map<String, String> options;
+    Set<String> blacklist;
+    Set<String> whitelist;
 
     static {
         DEFAULTS.put("port", "8181");
@@ -24,9 +25,7 @@ public class Options {
         return null == s || s.isEmpty();
     }
 
-    Map<String, String> options;
-
-    public Options(Map<String, String> options) {
+    Options(Map<String, String> options) {
         this.options = options;
     }
 
@@ -95,7 +94,8 @@ public class Options {
     }
 
     public String[] defaultTraceAsArray() {
-        return defaultTrace().split(":");
+        String defaultTrace = this.defaultTrace();
+        return (defaultTrace == null || defaultTrace.trim().length() == 0) ? null : defaultTrace.trim().split(":");
     }
 
     public void updateOption(String key, String value) {
