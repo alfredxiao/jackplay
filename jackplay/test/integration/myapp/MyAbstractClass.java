@@ -3,7 +3,7 @@ package integration.myapp;
 public abstract class MyAbstractClass {
 
     public String myfunction1(int arg1, String arg2) {
-        return arg2 + "." + arg1;
+        return arg1 + "." + arg2;
     }
 
     // will throw exception, for testing tracing exception

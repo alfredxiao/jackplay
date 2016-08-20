@@ -4,6 +4,7 @@ import integration.myapp.MyAbstractClass;
 import integration.myapp.MyClass;
 import jackplay.TheatreRep;
 import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.TraceKeeper;
 import jackplay.bootstrap.TracePoint;
 import jackplay.play.InfoCenter;
 import jackplay.play.PlayCoordinator;
@@ -20,21 +21,23 @@ public class PlayCoordinatorTest {
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
     PlayGround pg_myfunction1 = new PlayGround("integration.myapp.MyAbstractClass.myfunction1(int,java.lang.String)");
     PlayGround pg_myfunction2 = new PlayGround("integration.myapp.MyAbstractClass.myfunction2(java.lang.Object,java.util.List)");
+    MyClass myObj;
 
     @Before
     public void setup() throws PlayException {
         coordinator.undoAll();
+        TraceKeeper.clearLogHistory();
         Class myAbstractClass = MyAbstractClass.class;
         Class myClass = MyClass.class;
+        myObj = new MyClass();
     }
 
     @Test
     public void canAddTraceAndProduceTraceLog() throws PlayException {
         List<Map<String, Object>> logsBefore = infoCenter.getTraceLogs();
         coordinator.trace(pg_myfunction1);
-        MyClass myObj = new MyClass();
         String returnValue = myObj.myfunction1(123, "ABC");
-        assertEquals("ABC.123", returnValue);
+        assertEquals("123.ABC", returnValue);
 
         List<Map<String, Object>> logsAfter = infoCenter.getTraceLogs();
 
@@ -46,7 +49,7 @@ public class PlayCoordinatorTest {
         assertEquals(2, traceLogOfMethodReturns.get("argumentsCount"));
         assertEquals("integration.myapp.MyAbstractClass", traceLogOfMethodReturns.get("classFullName"));
         assertEquals("myfunction1", traceLogOfMethodReturns.get("methodShortName"));
-        assertEquals("\"ABC.123\"", traceLogOfMethodReturns.get("returnedValue"));
+        assertEquals("\"123.ABC\"", traceLogOfMethodReturns.get("returnedValue"));
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodReturns.get("threadName"));
 
         Map<String, ?> traceLogOfMethodEntry = logsAfter.get(1);
@@ -66,7 +69,6 @@ public class PlayCoordinatorTest {
     public void canTraceException() throws PlayException {
         List<Map<String, Object>> logsBefore = infoCenter.getTraceLogs();
         coordinator.trace(pg_myfunction2);
-        MyClass myObj = new MyClass();
         Exception thrown = null;
         try {
             myObj.myfunction2("A", null);
@@ -95,7 +97,6 @@ public class PlayCoordinatorTest {
     public void canUndoTrace() throws PlayException {
         List<Map<String, Object>> logsBefore = infoCenter.getTraceLogs();
         coordinator.trace(pg_myfunction1);
-        MyClass myObj = new MyClass();
         myObj.myfunction1(123, "ABC");
         List<Map<String, Object>> logsAfter = infoCenter.getTraceLogs();
 
@@ -109,17 +110,82 @@ public class PlayCoordinatorTest {
     }
 
     @Test
-    public void canHandleHappyCaseRedefine() {
+    public void canRedefine() throws PlayException {
+        // before redefine, things work as expected
+        String returnValue = myObj.myfunction1(123, "ABC");
+        assertEquals("123.ABC", returnValue);
+
+        // redefine it
+        coordinator.redefine(pg_myfunction1, "{ return \"HAS_BEEN_REDEFINED1\";}");
+
+        // after redefinition
+        returnValue = myObj.myfunction1(234, "DEF");
+        assertEquals("HAS_BEEN_REDEFINED1", returnValue);
     }
 
     @Test
-    public void canRedefineAfterTrace() {
+    public void canUndoRedefine() throws PlayException {
+        // redefine it
+        coordinator.redefine(pg_myfunction1, "{ return \"HAS_BEEN_REDEFINED4\";}");
 
+        // after redefinition
+        String returnValue = myObj.myfunction1(234, "DEF");
+        assertEquals("HAS_BEEN_REDEFINED4", returnValue);
+
+        // undo it
+        coordinator.undoRedefine(pg_myfunction1);
+
+        // after undo
+        returnValue = myObj.myfunction1(345, "GHI");
+        assertEquals("345.GHI", returnValue);
     }
 
     @Test
-    public void canTraceAfterRedefine() {
+    public void canRedefineAfterTrace() throws PlayException {
+        // start tracing
+        coordinator.trace(pg_myfunction1);
+        int logCountBegin = infoCenter.getTraceLogs().size();
 
+        // do something, which works as normal
+        String returnValue = myObj.myfunction1(123, "ABC");
+        assertEquals("123.ABC", returnValue);
+
+        // redefine it
+        coordinator.redefine(pg_myfunction1, "{ return \"HAS_BEEN_REDEFINED2\";}");
+
+        // after redefinition, which should work as expected
+        returnValue = myObj.myfunction1(234, "DEF");
+        assertEquals("HAS_BEEN_REDEFINED2", returnValue);
+
+        // trace should works as orthogonal to redefinition
+        int logCountEnd = infoCenter.getTraceLogs().size();
+
+        assertEquals(4, logCountEnd - logCountBegin);
+    }
+
+    @Test
+    public void canTraceAfterRedefine() throws PlayException {
+        // log count before anything
+        int logCountBegin = infoCenter.getTraceLogs().size();
+
+        // start with redefinition
+        coordinator.redefine(pg_myfunction1, "{ return \"HAS_BEEN_REDEFINED3\";}");
+
+        // after redefinition, which should work as expected
+        String returnValue = myObj.myfunction1(234, "DEF");
+        assertEquals("HAS_BEEN_REDEFINED3", returnValue);
+
+        // start tracing
+        coordinator.trace(pg_myfunction1);
+
+        // do something, which should still be under redefinition
+        returnValue = myObj.myfunction1(123, "ABC");
+        assertEquals("HAS_BEEN_REDEFINED3", returnValue);
+
+        // trace should works as orthogonal to redefinition
+        int logCountEnd = infoCenter.getTraceLogs().size();
+
+        assertEquals(2, logCountEnd - logCountBegin);
     }
 
     @Test

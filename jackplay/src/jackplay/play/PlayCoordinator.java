@@ -119,7 +119,7 @@ public class PlayCoordinator {
         Map<String, ?> plays = pm.program.get(genre).get(className);
         if (!plays.isEmpty()) {
             for (String methodFullName : plays.keySet()) {
-                this.undoTrace(new PlayGround(methodFullName));
+                this.undoPlay(genre, new PlayGround(methodFullName));
             }
         }
     }
