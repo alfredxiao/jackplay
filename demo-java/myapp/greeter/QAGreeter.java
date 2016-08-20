@@ -15,7 +15,7 @@ public class QAGreeter implements Greeter {
         byte b = 10;
         short sh = 100;
         testArguments(true, b, sh, 1000, 10000L, 2.3F, 3.8D, 'C', "String", new Object(), new QAGreeter(), new String[]{"S1", "S2"});
-        testReturningVoid("nothing");
+        testReturningVoid("noth\"i'ng");
         testReturningBoolean();
         testReturningByte();
         testReturningShort();
@@ -36,7 +36,7 @@ public class QAGreeter implements Greeter {
 
     private String testReturningString() {
         Demo.sleepSmallRandom();
-        return "Hello QA";
+        return "Hello QA '$%#@!(*&^\"";
     }
 
     private void testThrowingCheckException() throws Exception {
