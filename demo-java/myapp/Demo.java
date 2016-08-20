@@ -25,6 +25,8 @@ public class Demo implements Runnable {
       Thread t = new Thread(new Demo());
       t.start();
     }
+
+    Class clz = Test.class;
   }
 
   static void visitGreeters() {

@@ -132,7 +132,7 @@ public class Options {
         return Pattern.matches(pattern, packageName);
     }
 
-    public boolean canPlayPackage(String packageName) {
+    public boolean packageAllowed(String packageName) {
         if ("java.lang".equals(packageName) ||
                 "jackplay".equals(packageName) ||
                 packageName.startsWith("jackplay.")) return false;

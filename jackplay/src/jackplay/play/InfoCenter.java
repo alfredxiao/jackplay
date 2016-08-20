@@ -4,17 +4,13 @@ import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.bootstrap.TraceLog;
-import jackplay.javassist.ClassPool;
-import jackplay.javassist.CtClass;
-import jackplay.javassist.CtMethod;
-import jackplay.javassist.NotFoundException;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
-import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;
 
 public class InfoCenter {
 
@@ -23,28 +19,6 @@ public class InfoCenter {
     final static ClassComparator classComparator = new ClassComparator();
     final static MethodComparator methodComparator = new MethodComparator();
     private Options options;
-
-    public static CtMethod locateMethod(PlayGround playGround, String methodFullName, String methodShortName) throws NotFoundException {
-        ClassPool cp = ClassPool.getDefault();
-        CtMethod found = null;
-        try {
-            CtClass cc = cp.get(playGround.classFullName);
-
-            CtMethod[] methods = cc.getDeclaredMethods(methodShortName);
-            for (CtMethod m : methods) {
-                if (m.getLongName().equals(methodFullName)) {
-                    found = m;
-                }
-            }
-        } catch(NotFoundException nfe) {
-        }
-
-        if (null == found) {
-            throw new NotFoundException(playGround.methodFullName + " not found!");
-        } else {
-            return found;
-        }
-    }
 
     public Map<String, Object> getServerSettings() {
         Map<String, Object> serverSettings = new HashMap<>();
@@ -58,29 +32,66 @@ public class InfoCenter {
         options.updateOption(key, value.toString());
     }
 
+    public List<Class> findLoadedClasses(String className) {
+        Class[] classes = this.inst.getAllLoadedClasses();
+        List<Class> matched = new LinkedList<>();
+        for (Class clz : classes) {
+            if (clz.getName().equals(className)) {
+                matched.add(clz);
+            }
+        }
+
+        return matched;
+    }
+
+    public Method findMatchingMethod(Class clazz, PlayGround pg) {
+        if (clazz.getName().equals(pg.classFullName)) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.getName().equals(pg.methodShortName)
+                        && method.getParameterCount() == pg.parameterList.size()) {
+
+                    Class[] paramClasses = method.getParameterTypes();
+                    boolean parametersMatched = true;
+                    for (int i=0; i<method.getParameterCount(); i++) {
+                        if (!paramClasses[i].getCanonicalName().equals(pg.parameterList.get(i))) {
+                            parametersMatched = false;
+                            break;
+                        }
+                    }
+
+                    if (parametersMatched) {
+                        return method;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     static class ClassComparator implements Comparator<Class> {
         public int compare(Class o1, Class o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }
 
-    static class MethodComparator implements Comparator<CtMethod> {
-        public int compare(CtMethod o1, CtMethod o2) {
-            return o1.getLongName().compareTo(o2.getLongName());
+    static class MethodComparator implements Comparator<Method> {
+        public int compare(Method o1, Method o2) {
+            return o1.getName().compareTo(o2.getName());
         }
     }
 
     public List<Map<String, String>> getLoadedMethods() throws Exception {
         List<Map<String, String>> loadedMethods = new ArrayList<>();
-        List<CtClass> classes = modifiableClasses();
+        List<Class> classes = getAllLoadedModifiableClasses();
 
-        for (CtClass clazz : classes) {
-            CtMethod[] methods = clazz.getDeclaredMethods();
+        for (Class clazz : classes) {
+            Method[] methods = clazz.getDeclaredMethods();
             Arrays.sort(methods, methodComparator);
-            for (CtMethod m : methods) {
-                if (!canPlayMethod(m)) continue;
+            for (Method m : methods) {
+                if (!hasMethodBody(m)) continue;
 
-                PlayGround pg = new PlayGround(m.getLongName());
+                PlayGround pg = new PlayGround(getMethodFullName(m));
                 Map<String, String> loadedMethod = new HashMap<>();
                 loadedMethod.put("classFullName", pg.classFullName);
                 loadedMethod.put("methodFullName", pg.methodFullName);
@@ -94,31 +105,42 @@ public class InfoCenter {
         return loadedMethods;
     }
 
-    public boolean canPlayMethod(CtMethod method) {
-        int flags = method.getMethodInfo().getAccessFlags();
-        return (flags & NATIVE) == 0
-                && (method.getMethodInfo().getAccessFlags() & ABSTRACT) == 0;
+    private String getMethodFullName(Method m) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(m.getDeclaringClass().getCanonicalName());
+        builder.append('.');
+        builder.append(m.getName());
+        builder.append('(');
+        boolean isFirstParam = true;
+        for (Class paramClass : m.getParameterTypes()) {
+            if (!isFirstParam) builder.append(',');
+            builder.append(paramClass.getCanonicalName());
+            isFirstParam = false;
+        }
+        builder.append(')');
+
+        return builder.toString();
     }
 
-    private List<CtClass> modifiableClasses() throws Exception {
-        List<CtClass> modifiableClasses = new ArrayList<CtClass>();
+    public boolean hasMethodBody(Method method) {
+        int flags = method.getModifiers();
+        return (flags & Modifier.NATIVE) == 0
+                && (flags & Modifier.ABSTRACT) == 0;
+    }
+
+    private List<Class> getAllLoadedModifiableClasses() throws Exception {
+        List<Class> modifiableClasses = new ArrayList<>();
         Class[] classes = inst.getAllLoadedClasses();
         Arrays.sort(classes, classComparator);
-
-        ClassPool cp = ClassPool.getDefault();
 
         for (Class clazz : classes) {
             String packageName = (clazz.getPackage() == null) ? "" : clazz.getPackage().getName();
 
             if (inst.isModifiableClass(clazz) &&
                     this.isClassTypeSupported(clazz) &&
-                    options.canPlayPackage(packageName)) {
+                    options.packageAllowed(packageName)) {
 
-                try {
-                    CtClass cc = cp.get(clazz.getName());
-                    modifiableClasses.add(cc);
-                } catch(NotFoundException nfe) {
-                }
+                modifiableClasses.add(clazz);
             }
         }
 

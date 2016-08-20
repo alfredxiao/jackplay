@@ -12,6 +12,7 @@ import com.sun.net.httpserver.*;
 import jackplay.Logger;
 import jackplay.bootstrap.Options;
 import jackplay.play.InfoCenter;
+import jackplay.play.PlayCoordinator;
 import jackplay.play.ProgramManager;
 
 import javax.net.ssl.*;
@@ -19,14 +20,14 @@ import javax.net.ssl.*;
 // singleton
 public class BoxOffice extends Thread {
     Options options;
-    ProgramManager pm;
+    PlayCoordinator coordinator;
     InfoCenter infoCenter;
     Map<String, HttpHandler> contextMap;
     private static int BACKLOG = 50;
 
-    public void init(Options options, ProgramManager pm, InfoCenter infoCenter) {
+    public void init(Options options, PlayCoordinator coordinator, InfoCenter infoCenter) {
         this.options = options;
-        this.pm = pm;
+        this.coordinator = coordinator;
         this.infoCenter = infoCenter;
 
         super.setDaemon(true);
@@ -36,7 +37,7 @@ public class BoxOffice extends Thread {
     private void initContextMap() {
         this.contextMap = new HashMap<>();
         this.contextMap.put("/", new RootHandler());
-        this.contextMap.put("/program", new ProgramHandler(this.pm, this.infoCenter));
+        this.contextMap.put("/program", new ProgramHandler(this.coordinator, this.infoCenter));
         this.contextMap.put("/info", new InfoHandler(infoCenter));
     }
 

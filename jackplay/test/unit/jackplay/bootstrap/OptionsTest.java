@@ -34,12 +34,12 @@ public class OptionsTest {
         assertNull(defaultOptions.keystoreFilepath());
 
         // built-in
-        assertFalse(defaultOptions.canPlayPackage("java.lang"));
-        assertFalse(defaultOptions.canPlayPackage("jackplay"));
-        assertFalse(defaultOptions.canPlayPackage("jackplay.web"));
+        assertFalse(defaultOptions.packageAllowed("java.lang"));
+        assertFalse(defaultOptions.packageAllowed("jackplay"));
+        assertFalse(defaultOptions.packageAllowed("jackplay.web"));
 
         // any package
-        assertTrue(defaultOptions.canPlayPackage("java.util"));
+        assertTrue(defaultOptions.packageAllowed("java.util"));
     }
 
     @Test
@@ -51,16 +51,16 @@ public class OptionsTest {
         assertTrue(whitelistOptions.whitelist().contains("my.utils"));
 
         // built-in
-        assertFalse(whitelistOptions.canPlayPackage("java.lang"));
-        assertFalse(whitelistOptions.canPlayPackage("jackplay"));
-        assertFalse(whitelistOptions.canPlayPackage("jackplay.web"));
+        assertFalse(whitelistOptions.packageAllowed("java.lang"));
+        assertFalse(whitelistOptions.packageAllowed("jackplay"));
+        assertFalse(whitelistOptions.packageAllowed("jackplay.web"));
 
         // not in whitelist
-        assertFalse(whitelistOptions.canPlayPackage("java.util"));
+        assertFalse(whitelistOptions.packageAllowed("java.util"));
 
         // in whitelist
-        assertTrue(whitelistOptions.canPlayPackage("java.net"));
-        assertTrue(whitelistOptions.canPlayPackage("my.utils"));
+        assertTrue(whitelistOptions.packageAllowed("java.net"));
+        assertTrue(whitelistOptions.packageAllowed("my.utils"));
     }
 
     @Test
@@ -72,15 +72,15 @@ public class OptionsTest {
         assertTrue(blacklistOptions.blacklist().contains("my.utils"));
 
         // built-in
-        assertFalse(blacklistOptions.canPlayPackage("java.lang"));
-        assertFalse(blacklistOptions.canPlayPackage("jackplay"));
-        assertFalse(blacklistOptions.canPlayPackage("jackplay.web"));
+        assertFalse(blacklistOptions.packageAllowed("java.lang"));
+        assertFalse(blacklistOptions.packageAllowed("jackplay"));
+        assertFalse(blacklistOptions.packageAllowed("jackplay.web"));
 
         // not in blacklist
-        assertTrue(blacklistOptions.canPlayPackage("java.util"));
+        assertTrue(blacklistOptions.packageAllowed("java.util"));
 
         // in blacklist
-        assertFalse(blacklistOptions.canPlayPackage("java.net"));
-        assertFalse(blacklistOptions.canPlayPackage("my.utils"));
+        assertFalse(blacklistOptions.packageAllowed("java.net"));
+        assertFalse(blacklistOptions.packageAllowed("my.utils"));
     }
 }

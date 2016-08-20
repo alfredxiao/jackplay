@@ -1,97 +1,66 @@
 package jackplay.play.performers;
 
-import jackplay.Logger;
-import jackplay.play.Composer;
-import jackplay.play.ProgramManager;
 import jackplay.bootstrap.Genre;
+import jackplay.javassist.NotFoundException;
+import jackplay.play.PlayException;
+import jackplay.play.ProgramManager;
+import static jackplay.bootstrap.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class LeadPerformer implements ClassFileTransformer {
-    Composer composer;
     ProgramManager pm;
-    private Class classToRetransform;
-    private List<Exception> exceptionsDuringPerformance;
+    ClassPool cp;
 
-    public void init(Composer composer, ProgramManager pm) {
-        this.composer = composer;
+    public void init(ProgramManager pm) {
         this.pm = pm;
+        this.cp = ClassPool.getDefault();
+    }
+
+    private CtClass performAgenda(Map<String, Performer> performerMap, CtClass cc) throws Exception {
+        CtClass beingPlayed = cc;
+        if (performerMap != null) {
+
+            for (Performer performer : performerMap.values()) {
+                beingPlayed = performer.perform(beingPlayed);
+            }
+        }
+
+        return beingPlayed;
     }
 
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
-        if (null == classBeingRedefined) return classfileBuffer;
-
-        String clsName = classBeingRedefined.getName();
-        if (!clsName.equals(classToRetransform.getName())) {
+        String className = classNameWithSlash.replace('/', '.');
+        Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
+        if (agenda.isEmpty()) {
+            // ignore it
             return classfileBuffer;
         } else {
-            byte[] byteCode = classfileBuffer;
-
-            List<Performer> allPerformers = findAllPerformers(clsName);
-            ClassPool cp = ClassPool.getDefault();
+            // this class is on the program menu
+            byte[] byteCode;
             CtClass cc = null;
 
             try {
-                cc =  cp.get(clsName);
-                List<Exception> exceptions = new LinkedList<>();
+                cc = cp.get(className);
 
-                Logger.debug("leadperformer transforming class:" + clsName);
-                for (Performer performer : allPerformers) {
-                    try {
-                        cc = performer.perform(cc);
-                    } catch (Exception e) {
-                        // markdown what exception happened and continue with next performer
-                        exceptions.add(e);
-                        // tell program manager to remove this bad performer
-                        if (performer instanceof  RedefinePerformer) {
-                            RedefinePerformer redefPerformer = (RedefinePerformer) performer;
-                            pm.removeMethodRedefinition(clsName, redefPerformer.getPlayGround().methodFullName);
-                        }
-                    }
-                }
-                this.setExceptionsDuringPerformance(exceptions);
+                cc = performAgenda(agenda.get(METHOD_REDEFINE), cc);
+                cc = performAgenda(agenda.get(METHOD_TRACE), cc);
 
                 byteCode = cc.toBytecode();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch(Exception e) {
+                throw new RuntimeException(e.getMessage());
             } finally {
                 if (cc != null) cc.detach();
             }
 
             return byteCode;
         }
-    }
-
-    private List<Performer> findAllPerformers(String clsName) {
-        List<Performer> allPerformers = new LinkedList<Performer>();
-
-        Collection<Performer> redefiningPerformers = pm.findPerformers(Genre.METHOD_REDEFINE, clsName);
-        if (redefiningPerformers != null) allPerformers.addAll(redefiningPerformers);
-
-        Collection<Performer> tracingPerformers = pm.findPerformers(Genre.METHOD_TRACE, clsName);
-        if (tracingPerformers != null) allPerformers.addAll(tracingPerformers);
-
-        return allPerformers;
-    }
-
-    public void setClassToRetransform(Class classToPlay) {
-        this.classToRetransform = classToPlay;
-    }
-
-    public void setExceptionsDuringPerformance(List<Exception> exceptionsDuringPerformance) {
-        this.exceptionsDuringPerformance = exceptionsDuringPerformance;
-    }
-
-    public List<Exception> getExceptionsDuringPerformance() {
-        return this.exceptionsDuringPerformance;
     }
 }

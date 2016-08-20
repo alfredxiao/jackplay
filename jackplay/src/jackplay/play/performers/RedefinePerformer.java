@@ -2,11 +2,11 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.bootstrap.PlayGround;
+import jackplay.javassist.CannotCompileException;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
-import jackplay.play.InfoCenter;
+import jackplay.play.PlayException;
 
-import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public class RedefinePerformer implements jackplay.play.performers.Performer {
     private final PlayGround playGround;
@@ -21,18 +21,15 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
     public CtClass perform(CtClass aClass) throws Exception {
         Logger.debug("performing redefinition for method:" + playGround.methodFullName);
 
-        CtMethod method = InfoCenter.locateMethod(playGround, playGround.methodFullName, playGround.methodShortName);
-        if ((method.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) {
-            throw new Exception("Cannot redefine native method!");
-        }
+        CtMethod method = this.findMethod(aClass, playGround);
 
-        method.setBody(newSource);
+        try {
+            method.setBody(newSource);
+        } catch(CannotCompileException cce) {
+            throw new PlayException(cce.getMessage());
+        }
         Logger.debug("performed redefinition for method:" + playGround.methodFullName);
 
         return aClass;
-    }
-
-    public PlayGround getPlayGround() {
-        return playGround;
     }
 }

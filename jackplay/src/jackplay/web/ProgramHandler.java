@@ -1,7 +1,9 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
+import jackplay.bootstrap.PlayGround;
 import jackplay.play.InfoCenter;
+import jackplay.play.PlayCoordinator;
 import jackplay.play.ProgramManager;
 import jackplay.bootstrap.Genre;
 
@@ -9,11 +11,11 @@ import jackplay.bootstrap.Genre;
 import java.util.Map;
 
 public class ProgramHandler extends BaseHandler {
-    ProgramManager pm;
+    PlayCoordinator coordinator;
     InfoCenter infoCenter;
 
-    public ProgramHandler(ProgramManager pm, InfoCenter infoCenter) {
-        this.pm = pm;
+    public ProgramHandler(PlayCoordinator coordinator, InfoCenter infoCenter) {
+        this.coordinator = coordinator;
         this.infoCenter = infoCenter;
     }
 
@@ -34,7 +36,7 @@ public class ProgramHandler extends BaseHandler {
                 break;
             case "/program/currentProgram":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(pm.getCurrentProgram()));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(this.coordinator.getCurrentProgram()));
                 break;
             default:
                 CommonHandling.error_404(http);
@@ -42,19 +44,19 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
-        pm.submitMethodRedefinition(params.get("longMethodName"), params.get("src"));
+//        pm.submitMethodRedefinition(params.get("longMethodName"), params.get("src"));
         CommonHandling.serveStringBody(http, 200, "Method is redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
-        pm.submitMethodTrace(params.get("methodFullName"));
+        coordinator.trace(new PlayGround(params.get("methodFullName")));
         CommonHandling.serveStringBody(http, 200, "Method trace is added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         String methodFullName = params.get("methodFullName");
-        pm.removeMethodFromProgramAndReplay(g, methodFullName);
+//        pm.removeMethodFromProgramAndReplay(g, methodFullName);
         CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 
@@ -62,7 +64,7 @@ public class ProgramHandler extends BaseHandler {
         Genre g = Genre.valueOf(params.get("genre"));
 
         String className = params.get("classFullName");
-        pm.removeClassFromProgramAndReplay(g, className);
+//        pm.removeClassFromProgramAndReplay(g, className);
         CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
     }
 

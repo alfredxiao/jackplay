@@ -2,108 +2,67 @@ package jackplay.play;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
-import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
+import static jackplay.bootstrap.Genre.*;
 import jackplay.play.performers.RedefinePerformer;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
-import jackplay.javassist.NotFoundException;
-import jackplay.javassist.CtClass;
-import jackplay.javassist.ClassPool;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+// singleton
 public class ProgramManager {
-    Composer composer;
     Map<Genre, Map<String, Map<String, Performer>>> program;
-    private Options options;
-    private InfoCenter infoCenter;
 
-    public void init(Composer composer, Options options, InfoCenter infoCenter) {
-        program = new ConcurrentHashMap<>();
-        this.options = options;
-        this.composer = composer;
-        this.infoCenter = infoCenter;
+    public ProgramManager() {
+        this.program = new ConcurrentHashMap<>();
+        this.prepareGenre(METHOD_TRACE);
+        this.prepareGenre(METHOD_REDEFINE);
     }
 
-    public void submitMethodTrace(String methodFullName) throws Exception {
-       this.submitPlayToProgram(methodFullName, Genre.METHOD_TRACE, null);
-    }
-
-    public void submitMethodRedefinition(String methodFullName, String src) throws Exception {
-        this.submitPlayToProgram(methodFullName, Genre.METHOD_REDEFINE, src);
-    }
-
-    private void submitPlayToProgram(String methodFullName, Genre genre, String src) throws Exception {
-        PlayGround pg = new PlayGround(methodFullName);     // basic format validation
-        checkValidity(pg);                         // validate method existence
-        if (genre == Genre.METHOD_REDEFINE || !existsPlay(pg, genre)) {
-            addPlayToProgram(pg, genre, src);
-            try {
-                composer.retransformByClassName(pg.classFullName);
-            } catch(Exception e) {
-                removeMethodFromProgram(genre, pg.methodFullName);
-                throw e;
-            }
+    public boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
+        if (this.existsAgenda(genre, pg)) {
+            return false;
+        } else {
+            this.createNewAgenda(genre, pg, newBody);
+            return true;
         }
     }
 
-    private void checkValidity(PlayGround pg) throws Exception {
-        if (!this.canPlayOn(pg)) {
-            throw new Exception(pg.methodFullName + " is not allowed.");
+    public boolean removeAgenda(Genre genre, PlayGround pg) {
+        if (!this.existsAgenda(genre, pg)) {
+            return false;
+        } else {
+            this.deleteExistingAgenda(genre, pg);
+            return true;
         }
     }
 
-    private boolean canPlayOn(PlayGround pg) throws NotFoundException {
-        ClassPool cp = ClassPool.getDefault();
-        CtClass cc = cp.get(pg.classFullName);
+    private synchronized void createNewAgenda(Genre genre, PlayGround pg, String newBody) {
+        prepareClass(genre, pg.classFullName);
 
-        String packageName = cc.getPackageName();
-        return options.canPlayPackage(packageName) &&
-                infoCenter.canPlayMethod(InfoCenter.locateMethod(pg, pg.methodFullName, pg.methodShortName));
+        Performer performer = createPerformer(pg, genre, newBody);
+        // todo, use method shortname + argslist instead of method full name
+        program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
+
+        Logger.debug("created new agenda:" + genre + ", " + pg.methodFullName);
     }
 
-    public void removeMethodRedefinition(String className, String methodFullName) {
-        program.get(Genre.METHOD_REDEFINE).get(className).remove(methodFullName);
-    }
+    private void deleteExistingAgenda(Genre genre, PlayGround pg) {
+        if (program.get(genre).containsKey(pg.classFullName)) {
 
-    public void removeMethodFromProgramAndReplay(Genre genre, String methodFullName) throws Exception {
-        removeMethodFromProgram(genre, methodFullName);
-
-        composer.retransformByClassName(new PlayGround(methodFullName).classFullName);
-    }
-
-    private void removeMethodFromProgram(Genre genre, String methodFullName) throws Exception {
-        PlayGround pg = new PlayGround(methodFullName);
-
-        if (program.containsKey(genre)
-                && program.get(genre).containsKey(pg.classFullName)) {
-            program.get(genre).get(pg.classFullName).remove(methodFullName);
+            program.get(genre).get(pg.classFullName).remove(pg.methodFullName);
+            Logger.debug("delete existing agenda:" + genre + ", " + pg.methodFullName);
 
             if (program.get(genre).get(pg.classFullName).isEmpty()) {
                 program.get(genre).remove(pg.classFullName);
-
-                if (program.get(genre).isEmpty()) {
-                    program.remove(genre);
-                }
             }
         }
     }
 
-    public void removeClassFromProgramAndReplay(Genre genre, String className) throws Exception {
-        removeClassFromProgram(genre, className);
-        composer.retransformByClassName(className);
-    }
-
-    // called when verifier error occurs
-    void removeClassFromProgram(Genre genre, String className) {
-        program.get(genre).remove(className);
-        if (program.get(genre).isEmpty()) program.remove(genre);
-    }
-
-    private boolean existsPlay(PlayGround pg, Genre genre) throws NotFoundException {
+    private boolean existsAgenda(Genre genre, PlayGround pg) {
         try {
             return program.get(genre).get(pg.classFullName).containsKey(pg.methodFullName);
         } catch(NullPointerException npe) {
@@ -111,22 +70,13 @@ public class ProgramManager {
         }
     }
 
-    private synchronized void addPlayToProgram(PlayGround pg, Genre genre, String methodSource) {
-        prepareProgram(genre, pg.classFullName);
-        Performer performer = createPerformer(pg, genre, methodSource);
-        program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
+    private void prepareGenre(Genre genre) {
+        if (!program.containsKey(genre)) {
+            program.put(genre, new ConcurrentHashMap<>());
+        }
     }
 
-    private synchronized void prepareProgram(Genre genre, String className) {
-        prepareGenreMap(genre);
-        prepareClassMap(genre, className);
-    }
-
-    private void prepareGenreMap(Genre genre) {
-        if (!program.containsKey(genre))  program.put(genre, new ConcurrentHashMap<String, Map<String, jackplay.play.performers.Performer>>());
-    }
-
-    private void prepareClassMap(Genre genre, String className) {
+    private void prepareClass(Genre genre, String className) {
         if (!program.get(genre).containsKey(className)) program.get(genre).put(className, new ConcurrentHashMap<String, jackplay.play.performers.Performer>());
     }
 
@@ -141,19 +91,15 @@ public class ProgramManager {
         }
     }
 
-    public Collection<Performer> findPerformers(Genre genre, String className) {
-        if (program.containsKey(genre) && program.get(genre).containsKey(className)) {
-            return program.get(genre).get(className).values();
-        } else {
-            return null;
-        }
+    public Map<Genre, Map<String, Performer>> agendaForClass(String classFullName) {
+        Map<Genre, Map<String, Performer>> agenda = new HashMap<>();
+        agenda.put(METHOD_TRACE, this.program.get(METHOD_TRACE).get(classFullName));
+        agenda.put(METHOD_REDEFINE, this.program.get(METHOD_REDEFINE).get(classFullName));
+
+        return agenda;
     }
 
-    public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
-        return this.program;
-    }
-
-    public void submitMethodTraceBatch(String[] methodFullNames) {
+    public void addDefaultTrace(String[] methodFullNames) {
         if (methodFullNames == null || methodFullNames.length == 0) return;
 
         for (String mfn : methodFullNames) {
@@ -162,11 +108,7 @@ public class ProgramManager {
             String trimmed = mfn.trim();
             if (trimmed.length() == 0) continue;
 
-            try {
-                this.submitMethodTrace(trimmed);
-            } catch (Exception e) {
-                Logger.error(e);
-            }
+            this.addAgenda(METHOD_TRACE, new PlayGround(mfn), null);
         }
     }
 }

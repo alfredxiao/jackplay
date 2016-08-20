@@ -12,9 +12,11 @@ public class PlayGroundTest {
         PlayGround noPackage = new PlayGround("MyClass.myFunction()");
 
         assertEquals("MyClass", noPackage.classFullName);
+        assertEquals("", noPackage.packageName);
         assertEquals("MyClass.myFunction()", noPackage.methodFullName);
         assertEquals("MyClass.myFunction", noPackage.methodLongName);
         assertEquals("myFunction", noPackage.methodShortName);
+        assertEquals("", noPackage.parameters);
     }
 
     @Test
@@ -22,6 +24,7 @@ public class PlayGroundTest {
         PlayGround withPackage = new PlayGround("mypackage.utils.MyClass.myFunction()");
 
         assertEquals("mypackage.utils.MyClass", withPackage.classFullName);
+        assertEquals("mypackage.utils", withPackage.packageName);
         assertEquals("mypackage.utils.MyClass.myFunction()", withPackage.methodFullName);
         assertEquals("mypackage.utils.MyClass.myFunction", withPackage.methodLongName);
         assertEquals("myFunction", withPackage.methodShortName);
@@ -32,6 +35,7 @@ public class PlayGroundTest {
         PlayGround withDollarSign = new PlayGround("mypackage.utils.My$Class.myFunction()");
 
         assertEquals("mypackage.utils.My$Class", withDollarSign.classFullName);
+        assertEquals("mypackage.utils", withDollarSign.packageName);
         assertEquals("mypackage.utils.My$Class.myFunction()", withDollarSign.methodFullName);
         assertEquals("mypackage.utils.My$Class.myFunction", withDollarSign.methodLongName);
         assertEquals("myFunction", withDollarSign.methodShortName);
@@ -42,9 +46,14 @@ public class PlayGroundTest {
         PlayGround withArguments = new PlayGround("mypackage.utils.My$Class.myFunction(java.lang.String,int)");
 
         assertEquals("mypackage.utils.My$Class", withArguments.classFullName);
+        assertEquals("mypackage.utils", withArguments.packageName);
         assertEquals("mypackage.utils.My$Class.myFunction(java.lang.String,int)", withArguments.methodFullName);
         assertEquals("mypackage.utils.My$Class.myFunction", withArguments.methodLongName);
         assertEquals("myFunction", withArguments.methodShortName);
+        assertEquals("java.lang.String,int", withArguments.parameters);
+        assertTrue(withArguments.parameterList.contains("java.lang.String"));
+        assertTrue(withArguments.parameterList.contains("int"));
+        assertEquals(2, withArguments.parameterList.size());
     }
 
     @Test
@@ -52,9 +61,13 @@ public class PlayGroundTest {
         PlayGround withArrayArguments = new PlayGround("mypackage.utils.My$Class.myFunction(java.lang.String[])");
 
         assertEquals("mypackage.utils.My$Class", withArrayArguments.classFullName);
+        assertEquals("mypackage.utils", withArrayArguments.packageName);
         assertEquals("mypackage.utils.My$Class.myFunction(java.lang.String[])", withArrayArguments.methodFullName);
         assertEquals("mypackage.utils.My$Class.myFunction", withArrayArguments.methodLongName);
         assertEquals("myFunction", withArrayArguments.methodShortName);
+        assertEquals("java.lang.String[]", withArrayArguments.parameters);
+        assertTrue(withArrayArguments.parameterList.contains("java.lang.String[]"));
+        assertEquals(1, withArrayArguments.parameterList.size());
     }
 
     @Test(expected=IllegalArgumentException.class)

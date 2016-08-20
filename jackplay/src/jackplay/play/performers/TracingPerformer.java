@@ -5,8 +5,7 @@ import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
-import static jackplay.javassist.bytecode.AccessFlag.*;
-import jackplay.play.InfoCenter;
+import jackplay.play.PlayException;
 
 public class TracingPerformer implements Performer {
     private final PlayGround playGround;
@@ -19,10 +18,7 @@ public class TracingPerformer implements Performer {
     public CtClass perform(CtClass aClass) throws Exception {
         Logger.debug("performing tracing for method:" + playGround.methodFullName);
 
-        CtMethod method = InfoCenter.locateMethod(playGround, playGround.methodFullName, playGround.methodShortName);
-        if ((method.getMethodInfo().getAccessFlags() & NATIVE) == NATIVE) {
-            throw new Exception("Cannot trace native method!");
-        }
+        CtMethod method = this.findMethod(aClass, playGround);
 
         method.addLocalVariable("_jackplay_elapsed$", CtClass.longType);
         method.addLocalVariable("_jackplay_uuid$", ClassPool.getDefault().get("java.lang.String"));
