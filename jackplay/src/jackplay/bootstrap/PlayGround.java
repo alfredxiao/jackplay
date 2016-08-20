@@ -46,7 +46,7 @@ public class PlayGround {
         String[] parametersArray = this.parameters.split(",");
         for (String param : parametersArray) {
             if (param != null && param.length() > 0) {
-                parameterList.add(0, param);
+                parameterList.add(param);
             }
         }
     }

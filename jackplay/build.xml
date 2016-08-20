@@ -56,14 +56,9 @@
     </javac>
   </target>
 
-  <target name="test" depends="compile">
+  <target name="test" depends="compile,dist">
 
     <junit printsummary="yes" haltonfailure="no">
-
-      <!--
-          <classpath location="lib/junit-4.11.jar" />
-          <classpath location="lib/hamcrest-core-1.3.jar" />
-      -->
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
       <classpath location="build/test-classes" />
@@ -73,14 +68,33 @@
 
       <batchtest fork="yes" todir="build/test-reports">
         <fileset dir="test">
-          <include name="**/*Test*.java" />
+          <include name="unit/**/*Test*.java" />
+        </fileset>
+      </batchtest>
+
+    </junit>
+
+    <junit printsummary="yes" haltonfailure="no">
+      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar"/>
+
+      <classpath refid="project.classpath" />
+      <classpath refid="test.classpath" />
+      <classpath location="build/test-classes" />
+
+      <formatter type="xml" />
+      <formatter type="plain" />
+
+      <batchtest fork="yes" todir="build/test-reports">
+        <fileset dir="test">
+          <include name="integration/**/*Test*.java" />
         </fileset>
       </batchtest>
 
     </junit>
 
     <junitreport todir="build/test-reports">
-      <fileset dir=".">
+      <fileset dir="build/test-reports">
         <include name="TEST-*.xml"/>
       </fileset>
       <report format="frames" todir="build/test-reports/html"/>

@@ -20,6 +20,12 @@ public class InfoCenter {
     final static MethodComparator methodComparator = new MethodComparator();
     private Options options;
 
+    public void init(Instrumentation inst, ProgramManager pm, Options options) {
+        this.inst = inst;
+        this.pm = pm;
+        this.options = options;
+    }
+
     public Map<String, Object> getServerSettings() {
         Map<String, Object> serverSettings = new HashMap<>();
         serverSettings.put("traceLogLimit", options.traceLogLimit());
@@ -151,12 +157,6 @@ public class InfoCenter {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
                 && !clazz.isArray();
-    }
-
-    public void init(Instrumentation inst, ProgramManager pm, Options options) {
-        this.inst = inst;
-        this.pm = pm;
-        this.options = options;
     }
 
     public List<Map<String, Object>> getTraceLogs() {

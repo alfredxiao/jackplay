@@ -1,4 +1,4 @@
-package integration.jackplay.play;
+package unit.jackplay.play;
 
 import static jackplay.bootstrap.Genre.*;
 

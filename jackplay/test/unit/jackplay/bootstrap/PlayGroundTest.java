@@ -51,9 +51,9 @@ public class PlayGroundTest {
         assertEquals("mypackage.utils.My$Class.myFunction", withArguments.methodLongName);
         assertEquals("myFunction", withArguments.methodShortName);
         assertEquals("java.lang.String,int", withArguments.parameters);
-        assertTrue(withArguments.parameterList.contains("java.lang.String"));
-        assertTrue(withArguments.parameterList.contains("int"));
         assertEquals(2, withArguments.parameterList.size());
+        assertEquals("java.lang.String", withArguments.parameterList.get(0));
+        assertEquals("int", withArguments.parameterList.get(1));
     }
 
     @Test
