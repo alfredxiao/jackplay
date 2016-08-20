@@ -34,6 +34,7 @@ public class TraceKeeper {
             entry.arguments = null;
         } else {
             entry.arguments = new String[args.length];
+            entry.argumentsCount = args.length;
             for (int i=0; i<args.length; i++) {
                 entry.arguments[i] = objectToString(args[i]);
             }

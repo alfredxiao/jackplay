@@ -9,24 +9,24 @@ public class PlayGroundTest {
 
     @Test
     public void testNoPackage() {
-        PlayGround noPackage = new PlayGround("MyClass.myFunction()");
+        PlayGround noPackage = new PlayGround("MyAbstractClass.myFunction()");
 
-        assertEquals("MyClass", noPackage.classFullName);
+        assertEquals("MyAbstractClass", noPackage.classFullName);
         assertEquals("", noPackage.packageName);
-        assertEquals("MyClass.myFunction()", noPackage.methodFullName);
-        assertEquals("MyClass.myFunction", noPackage.methodLongName);
+        assertEquals("MyAbstractClass.myFunction()", noPackage.methodFullName);
+        assertEquals("MyAbstractClass.myFunction", noPackage.methodLongName);
         assertEquals("myFunction", noPackage.methodShortName);
         assertEquals("", noPackage.parameters);
     }
 
     @Test
     public void testPackage() {
-        PlayGround withPackage = new PlayGround("mypackage.utils.MyClass.myFunction()");
+        PlayGround withPackage = new PlayGround("mypackage.utils.MyAbstractClass.myFunction()");
 
-        assertEquals("mypackage.utils.MyClass", withPackage.classFullName);
+        assertEquals("mypackage.utils.MyAbstractClass", withPackage.classFullName);
         assertEquals("mypackage.utils", withPackage.packageName);
-        assertEquals("mypackage.utils.MyClass.myFunction()", withPackage.methodFullName);
-        assertEquals("mypackage.utils.MyClass.myFunction", withPackage.methodLongName);
+        assertEquals("mypackage.utils.MyAbstractClass.myFunction()", withPackage.methodFullName);
+        assertEquals("mypackage.utils.MyAbstractClass.myFunction", withPackage.methodLongName);
         assertEquals("myFunction", withPackage.methodShortName);
     }
 
@@ -72,11 +72,11 @@ public class PlayGroundTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidSpaceCharacter() {
-        PlayGround pg = new PlayGround("mypackage.MyClass.test( )");
+        PlayGround pg = new PlayGround("mypackage.MyAbstractClass.test( )");
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidFunctionParens() {
-        PlayGround pg = new PlayGround("mypackage.MyClass.test(]");
+        PlayGround pg = new PlayGround("mypackage.MyAbstractClass.test(]");
     }
 }

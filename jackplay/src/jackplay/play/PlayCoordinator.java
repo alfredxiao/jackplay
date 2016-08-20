@@ -2,6 +2,7 @@ package jackplay.play;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
+import static jackplay.bootstrap.Genre.*;
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.LeadPerformer;
@@ -9,16 +10,11 @@ import jackplay.play.performers.Performer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class PlayCoordinator {
-    // depends on programmanager
-    // depends on composer
-    // programmanager: manage program, add, remove, etc. (not play)
-    // composer: play things on the program; if error, report it; do not modify program
-    // processmanager: if error when in composer's play, handle it
-    // leadperformer: be aware of loadtime class transformation
     Instrumentation inst;
     ProgramManager pm;
     Options options;
@@ -104,40 +100,45 @@ public class PlayCoordinator {
     }
 
     public void trace(PlayGround pg) throws PlayException {
-        this.play(Genre.METHOD_TRACE, pg, null);
+        this.play(METHOD_TRACE, pg, null);
     }
 
-    public void traceBatch(List<PlayGround> pgList) {
-        for (PlayGround pg : pgList) {
-            try {
-                this.trace(pg);
-            } catch (Exception e) {
-                Logger.error(e);
+    public void undoTrace(PlayGround pg) throws PlayException {
+        this.undoPlay(METHOD_TRACE, pg);
+    }
+
+    public void redefine(PlayGround pg, String newBody) throws PlayException {
+        this.play(METHOD_REDEFINE, pg, newBody);
+    }
+
+    public void undoRedefine(PlayGround pg) throws PlayException {
+        this.undoPlay(METHOD_REDEFINE, pg);
+    }
+
+    public void undoClass(Genre genre, String className) throws PlayException {
+        Map<String, ?> plays = pm.program.get(genre).get(className);
+        if (!plays.isEmpty()) {
+            for (String methodFullName : plays.keySet()) {
+                this.undoTrace(new PlayGround(methodFullName));
             }
         }
     }
 
-    public void redefine(PlayGround pg, String newBody) throws PlayException {
-        this.play(Genre.METHOD_REDEFINE, pg, newBody);
+    public void undoAll(Genre genre) throws PlayException {
+        Map<String,?> traces = pm.program.get(genre);
+        if (!traces.isEmpty()) {
+            for (String className : traces.keySet()) {
+                this.undoClass(genre, className);
+            }
+        }
     }
 
-    public void undoTrace(PlayGround pg) throws PlayException {
-        this.undoPlay(Genre.METHOD_TRACE, pg);
-    }
-
-    public void undoRedefine(PlayGround pg) throws PlayException {
-        this.undoPlay(Genre.METHOD_REDEFINE, pg);
-    }
-
-    public void undoTraceClass() {
-
-    }
-
-    public void undoRedefineClass() {
-
+    public void undoAll() throws PlayException {
+        this.undoAll(METHOD_TRACE);
+        this.undoAll(METHOD_REDEFINE);
     }
 
     public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
-        return pm.program;
+        return Collections.unmodifiableMap(pm.program);
     }
 }
