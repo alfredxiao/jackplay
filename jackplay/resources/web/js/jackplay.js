@@ -912,7 +912,7 @@ let AboutJackPlay = React.createClass({
                       </ul>
                   </li>
                 </ol>
-                <div className='aboutBottomline'>
+                <div className='aboutBottomline' style={{display: 'none'}}>
                   If you find a good solution and become attached to it, the solution may become your next problem. {LONG_DASH} Robert Anthony
                 </div>
               </div>
