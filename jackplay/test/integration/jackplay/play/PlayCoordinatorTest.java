@@ -29,11 +29,13 @@ public class PlayCoordinatorTest {
     }
 
     @Test
-    public void canHandleHappyCaseAddTrace() throws PlayException {
+    public void canAddTraceAndProduceTraceLog() throws PlayException {
         List<Map<String, Object>> logsBefore = infoCenter.getTraceLogs();
         coordinator.trace(pg_myfunction1);
         MyClass myObj = new MyClass();
-        myObj.myfunction1(123, "ABC");
+        String returnValue = myObj.myfunction1(123, "ABC");
+        assertEquals("ABC.123", returnValue);
+
         List<Map<String, Object>> logsAfter = infoCenter.getTraceLogs();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
@@ -65,9 +67,14 @@ public class PlayCoordinatorTest {
         List<Map<String, Object>> logsBefore = infoCenter.getTraceLogs();
         coordinator.trace(pg_myfunction2);
         MyClass myObj = new MyClass();
+        Exception thrown = null;
         try {
             myObj.myfunction2("A", null);
-        } catch(Exception ignore) {}
+        } catch(Exception e) {
+            thrown = e;
+        }
+
+        assertTrue(thrown instanceof NullPointerException);
 
         List<Map<String, Object>> logsAfter = infoCenter.getTraceLogs();
 
