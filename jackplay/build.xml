@@ -77,7 +77,7 @@
 
     <junit printsummary="yes" haltonfailure="no">
       <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
-      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug;port=8179"/>
 
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
