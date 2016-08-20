@@ -64,7 +64,7 @@ public class Theatre {
     }
 
     private void prepare() {
-        pm.addDefaultTrace(options.defaultTraceAsArray());
+        pm.addTraces(options.defaultTraceAsArray());
     }
 
     private void start() {

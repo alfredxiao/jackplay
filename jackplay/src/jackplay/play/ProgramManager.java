@@ -99,7 +99,7 @@ public class ProgramManager {
         return agenda;
     }
 
-    public void addDefaultTrace(String[] methodFullNames) {
+    public void addTraces(String[] methodFullNames) {
         if (methodFullNames == null || methodFullNames.length == 0) return;
 
         for (String mfn : methodFullNames) {
