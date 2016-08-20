@@ -494,7 +494,7 @@ function extractMethodInfo(methodFullName) {
 }
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
-  if (suggestion.indicatorForMore === true) return <span title='please enter more to narrow down selections' style={{display:'block', width:'450px', paddingLeft: '10px'}}>...more...</span>;
+  if (suggestion.indicatorForMore === true) return <span title='or enter more to narrow down selections' style={{display:'block', fontSize: '11px', width:'448px', paddingLeft: '0px', borderTop:'1px dotted #333'}}>==click Settings > Configuration > Max Number of Auto Suggest to display more==</span>;
 
   const query = (valueBeforeUpDown || value).trim();
   let methodFullName = suggestion.methodFullName;
