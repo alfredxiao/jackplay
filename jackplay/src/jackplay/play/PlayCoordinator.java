@@ -53,9 +53,10 @@ public class PlayCoordinator {
         // if an agenda causes problem, we do our best by removing it and
         // re-transform with this agenda removed - in other words, undo it
 
-        Logger.error(t);
+        Logger.error("coordinator", t);
         pm.removeAgenda(genre, pg);
         try {
+            Logger.debug("coordinator attempting to undo retransformation for class:" + pg.classFullName);
             inst.retransformClasses(clazz);
         } catch(Exception bestEffort) {}
 
@@ -70,10 +71,14 @@ public class PlayCoordinator {
             for (Class clazz : loadedMatchedClasses) {
                 Method method = infoCenter.findMatchingMethod(clazz, pg);
                 if (method != null && verifyPlayability(method)) {
+                    matched = true;
                     try {
-                        matched = true;
+                        leadPerformer.rehearsal(clazz);
+
+                        Logger.debug("coordinator start retransforming class:" + pg.classFullName);
                         inst.retransformClasses(clazz);
-                    } catch (Throwable t) {
+                        Logger.debug("coordinator finished retransforming class:" + pg.classFullName);
+                    } catch(Throwable t) {
                         handleRetransformationError(t, clazz, genre, pg);
                     }
                 }
@@ -117,7 +122,7 @@ public class PlayCoordinator {
 
     public void undoClass(Genre genre, String className) throws PlayException {
         Map<String, ?> plays = pm.program.get(genre).get(className);
-        if (!plays.isEmpty()) {
+        if (plays != null && !plays.isEmpty()) {
             for (String methodFullName : plays.keySet()) {
                 this.undoPlay(genre, new PlayGround(methodFullName));
             }

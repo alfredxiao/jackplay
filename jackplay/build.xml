@@ -34,6 +34,7 @@
   <path id="test.classpath" cache="true">
     <fileset dir="lib">
       <include name="junit-4.12.jar"/>
+      <include name="javassist-3.20.0-GA-jackplay.jar"/>
       <include name="java-hamcrest-2.0.0.0.jar"/>
     </fileset>
     <pathelement location="build/classes"/>
@@ -76,7 +77,7 @@
 
     <junit printsummary="yes" haltonfailure="no">
       <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
-      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug"/>
 
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />

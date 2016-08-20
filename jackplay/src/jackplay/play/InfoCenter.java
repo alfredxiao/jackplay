@@ -2,13 +2,10 @@ package jackplay.play;
 
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
-import jackplay.bootstrap.TraceKeeper;
-import jackplay.bootstrap.TraceLog;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -157,40 +154,6 @@ public class InfoCenter {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
                 && !clazz.isArray();
-    }
-
-    public List<Map<String, Object>> getTraceLogs() {
-        Iterator<TraceLog> it = TraceKeeper.copyTraceLogs().iterator();
-        List<Map<String, Object>> listOfLogs = new ArrayList<>();
-
-        while (it.hasNext()) {
-            try {
-                TraceLog traceLog = it.next();
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("when", formatDate(traceLog.when));
-                map.put("tracePoint", traceLog.tracePoint.toString());
-                map.put("classFullName", traceLog.pg.classFullName);
-                map.put("methodShortName", traceLog.pg.methodShortName);
-                map.put("uuid", traceLog.uuid);
-                map.put("threadId", traceLog.threadId);
-                map.put("threadName", traceLog.threadName);
-                map.put("arguments", traceLog.arguments);
-                map.put("returnedValue", traceLog.returnedValue);
-                map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
-                map.put("elapsed", traceLog.elapsed);
-                map.put("argumentsCount", traceLog.argumentsCount);
-
-                listOfLogs.add(map);
-            } catch(ConcurrentModificationException e) {}
-        }
-
-        return listOfLogs;
-    }
-
-    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static String formatDate(Date when) {
-        return formatter.format(when);
     }
 
 }

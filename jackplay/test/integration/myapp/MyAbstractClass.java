@@ -8,7 +8,7 @@ public abstract class MyAbstractClass {
 
     // will throw exception, for testing tracing exception
     public void myfunction2(Object arg1, java.util.List<String> arg2) {
-        arg2.get(100);
+        int size = arg2.size();
     }
 
     public Object[] myfunction3(Object[] arg1, int[][] arg2) {

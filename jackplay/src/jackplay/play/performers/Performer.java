@@ -4,7 +4,6 @@ package jackplay.play.performers;
 import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
-import jackplay.javassist.NotFoundException;
 import jackplay.play.PlayException;
 
 import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;

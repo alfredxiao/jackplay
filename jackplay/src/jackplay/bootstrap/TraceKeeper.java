@@ -4,20 +4,52 @@ import static jackplay.bootstrap.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TraceKeeper {
+    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static List<TraceLog> traceLogs = new LinkedList<>();
     private static Options options;
 
-    public synchronized static List<TraceLog> copyTraceLogs() {
+    private synchronized static List<TraceLog> copyTraceLogs() {
         List<TraceLog> copyList = new ArrayList<>(traceLogs.size());
         copyList.addAll(traceLogs);
 
         return copyList;
+    }
+
+    private static String formatDate(Date when) {
+        return formatter.format(when);
+    }
+
+    public static List<Map<String, Object>> getTraceLogs() {
+        Iterator<TraceLog> it = TraceKeeper.copyTraceLogs().iterator();
+        List<Map<String, Object>> listOfLogs = new ArrayList<>();
+
+        while (it.hasNext()) {
+            try {
+                TraceLog traceLog = it.next();
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("when", formatDate(traceLog.when));
+                map.put("tracePoint", traceLog.tracePoint.toString());
+                map.put("classFullName", traceLog.pg.classFullName);
+                map.put("methodShortName", traceLog.pg.methodShortName);
+                map.put("uuid", traceLog.uuid);
+                map.put("threadId", traceLog.threadId);
+                map.put("threadName", traceLog.threadName);
+                map.put("arguments", traceLog.arguments);
+                map.put("returnedValue", traceLog.returnedValue);
+                map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
+                map.put("elapsed", traceLog.elapsed);
+                map.put("argumentsCount", traceLog.argumentsCount);
+
+                listOfLogs.add(map);
+            } catch(ConcurrentModificationException e) {}
+        }
+
+        return listOfLogs;
     }
 
     private synchronized static void addTraceLog(TraceLog entry) {
