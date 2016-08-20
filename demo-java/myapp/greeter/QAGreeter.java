@@ -28,10 +28,20 @@ public class QAGreeter implements Greeter {
         testReturningObject();
         testReturningQAGreeter();
         testReturningArray();
+        testVarargs("A", "B", "C");
         try {
             testThrowingCheckException();
         } catch (Exception e) {}
         testThrowingRuntimeException();
+    }
+
+    private String testVarargs(String ... args) {
+        StringBuilder result = new StringBuilder();
+        for(String arg : args) {
+            result.append(arg);
+        }
+
+        return result.toString();
     }
 
     private String testReturningString() {
