@@ -3,19 +3,18 @@ package jackplay.web;
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.InfoCenter;
-import jackplay.play.PlayCoordinator;
-import jackplay.play.ProgramManager;
+import jackplay.play.Jack;
 import jackplay.bootstrap.Genre;
 
 
 import java.util.Map;
 
 public class ProgramHandler extends BaseHandler {
-    PlayCoordinator coordinator;
+    Jack jack;
     InfoCenter infoCenter;
 
-    public ProgramHandler(PlayCoordinator coordinator, InfoCenter infoCenter) {
-        this.coordinator = coordinator;
+    public ProgramHandler(Jack jack, InfoCenter infoCenter) {
+        this.jack = jack;
         this.infoCenter = infoCenter;
     }
 
@@ -36,7 +35,7 @@ public class ProgramHandler extends BaseHandler {
                 break;
             case "/program/currentProgram":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(this.coordinator.getCurrentProgram()));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(this.jack.getCurrentProgram()));
                 break;
             default:
                 CommonHandling.error_404(http);
@@ -44,27 +43,26 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
-//        pm.submitMethodRedefinition(params.get("longMethodName"), params.get("src"));
+        jack.redefine(new PlayGround(params.get("longMethodName")), params.get("src"));
         CommonHandling.serveStringBody(http, 200, "Method is redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
-        coordinator.trace(new PlayGround(params.get("methodFullName")));
+        jack.trace(new PlayGround(params.get("methodFullName")));
         CommonHandling.serveStringBody(http, 200, "Method trace is added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         String methodFullName = params.get("methodFullName");
-//        pm.removeMethodFromProgramAndReplay(g, methodFullName);
+        jack.undoPlay(g, new PlayGround(methodFullName));
         CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
-
         String className = params.get("classFullName");
-//        pm.removeClassFromProgramAndReplay(g, className);
+        jack.undoClass(g, className);
         CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
     }
 

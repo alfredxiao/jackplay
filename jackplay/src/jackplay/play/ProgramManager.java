@@ -47,14 +47,14 @@ public class ProgramManager {
         // todo, use method shortname + argslist instead of method full name
         program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
 
-        Logger.debug("created new agenda:" + genre + ", " + pg.methodFullName);
+        Logger.debug("program-manager", "created new agenda:" + genre + ", " + pg.methodFullName);
     }
 
     private void deleteExistingAgenda(Genre genre, PlayGround pg) {
         if (program.get(genre).containsKey(pg.classFullName)) {
 
             program.get(genre).get(pg.classFullName).remove(pg.methodFullName);
-            Logger.debug("delete existing agenda:" + genre + ", " + pg.methodFullName);
+            Logger.debug("program-manager", "deleted existing agenda:" + genre + ", " + pg.methodFullName);
 
             if (program.get(genre).get(pg.classFullName).isEmpty()) {
                 program.get(genre).remove(pg.classFullName);

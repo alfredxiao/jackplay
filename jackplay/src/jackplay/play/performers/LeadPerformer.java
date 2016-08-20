@@ -16,17 +16,20 @@ public class LeadPerformer implements ClassFileTransformer {
     ProgramManager pm;
     ClassPool cp;
 
+    final static String REHEARSAL_MODE = "REHEARSAL";
+    final static String STAGING_MODE = "STAGING";
+
     public void init(ProgramManager pm) {
         this.pm = pm;
         this.cp = ClassPool.getDefault();
     }
 
-    private CtClass performAgenda(Map<String, Performer> performerMap, CtClass cc) throws Exception {
+    private CtClass performAgenda(Map<String, Performer> performerMap, CtClass cc, String mode) throws Exception {
         CtClass beingPlayed = cc;
 
         if (performerMap != null) {
             for (Performer performer : performerMap.values()) {
-                beingPlayed = performer.perform(beingPlayed);
+                beingPlayed = performer.perform(beingPlayed, mode);
             }
         }
 
@@ -43,12 +46,12 @@ public class LeadPerformer implements ClassFileTransformer {
         Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
 
         if (!isAgendaEmpty(agenda)) {
-            Logger.debug("leadPerformer starting rehearsal on class:" + className);
+            Logger.debug("leadPerformer", "starting rehearsal on class:" + className);
             CtClass cc = null;
 
             try {
-                cc = performAsPerAgenda(className, agenda);
-                Logger.debug("leadPerformer finished rehearsal on class:" + className);
+                cc = performAsPerAgenda(className, agenda, REHEARSAL_MODE);
+                Logger.debug("leadPerformer", "finished rehearsal on class:" + className);
             } finally {
                 if (cc != null) cc.detach();
             }
@@ -78,15 +81,15 @@ public class LeadPerformer implements ClassFileTransformer {
 
             }
         } else {
-            Logger.debug("leadPerformer found agenda for class:" + className);
+            Logger.debug("leadPerformer", "found agenda for class:" + className);
             // this class is on the program menu
             byte[] byteCode;
             CtClass cc = null;
 
             try {
-                Logger.debug("leadPerformer starting retransform class:" + className);
-                cc = performAsPerAgenda(className, agenda);
-                Logger.debug("leadPerformer finished retransform class:" + className);
+                Logger.debug("leadPerformer", "starts retransform class:" + className);
+                cc = performAsPerAgenda(className, agenda, STAGING_MODE);
+                Logger.debug("leadPerformer", "finished retransform class:" + className);
 
                 byteCode = cc.toBytecode();
             } catch(Exception e) {
@@ -100,12 +103,12 @@ public class LeadPerformer implements ClassFileTransformer {
         }
     }
 
-    private CtClass performAsPerAgenda(String className, Map<Genre, Map<String, Performer>> agenda) throws Exception {
+    private CtClass performAsPerAgenda(String className, Map<Genre, Map<String, Performer>> agenda, String mode) throws Exception {
         CtClass cc;
         cc = cp.get(className);
 
-        cc = performAgenda(agenda.get(METHOD_REDEFINE), cc);
-        cc = performAgenda(agenda.get(METHOD_TRACE), cc);
+        cc = performAgenda(agenda.get(METHOD_REDEFINE), cc, mode);
+        cc = performAgenda(agenda.get(METHOD_TRACE), cc, mode);
         return cc;
     }
 }

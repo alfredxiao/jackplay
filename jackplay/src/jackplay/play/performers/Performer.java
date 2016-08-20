@@ -10,7 +10,7 @@ import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public interface Performer {
-    CtClass perform(CtClass aClass) throws Exception;
+    CtClass perform(CtClass aClass, String mode) throws Exception;
 
     default CtMethod findMethod(CtClass ctClass, PlayGround pg) throws Exception {
         CtMethod[] methods;

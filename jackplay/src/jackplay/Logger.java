@@ -5,14 +5,14 @@ import jackplay.bootstrap.Options;
 public class Logger {
     static String logLevel = "info";
 
-    public static void info(Object msg) {
+    public static void info(String who, Object msg) {
         if ("info".equalsIgnoreCase(logLevel) || "debug".equalsIgnoreCase(logLevel)) {
-            System.out.println("jackplay[info]: " + ((null == msg) ? "" : msg.toString()));
+            System.out.println("jackplay[info][" + who + "]: " + ((null == msg) ? "" : msg.toString()));
         }
     }
 
-    public static void error(Object msg) {
-        System.out.println("jackplay[error]: " + ((null == msg) ? "" : msg.toString()));
+    public static void error(String who, Object msg) {
+        System.out.println("jackplay[error][" + who + "]: " + ((null == msg) ? "" : msg.toString()));
     }
 
     public static void error(String who, Throwable t) {
@@ -20,9 +20,9 @@ public class Logger {
         if (null != t) t.printStackTrace();
     }
 
-    public static void debug(Object msg) {
+    public static void debug(String who, Object msg) {
         if ("debug".equalsIgnoreCase(logLevel)) {
-            System.out.println("jackplay[debug]: " + ((null == msg) ? "" : msg.toString()));
+            System.out.println("jackplay[debug][" + who + "]: " + ((null == msg) ? "" : msg.toString()));
         }
     }
 

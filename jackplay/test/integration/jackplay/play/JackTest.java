@@ -8,8 +8,7 @@ import static jackplay.bootstrap.Genre.*;
 import jackplay.bootstrap.PlayGround;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.bootstrap.TracePoint;
-import jackplay.play.InfoCenter;
-import jackplay.play.PlayCoordinator;
+import jackplay.play.Jack;
 import jackplay.play.PlayException;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class PlayCoordinatorTest {
-    PlayCoordinator coordinator = TheatreRep.getPlayCoordinator();
+public class JackTest {
+    Jack jack = TheatreRep.getJack();
 
     PlayGround pg_myfunction01 = new PlayGround("integration.myapp.MyAbstractClass.myfunction1(int,java.lang.String)");
     PlayGround pg_myfunction02 = new PlayGround("integration.myapp.MyAbstractClass.myfunction2(java.lang.Object,java.util.List)");
@@ -31,7 +30,7 @@ public class PlayCoordinatorTest {
 
     @Before
     public void setup() throws PlayException {
-        coordinator.undoAll();
+        jack.undoAll();
         TraceKeeper.clearLogHistory();
         Class myAbstractClass = MyAbstractClass.class;
         Class myClass = MyClass.class;
@@ -41,7 +40,7 @@ public class PlayCoordinatorTest {
     @Test
     public void canAddTraceAndProduceTraceLog() throws PlayException {
         List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
         String returnValue = myObj.myfunction1(123, "ABC");
         assertEquals("123.ABC", returnValue);
 
@@ -74,7 +73,7 @@ public class PlayCoordinatorTest {
     @Test
     public void canTraceException() throws PlayException {
         List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
-        coordinator.trace(pg_myfunction02);
+        jack.trace(pg_myfunction02);
         Exception thrown = null;
         try {
             myObj.myfunction2("A", null);
@@ -102,13 +101,13 @@ public class PlayCoordinatorTest {
     @Test
     public void canUndoTrace() throws PlayException {
         int logsCountStart = getTraceLogSize();
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
         myObj.myfunction1(123, "ABC");
         int logsCountEnd = getTraceLogSize();
 
         assertEquals(2, logsCountEnd - logsCountStart);
 
-        coordinator.undoTrace(pg_myfunction01);
+        jack.undoTrace(pg_myfunction01);
         myObj.myfunction1(234, "DEF");
         int logsCountAfterUndo = getTraceLogSize();
 
@@ -126,7 +125,7 @@ public class PlayCoordinatorTest {
         assertEquals("123.ABC", returnValue);
 
         // redefine it
-        coordinator.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED1\";}");
+        jack.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED1\";}");
 
         // after redefinition
         returnValue = myObj.myfunction1(234, "DEF");
@@ -136,14 +135,14 @@ public class PlayCoordinatorTest {
     @Test
     public void canUndoRedefine() throws PlayException {
         // redefine it
-        coordinator.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED4\";}");
+        jack.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED4\";}");
 
         // after redefinition
         String returnValue = myObj.myfunction1(234, "DEF");
         assertEquals("HAS_BEEN_REDEFINED4", returnValue);
 
         // undo it
-        coordinator.undoRedefine(pg_myfunction01);
+        jack.undoRedefine(pg_myfunction01);
 
         // after undo
         returnValue = myObj.myfunction1(345, "GHI");
@@ -153,7 +152,7 @@ public class PlayCoordinatorTest {
     @Test
     public void canRedefineAfterTrace() throws PlayException {
         // start tracing
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
         int logCountBegin = getTraceLogSize();
 
         // do something, which works as normal (before redefinition)
@@ -161,7 +160,7 @@ public class PlayCoordinatorTest {
         assertEquals("123.ABC", returnValue);
 
         // redefine it
-        coordinator.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED2\";}");
+        jack.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED2\";}");
 
         // after redefinition, which should work as expected
         returnValue = myObj.myfunction1(234, "DEF");
@@ -179,14 +178,14 @@ public class PlayCoordinatorTest {
         int logCountBegin = getTraceLogSize();
 
         // start with redefinition
-        coordinator.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED3\";}");
+        jack.redefine(pg_myfunction01, "{ return \"HAS_BEEN_REDEFINED3\";}");
 
         // after redefinition, which should work as expected
         String returnValue = myObj.myfunction1(234, "DEF");
         assertEquals("HAS_BEEN_REDEFINED3", returnValue);
 
         // start tracing
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
 
         // do something, which should still be under redefinition
         returnValue = myObj.myfunction1(123, "ABC");
@@ -202,7 +201,7 @@ public class PlayCoordinatorTest {
     public void handlesAndReportsCompilationErrorWhenRedefine() {
         Exception exp = null;
         try {
-            coordinator.redefine(pg_myfunction01, "{ return no_such_thing; }");
+            jack.redefine(pg_myfunction01, "{ return no_such_thing; }");
         } catch(Exception e) {
             exp = e;
         }
@@ -217,10 +216,10 @@ public class PlayCoordinatorTest {
     @Test
     public void compilationErrorShouldNotAffectTraces() throws PlayException {
         int logCountBegin = getTraceLogSize();
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
 
         try {
-            coordinator.redefine(pg_myfunction01, "{ return no_such_thing; }");
+            jack.redefine(pg_myfunction01, "{ return no_such_thing; }");
         } catch(Exception e) {}
 
         myObj.myfunction1(1, "A");
@@ -234,7 +233,7 @@ public class PlayCoordinatorTest {
     public void handlesAndReportsVerifierErrorWhenRedefine() {
         Exception exp = null;
         try {
-            coordinator.redefine(pg_myfunction01, "{ return 2; }");
+            jack.redefine(pg_myfunction01, "{ return 2; }");
         } catch(Exception e) {
             exp = e;
         }
@@ -249,11 +248,11 @@ public class PlayCoordinatorTest {
 
     @Test
     public void verificationErrorShouldNotAffectTraces() throws PlayException {
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
         int logCountBegin = getTraceLogSize();
 
         try {
-            coordinator.redefine(pg_myfunction01, "{ return 2; }");
+            jack.redefine(pg_myfunction01, "{ return 2; }");
         } catch(Exception e) {}
 
         myObj.myfunction1(1, "A");
@@ -265,9 +264,9 @@ public class PlayCoordinatorTest {
 
     @Test
     public void compilationErrorShouldNotAffectRedefinitionInAnotherMethod() throws PlayException {
-        coordinator.redefine(pg_myfunction01, "{ return \"REDEFINED1\"; }");
+        jack.redefine(pg_myfunction01, "{ return \"REDEFINED1\"; }");
         try {
-            coordinator.redefine(pg_myfunction03, "{ return no_such_var2; }");
+            jack.redefine(pg_myfunction03, "{ return no_such_var2; }");
         } catch(Exception e) {}
 
         assertEquals("REDEFINED1", myObj.myfunction1(200, "BCD"));
@@ -275,9 +274,9 @@ public class PlayCoordinatorTest {
 
     @Test
     public void verificationErrorShouldNotAffectRedefinitionInAnotherMethod() throws PlayException {
-        coordinator.redefine(pg_myfunction01, "{ return \"REDEFINED1\"; }");
+        jack.redefine(pg_myfunction01, "{ return \"REDEFINED1\"; }");
         try {
-            coordinator.redefine(pg_myfunction03, "{ return 3; }");
+            jack.redefine(pg_myfunction03, "{ return 3; }");
         } catch(Exception e) {}
 
         assertEquals("REDEFINED1", myObj.myfunction1(200, "BCD"));
@@ -287,8 +286,8 @@ public class PlayCoordinatorTest {
     public void canTraceAndRedefineBeforeClassLoaded() throws Exception {
         long now = System.currentTimeMillis();
 
-        coordinator.trace(pg_myfunction11);
-        coordinator.redefine(pg_myfunction11, "{ return \"REDEFINED2\";}");
+        jack.trace(pg_myfunction11);
+        jack.redefine(pg_myfunction11, "{ return \"REDEFINED2\";}");
 
         int logCountStart = getTraceLogSize();
         Thread.currentThread().sleep(10);
@@ -305,11 +304,11 @@ public class PlayCoordinatorTest {
 
     @Test
     public void canContinueToTraceAfterUndoTrace() throws PlayException {
-        coordinator.trace(pg_myfunction01);
-        coordinator.undoTrace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
+        jack.undoTrace(pg_myfunction01);
 
         int logCountStart = getTraceLogSize();
-        coordinator.trace(pg_myfunction01);
+        jack.trace(pg_myfunction01);
         myObj.myfunction1(1, "A");
         int logCountEnd = getTraceLogSize();
 
@@ -318,21 +317,21 @@ public class PlayCoordinatorTest {
 
     @Test
     public void canRedefineAfterUndoRedefine() throws PlayException {
-        coordinator.redefine(pg_myfunction01, "{ return \"A\"; }");
-        coordinator.undoRedefine(pg_myfunction01);
-        coordinator.redefine(pg_myfunction01, "{ return \"B\"; }");
+        jack.redefine(pg_myfunction01, "{ return \"A\"; }");
+        jack.undoRedefine(pg_myfunction01);
+        jack.redefine(pg_myfunction01, "{ return \"B\"; }");
 
         assertEquals("B", myObj.myfunction1(1, "A"));
     }
 
     @Test
     public void canUndoTraceOnClassLevel() throws PlayException {
-        coordinator.trace(pg_myfunction01);
-        coordinator.trace(pg_myfunction02);
-        coordinator.trace(pg_myfunction03);
+        jack.trace(pg_myfunction01);
+        jack.trace(pg_myfunction02);
+        jack.trace(pg_myfunction03);
 
         int logCountStart = getTraceLogSize();
-        coordinator.undoClass(METHOD_TRACE, MyAbstractClass.class.getName());
+        jack.undoClass(METHOD_TRACE, MyAbstractClass.class.getName());
 
         myObj.myfunction1(1, "A");
         myObj.myfunction2("A", new LinkedList<>());
@@ -344,11 +343,11 @@ public class PlayCoordinatorTest {
 
     @Test
     public void canUndoRedefinitionOnClassLevel() throws PlayException {
-        coordinator.redefine(pg_myfunction01, "{ return \"A\"; }");
-        coordinator.redefine(pg_myfunction02, "{ throw new RuntimeException(); }");
-        coordinator.redefine(pg_myfunction03, "return null; ");
+        jack.redefine(pg_myfunction01, "{ return \"A\"; }");
+        jack.redefine(pg_myfunction02, "{ throw new RuntimeException(); }");
+        jack.redefine(pg_myfunction03, "return null; ");
 
-        coordinator.undoClass(METHOD_REDEFINE, MyAbstractClass.class.getName());
+        jack.undoClass(METHOD_REDEFINE, MyAbstractClass.class.getName());
 
         assertEquals("1.A", myObj.myfunction1(1, "A"));
         myObj.myfunction2("A", new LinkedList<>());

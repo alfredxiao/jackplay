@@ -14,8 +14,8 @@ public class TracingPerformer implements Performer {
     }
 
     @Override
-    public CtClass perform(CtClass aClass) throws Exception {
-        Logger.debug("tracingPerformer performing tracing for method:" + playGround.methodFullName);
+    public CtClass perform(CtClass aClass, String mode) throws Exception {
+        Logger.debug("tracingPerformer", "[" + mode + "] performing tracing for method:" + playGround.methodFullName);
 
         CtMethod method = this.findMethod(aClass, playGround);
 
@@ -33,7 +33,7 @@ public class TracingPerformer implements Performer {
             method.insertAfter(traceMethodReturningResult(method));
         }
 
-        Logger.debug("tracingPerformer finished tracing for method:" + playGround.methodFullName);
+        Logger.debug("tracingPerformer", "finished tracing for method:" + playGround.methodFullName);
         return aClass;
 
         // tried to introduce a local variable - TraceKeeper object instead of static invocation

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class PlayCoordinator {
+public class Jack {
     Instrumentation inst;
     ProgramManager pm;
     Options options;
@@ -53,10 +53,10 @@ public class PlayCoordinator {
         // if an agenda causes problem, we do our best by removing it and
         // re-transform with this agenda removed - in other words, undo it
 
-        Logger.error("coordinator", t);
+        Logger.error("jack", t);
         pm.removeAgenda(genre, pg);
         try {
-            Logger.debug("coordinator attempting to undo retransformation for class:" + pg.classFullName);
+            Logger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
             inst.retransformClasses(clazz);
         } catch(Exception bestEffort) {}
 
@@ -75,9 +75,9 @@ public class PlayCoordinator {
                     try {
                         leadPerformer.rehearsal(clazz);
 
-                        Logger.debug("coordinator start retransforming class:" + pg.classFullName);
+                        Logger.debug("jack", "starts retransforming class:" + pg.classFullName);
                         inst.retransformClasses(clazz);
-                        Logger.debug("coordinator finished retransforming class:" + pg.classFullName);
+                        Logger.debug("jack", "finished retransforming class:" + pg.classFullName);
                     } catch(Throwable t) {
                         handleRetransformationError(t, clazz, genre, pg);
                     }
@@ -85,12 +85,12 @@ public class PlayCoordinator {
             }
 
             if (!matched) {
-                Logger.debug("agenda " + genre + ", " + pg.methodFullName + " added but not played yet");
+                Logger.debug("jack", "agenda " + genre + ", " + pg.methodFullName + " added but not played yet");
             }
         }
     }
 
-    private synchronized void undoPlay(Genre genre, PlayGround pg) throws PlayException {
+    public synchronized void undoPlay(Genre genre, PlayGround pg) throws PlayException {
         if (pm.removeAgenda(genre, pg)) {
             List<Class> loadedMatchedClasses = infoCenter.findLoadedClasses(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {

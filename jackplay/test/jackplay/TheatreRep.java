@@ -2,7 +2,7 @@ package jackplay;
 
 
 import jackplay.play.InfoCenter;
-import jackplay.play.PlayCoordinator;
+import jackplay.play.Jack;
 
 public class TheatreRep {
     public static Theatre getTheatre() {
@@ -13,7 +13,7 @@ public class TheatreRep {
         return getTheatre().infoCenter;
     }
 
-    public static PlayCoordinator getPlayCoordinator() {
-        return getTheatre().coordinator;
+    public static Jack getJack() {
+        return getTheatre().jack;
     }
 }
