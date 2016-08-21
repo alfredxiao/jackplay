@@ -240,19 +240,21 @@ legend > div > span:last-child {
 .traceLogWhen {
   font-size: 13px;
   font-style: italic;
+  padding-left: 3px;
 }
 
 .traceLogThreadName {
  white-space: nowrap;
- padding-left: 5px;
+ padding-left: 3px;
 }
 
 .traceLogIcon {
   width: 18px;
+  padding-left: 3px;
 }
 
 .traceLogClassFullName {
-  padding-left: 5px;
+  padding-left: 3px;
 }
 
 .traceLogMethodShortName {
@@ -266,7 +268,7 @@ legend > div > span:last-child {
   font-size: 13px;
   font-style: italic;
   text-align: right;
-  padding-right: 2px;
+  padding-right: 5px;
 }
 
 .sameUuidHighlight {
@@ -283,8 +285,17 @@ legend > div > span:last-child {
 }
 
 .shadedTraceLog {
-  opacity: 0.66;
+  /*opacity: 0.8;*/
   background-color: rgba(0, 0, 0, 0.8);
+}
+.shadedTraceLog.sameUuidHighlight.traceLogMethodReturns {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+.shadedTraceLog.sameUuidHighlight.traceLogMethodThrowsException {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+.shadedTraceLog.sameUuidHighlight.traceLogMethodEntry {
+  background-color: rgba(0, 0, 0, 0.36);
 }
 
 tr.broughtToFrontTraceLog > td {

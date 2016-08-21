@@ -1150,7 +1150,7 @@ let LogHistory = React.createClass({
               </tr>
             </table>
           </td>
-          <td style={{width: '1%'}}><span className='traceLogElapsedTime'>{elapsedTimeMessage}</span></td>
+          <td style={{width: '1%'}} className='traceLogElapsedTime'>{elapsedTimeMessage}</td>
         </tr>
       )
     });
@@ -1171,7 +1171,7 @@ let JackPlayTitle = React.createClass({
           <img src="/img/guitar.png" style={{verticalAlign: 'bottom'}}/>
         </span>
         <span style={{fontSize:'32px', fontWeight:'bold', marginLeft: '5px'}}>Jackplay!</span>
-        <span style={{fontSize:'17px', fontStyle:'italic',marginLeft: '18px'}}> {LONG_DASH}{LONG_DASH} A JVM Tracing Tool</span>
+        <span style={{fontSize:'17px', fontStyle:'italic',marginLeft: '18px'}}> {LONG_DASH}{LONG_DASH} A JVM Tracing Tool Built for Developers</span>
         <span style={{marginRight: '25px', marginTop: '12px', color:'#424242', fontSize: '14px', fontStyle: 'italic', float: 'right'}} className="fadein">
           "All work and no play makes Jack a dull boy. &mdash;&mdash; So, let's have Jack play!"
         </span>
