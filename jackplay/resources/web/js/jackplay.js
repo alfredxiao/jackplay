@@ -641,7 +641,7 @@ let modalDefaultStyle = {
 let containerDefaultStyle = {
   width: '680px',
   position: 'relative',
-  margin: '6% auto',
+  margin: '5% auto',
   padding: '10px 20px 13px 20px',
   background: '#fff',
   borderRadius: '8px'
@@ -907,7 +907,7 @@ let AboutJackPlay = React.createClass({
                   </li>
                   <li><span className='aboutPoint'>Who created Jackplay?</span>
                       <ul className='aboutText'>
-                        <li>Alfred Xiao, Developer, alfred.xiao@outlook.com, code at <a href='https://github.com/alfredxiao/jackplay' title='https://github.com/alfredxiao/jackplay'>github.com</a></li>
+                        <li>Alfred Xiao, Developer, code at <a href='https://github.com/alfredxiao/jackplay' title='https://github.com/alfredxiao/jackplay'>github.com</a></li>
                         <li>Hayden Virtue, Contributor</li>
                       </ul>
                   </li>

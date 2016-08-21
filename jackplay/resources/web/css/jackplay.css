@@ -384,6 +384,7 @@ tr.broughtToFrontTraceLog > td:last-child {
 .aboutTitle {
   font-size: 22px;
   text-align: center;
+  padding-bottom: 5px;
 }
 
 .aboutHeadline, .aboutBottomline {
@@ -393,6 +394,7 @@ tr.broughtToFrontTraceLog > td:last-child {
   text-align: center;
 }
 .aboutHeadline {
+  border-top: 1px dotted #333;
   border-bottom: 1px dotted #333;
 }
 .aboutBottomline {
