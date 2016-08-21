@@ -283,10 +283,15 @@ legend > div > span:last-child {
 .sameUuidHighlight.traceLogMethodEntry {
   background-color: orange;
 }
-
+.traceLogMethodThrowsException {
+  color: red;
+}
+.shadedTraceLog.traceLogMethodThrowsException{
+  color: black;
+}
 .shadedTraceLog {
   /*opacity: 0.8;*/
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.78);
 }
 .shadedTraceLog.sameUuidHighlight.traceLogMethodReturns {
   background-color: rgba(0, 0, 0, 0.18);
