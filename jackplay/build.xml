@@ -8,7 +8,7 @@
   <property name="groupId" value="com.github.alfredxiao" />
   <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
-  <property name="version" value="0.9.0-SNAPSHOT" />
+  <property name="version" value="0.9.0" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
   <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
