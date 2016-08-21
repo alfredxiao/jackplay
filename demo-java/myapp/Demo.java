@@ -5,9 +5,6 @@ import myapp.greeter.NiceGreeter;
 import myapp.greeter.RudeGreeter;
 import myapp.greeter.QAGreeter;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Demo implements Runnable {
@@ -30,7 +27,7 @@ public class Demo implements Runnable {
   static void visitGreeters() {
     for (Greeter g : greeters) {
       try {
-        g.greet("Alfred-" + new Random().nextInt(200));
+        g.greet(getRandomName());
       } catch (Exception e) {
       }
     }
@@ -45,14 +42,27 @@ public class Demo implements Runnable {
     }
   }
 
+  final static String[] NAMES = new String[] {"Alfred", "Brian", "Cameron", "David", "Emily", "Fendy", "Gary",
+                                              "Hayden", "Ivory", "Joe", "Kian", "Lawrence", "Max", "Nick",
+                                              "Osaka", "Paul", "Quinn", "Ryan", "Sally", "Tina", "Ugo", "Vivien",
+                                              "Xavier", "Yancy", "Zach"};
+  static String getRandomName() {
+    int idx = nextInt(0, NAMES.length);
+    return NAMES[idx];
+  }
+
   public static long getRandomSleep() {
-    return ThreadLocalRandom.current().nextLong(3000, 12000);
+    return nextInt(3000, 12000);
   }
 
   public static void sleepSmallRandom() {
-    long r = ThreadLocalRandom.current().nextLong(200, 500);
+    long r = nextInt(200, 500);
     try {
       Thread.sleep(r);
     } catch(Exception e) {};
+  }
+
+  public synchronized static int nextInt(int start, int endExclusive) {
+      return ThreadLocalRandom.current().nextInt(start, endExclusive);
   }
 }
