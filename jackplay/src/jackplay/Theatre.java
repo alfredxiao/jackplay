@@ -32,16 +32,16 @@ public class Theatre {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
+        Options options = Options.optionsMergedWithDefaults(agentArgs);
+        Logger.init(options);
+
         Logger.info("jack-agent", "running JackPlay with arguments:" + (agentArgs == null ? "(no args, resort to default)" : agentArgs));
         Logger.debug("jack-agent", "Instrumentation.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
         Logger.debug("jack-agent", "Instrumentation.isRedefineClassesSupported():" + inst.isRedefineClassesSupported());
-
-        Options options = Options.optionsMergedWithDefaults(agentArgs);
         Logger.info("jack-agent", "After web server is started, point your browser to " +
                     (options.https() ? "https" : "http") +
                     "://yourserver:" + options.port());
 
-        Logger.init(options);
         TraceKeeper.init(options);
 
         ProgramManager pm = new ProgramManager();

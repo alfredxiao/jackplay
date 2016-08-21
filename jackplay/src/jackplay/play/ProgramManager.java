@@ -24,6 +24,7 @@ public class ProgramManager {
 
     public boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
         if (this.existsAgenda(genre, pg)) {
+            Logger.debug("program-manager", "not create new agenda as it already exists:" + pg.methodFullName);
             return false;
         } else {
             this.createNewAgenda(genre, pg, newBody);
@@ -47,14 +48,14 @@ public class ProgramManager {
         // todo, use method shortname + argslist instead of method full name
         program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
 
-        Logger.debug("program-manager", "created new agenda:" + genre + ", " + pg.methodFullName);
+        Logger.info("program-manager", "created new agenda:" + genre + ", " + pg.methodFullName);
     }
 
     private void deleteExistingAgenda(Genre genre, PlayGround pg) {
         if (program.get(genre).containsKey(pg.classFullName)) {
 
             program.get(genre).get(pg.classFullName).remove(pg.methodFullName);
-            Logger.debug("program-manager", "deleted existing agenda:" + genre + ", " + pg.methodFullName);
+            Logger.info("program-manager", "deleted existing agenda:" + genre + ", " + pg.methodFullName);
 
             if (program.get(genre).get(pg.classFullName).isEmpty()) {
                 program.get(genre).remove(pg.classFullName);

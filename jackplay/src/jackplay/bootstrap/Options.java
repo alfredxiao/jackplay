@@ -103,6 +103,10 @@ public class Options {
         return options.get("defaultTrace");
     }
 
+    public String logFile() {
+        return options.get("logFile");
+    }
+
     public String[] defaultTraceAsArray() {
         String defaultTrace = this.defaultTrace();
         return (defaultTrace == null || defaultTrace.trim().length() == 0) ? null : defaultTrace.trim().split(":");

@@ -2,13 +2,52 @@ package jackplay;
 
 import jackplay.bootstrap.Options;
 
+import java.io.*;
+
 public class Logger {
     static String logLevel = "info";
+    static String logFile = null;
+    static final long FILE_SIZE_LIMIT = 100 * 1024 * 1024;  // 100M as maximum log file size
 
     private final static String TEMPLATE = "jackplay[%2$s][%1$s][%3$s]: %4$s";
 
     private static void write(String level, String who, Object msg) {
-        System.out.println(String.format(TEMPLATE, level, now(), who, messagify(msg)));
+        String logLine = String.format(TEMPLATE, level, now(), who, messagify(msg));
+
+        File file =  fineWritableFile(logFile);
+        if (file != null) {
+            PrintWriter out = null;
+            try {
+                boolean append = file.length() < FILE_SIZE_LIMIT;
+                if (!append) System.out.println(String.format(TEMPLATE, "error", now(), "logger", "log file being truncated!"));
+
+                out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, append)));
+                out.write(logLine);
+                out.write('\n');
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+                System.out.println(logLine);
+                if (out != null) out.close();
+            }
+        } else {
+            System.out.println(logLine);
+        }
+    }
+
+    private static File fineWritableFile(String logFile) {
+        if (logFile == null || logFile.trim().length() == 0) return null;
+
+        File file = new File(logFile.trim());
+
+        try {
+            return (file.exists() || file.createNewFile())
+                     && file.canWrite()
+                   ? file : null;
+        } catch (IOException ioe) {
+            return null;
+        }
     }
 
     private static String now() {
@@ -43,5 +82,6 @@ public class Logger {
 
     public static void init(Options options) {
         logLevel = options.logLevel();
+        logFile = options.logFile();
     }
 }

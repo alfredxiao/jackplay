@@ -17,12 +17,12 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
 
     @Override
     public CtClass perform(CtClass aClass, String mode) throws Exception {
-        Logger.debug("redefinePerformer", "[" + mode + "] performing redefinition for method:" + playGround.methodFullName);
+        Logger.debug("redefinePerformer", "[" + mode + "] starts redefining method:" + playGround.methodFullName);
 
         CtMethod method = this.findMethod(aClass, playGround);
 
         method.setBody(newSource);
-        Logger.debug("redefinePerformer", "performed redefinition for method:" + playGround.methodFullName);
+        Logger.info("redefinePerformer", "finished redefining method:" + playGround.methodFullName);
 
         return aClass;
     }

@@ -77,7 +77,7 @@ public class Jack {
 
                         Logger.debug("jack", "starts retransforming class:" + pg.classFullName);
                         inst.retransformClasses(clazz);
-                        Logger.debug("jack", "finished retransforming class:" + pg.classFullName);
+                        Logger.info("jack", "finished retransforming class:" + pg.classFullName);
                     } catch(Throwable t) {
                         handleRetransformationError(t, clazz, genre, pg);
                     }
@@ -85,7 +85,7 @@ public class Jack {
             }
 
             if (!matched) {
-                Logger.debug("jack", "agenda " + genre + ", " + pg.methodFullName + " added but not played yet");
+                Logger.info("jack", "agenda " + genre + ", " + pg.methodFullName + " added but not played yet");
             }
         }
     }
