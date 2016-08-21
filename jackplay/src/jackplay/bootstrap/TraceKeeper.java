@@ -4,11 +4,9 @@ import static jackplay.bootstrap.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class TraceKeeper {
-    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static List<TraceLog> traceLogs = new LinkedList<>();
     private static Options options;
 
@@ -17,10 +15,6 @@ public class TraceKeeper {
         copyList.addAll(traceLogs);
 
         return copyList;
-    }
-
-    private static String formatDate(Date when) {
-        return formatter.format(when);
     }
 
     public static List<Map<String, Object>> getTraceLogs() {
@@ -32,7 +26,7 @@ public class TraceKeeper {
                 TraceLog traceLog = it.next();
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("when", formatDate(traceLog.when));
+                map.put("when", Options.formatDate(traceLog.when));
                 map.put("tracePoint", traceLog.tracePoint.toString());
                 map.put("classFullName", traceLog.pg.classFullName);
                 map.put("methodShortName", traceLog.pg.methodShortName);

@@ -1,5 +1,6 @@
 package jackplay.bootstrap;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,7 @@ public class Options {
     Map<String, String> options;
     Set<String> blacklist;
     Set<String> whitelist;
+    public final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     static {
         DEFAULTS.put("port", "8181");
@@ -59,6 +61,14 @@ public class Options {
         merged.putAll(options);
 
         return merged;
+    }
+
+    public static String formatDate(Date when) {
+        return SIMPLE_DATE_FORMAT.format(when);
+    }
+
+    public static String formateNow() {
+        return SIMPLE_DATE_FORMAT.format(new java.util.Date());
     }
 
     public int port() {
