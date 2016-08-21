@@ -38,12 +38,12 @@ public class ProgramManagerTest {
     }
 
     @Test
-    public void shouldNotAddExistingPlay() {
+    public void shouldNotAddExistingPlayForTracingButAlwaysAddForRedefinition() {
         ProgramManager pm = new ProgramManager();
         pm.addAgenda(METHOD_REDEFINE, new PlayGround("a.b.c()"), "newsource");
         pm.addAgenda(METHOD_TRACE, new PlayGround("a.b.c()"), null);
 
-        assertFalse(pm.addAgenda(METHOD_REDEFINE, new PlayGround("a.b.c()"), "newsource"));
+        assertTrue(pm.addAgenda(METHOD_REDEFINE, new PlayGround("a.b.c()"), "newsource"));
         assertFalse(pm.addAgenda(METHOD_TRACE, new PlayGround("a.b.c()"), null));
     }
 

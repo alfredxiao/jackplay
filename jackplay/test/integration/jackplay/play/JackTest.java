@@ -325,6 +325,26 @@ public class JackTest {
     }
 
     @Test
+    public void canRedefineAfterRedefine() throws PlayException {
+        jack.redefine(pg_myfunction01, "{ return \"A\"; }");
+        myObj.myfunction1(1, "AA");
+        jack.redefine(pg_myfunction01, "{ return \"B\"; }");
+
+        assertEquals("B", myObj.myfunction1(2, "AA"));
+    }
+
+//    @Test
+//    public void failedRedefinitionDoesNotChangePreviousRedefinition() throws PlayException {
+//        jack.redefine(pg_myfunction01, "{ return \"A\"; }");
+//        assertEquals("A", myObj.myfunction1(2, "AA"));
+//        try {
+//            jack.redefine(pg_myfunction01, "{ return no_such_thing; }");
+//        } catch (PlayException ignore) {}
+//
+//        assertEquals("A", myObj.myfunction1(3, "AA"));
+//    }
+
+    @Test
     public void canUndoTraceOnClassLevel() throws PlayException {
         jack.trace(pg_myfunction01);
         jack.trace(pg_myfunction02);

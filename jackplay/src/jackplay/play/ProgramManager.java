@@ -23,7 +23,7 @@ public class ProgramManager {
     }
 
     public boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
-        if (this.existsAgenda(genre, pg)) {
+        if (METHOD_TRACE == genre && this.existsAgenda(genre, pg)) {
             Logger.debug("program-manager", "not create new agenda as it already exists:" + pg.methodFullName);
             return false;
         } else {
