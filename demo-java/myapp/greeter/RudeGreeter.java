@@ -17,7 +17,7 @@ public class RudeGreeter implements Greeter {
         } else if (mood < 6) {
             return "Go away, " + name;
         } else if (mood < 8) {
-            throw new RuntimeException(name + ", you know, life sucks, but I love it.");
+            throw new RuntimeException(name + ", I don't wanna go to school, I just wanna break the rule.");
         } else {
             throw new RuntimeException(name + ", can you tell me what the hell is cloud computing!");
         }
