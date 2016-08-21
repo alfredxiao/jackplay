@@ -33,16 +33,16 @@ public class Jack {
     private boolean verifyPlayability(Method method) throws PlayException {
         String packageName = method.getDeclaringClass().getPackage().getName();
         if (!options.packageAllowed(packageName)) {
-            throw new InvalidPlayGroundException("package not allowed: " + packageName);
+            throw new PlayException("package not allowed: " + packageName);
         }
 
         String className = method.getDeclaringClass().getCanonicalName();
         if (!infoCenter.hasMethodBody(method)) {
-            throw new InvalidPlayGroundException("method has no body (either native or abstract): " +
+            throw new PlayException("method has no body (either native or abstract): " +
                     className + "." + method.getName());
         }
 
-        if (!inst.isModifiableClass(method.getDeclaringClass())) throw new InvalidPlayGroundException("class not modifiable:" + className);
+        if (!inst.isModifiableClass(method.getDeclaringClass())) throw new PlayException("class not modifiable:" + className);
 
         if (!inst.isRetransformClassesSupported()) throw new PlayException("RetransformClass not supported");
 
