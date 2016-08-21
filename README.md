@@ -6,7 +6,7 @@
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 ## Latest Version
-  ```com.github.alfredxiao/jackplay 0.8.8```
+  ```com.github.alfredxiao/jackplay 0.9.0```
 
 ## Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
@@ -16,7 +16,24 @@
  - No need to change application code
  - No need to restart a JVM
 
-## How to use it?
+## Q and A
+
+### Why do I need Jackplay?
+1. Developers are not sure where to put log statements and what to log - before running into a problem in an deployed environment.
+2. Sometimes we want to apply a quite trivial change to the code to verify some thing.
+3. We are lazy people and do not want to go through the dev/test/deploy cycle again and again, especially in a testing setting.
+4. Sometimes we need to trace into a library but it is a challenge since you cannot change its source code.
+
+If you have ever run into any situation as mentioned above, you would benefit from Jackplay's code change free tracing and redefinition capabilities.
+
+### What's the difference between 'Tracing' and 'Debugging'?
+
+1. A debugger is heavyweight, it requires full source code, an IDE and deep knowledge of how the code works. Whereas a tracing tool is lightweight, it does not require full source code or deep knowledge of the code.
+2. A debugger stops or pauses execution, whereas a tracing tool like Jackplay does not change application behaviour. A tracing tool's role is like a silent interceptor.
+3. A debugger give more insight into how a function body executes, but a tracing tool touches only the entry and exit points of your functions.
+4. A debugger normally works at TCP level, and does not provide a UI; Jackplay gives a web UI which is easy to use for developers, testers, and DevOps.
+
+## Usage
 
 ### Start you application with jackplay
 
@@ -55,6 +72,7 @@
 |*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
 |*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
 |*defaultTrace*    | colon separated full method names that we want Jackplay to trace by default | | ```myapp.Math.add(int)``` |
+|*logFile*         | file path to write Jackplay logs to. Note if file size grows over 100M, it will be truncated | | ```./jackplay.log``` |
 
   **Note**:
   1. When *https* is set to true, but no password or keystore path provided, a built-in demo self-signed keystore would be used instead.
@@ -88,7 +106,7 @@
    }
    ```
 
-## How to Run the Demo provided
+## How to Run the provided Demo app
 
 1. Clone project, and build jackplay
 

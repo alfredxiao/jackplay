@@ -1,9 +1,18 @@
 # Jackplay Change Logs
 
-## 0.8.8 (?)
 - Can trace constructor?
 
-## 0.8.7-SNAPSHOT (17-Aug-2016)
+## 0.9.0 (21-Aug-2016)
+- Added unit and integration tests
+- Refactoring around play process, now we clearly have a REHEARSAL and a STAGING phase, where in REHEARSAL phase the Java Instrumentation API is not involved, we can find compilation errors in this phase; in STAGING the transformation is applied by Instrumentation API and we can find errors like VerifyError
+- Display timestamps in logging
+- Added logFile option to specify a file path to log to
+- Display exception logs in UI in red color
+
+## 0.8.8 (18-Aug-2016)
+- bug fix NullPointerException when removing a method from program
+
+## 0.8.7 (17-Aug-2016)
 - Apply same transformation to all Classes when multiple are found (loaded by different classloader)
 - Refactoring and bug fix
 
