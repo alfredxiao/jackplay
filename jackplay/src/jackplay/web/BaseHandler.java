@@ -15,9 +15,10 @@ public abstract class BaseHandler implements HttpHandler {
             String uri = http.getRequestURI().toString();
             Map<String, String> params = extractParams(http);
             this.process(http, uri, params);
-        } catch (Exception e) {
-            Logger.error("baseHandler", e);
-            CommonHandling.serveStringBody(http, 500, e.getMessage());
+        } catch (Throwable t) {
+            Logger.error("baseHandler", t);
+            CommonHandling.serveStringBody(http, 500,
+                                           (t.getMessage() == null ? t.getClass().getCanonicalName() : t.getMessage()));
         }
     }
 
