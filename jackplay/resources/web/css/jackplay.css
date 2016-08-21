@@ -89,7 +89,7 @@ pre {
 
 input[type='text'],input[type='number'] {
   outline: none;
-  padding: 6px 10px;
+  padding: 6px 8px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 16px;
@@ -270,11 +270,20 @@ legend > div > span:last-child {
 }
 
 .sameUuidHighlight {
-  background-color: #FFD700;
+  background-color: gold;
+}
+.sameUuidHighlight.traceLogMethodReturns {
+  background-color: gold;
+}
+.sameUuidHighlight.traceLogMethodThrowsException {
+  background-color: gold;
+}
+.sameUuidHighlight.traceLogMethodEntry {
+  background-color: orange;
 }
 
 .shadedTraceLog {
-  opacity: 0.6;
+  opacity: 0.66;
   background-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -295,7 +304,16 @@ tr.broughtToFrontTraceLog > td:last-child {
 }
 
 .broughtToFrontTraceLog {
-  background-color: #FFD700;
+  background-color: gold;
+}
+.broughtToFrontTraceLog.traceLogMethodReturns {
+  background-color: gold;
+}
+.broughtToFrontTraceLog.traceLogMethodThrowsException {
+  background-color: gold;
+}
+.broughtToFrontTraceLog.traceLogMethodEntry {
+  background-color: orange;
 }
 
 .traceLogArgsList {

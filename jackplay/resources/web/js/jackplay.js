@@ -494,7 +494,7 @@ function extractMethodInfo(methodFullName) {
 }
 
 function renderSuggestion(suggestion, {value, valueBeforeUpDown}) {
-  if (suggestion.indicatorForMore === true) return <span title='or enter more to narrow down selections' style={{display:'block', fontSize: '11px', width:'448px', paddingLeft: '0px', borderTop:'1px dotted #333'}}>==click Settings > Configuration > Max Number of Auto Suggest to display more==</span>;
+  if (suggestion.indicatorForMore === true) return <span id='autoSuggestMore' title='or enter more to narrow down selections'> {BULLET} change Settings > Configuration > Max Number of Auto Suggest to display more </span>;
 
   const query = (valueBeforeUpDown || value).trim();
   let methodFullName = suggestion.methodFullName;
@@ -1118,6 +1118,7 @@ let LogHistory = React.createClass({
                                   : <span></span>;
 
       let clsNames = 'traceLogRecord';
+      clsNames += ' traceLog' + entry.tracePoint;
       clsNames += (idx % 2 == 0) ? ' traceLogEven' : ' traceLogOdd'
       if (uuidHovered == entry.uuid) clsNames += ' sameUuidHighlight';
       if (traceLogBroughtToFront && traceLogBroughtToFront.length > 0) {
