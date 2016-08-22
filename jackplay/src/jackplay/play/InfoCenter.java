@@ -1,7 +1,11 @@
 package jackplay.play;
 
+import jackplay.bootstrap.Genre;
+import static jackplay.bootstrap.Genre.*;
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
+import jackplay.play.performers.Performer;
+import jackplay.play.performers.RedefinePerformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -100,6 +104,12 @@ public class InfoCenter {
                 loadedMethod.put("methodFullName", pg.methodFullName);
                 loadedMethod.put("methodLongName", pg.methodLongName);
                 loadedMethod.put("returnType", m.getReturnType().getName());
+                RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(METHOD_REDEFINE,
+                                                                                       pg.classFullName,
+                                                                                       pg.methodFullName);
+                if (performer != null) {
+                    loadedMethod.put("newBody", performer.getNewBody());
+                }
 
                 loadedMethods.add(loadedMethod);
             }
@@ -154,6 +164,10 @@ public class InfoCenter {
         return !clazz.isInterface()
                 && !clazz.isAnnotation()
                 && !clazz.isArray();
+    }
+
+    public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
+        return pm.copyOfCurrentProgram();
     }
 
 }

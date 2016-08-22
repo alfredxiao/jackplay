@@ -8,11 +8,11 @@ import jackplay.javassist.CtMethod;
 
 public class RedefinePerformer implements jackplay.play.performers.Performer {
     private final PlayGround playGround;
-    private final String newSource;
+    private final String newBody;
 
-    public RedefinePerformer(PlayGround playGround, String newSource) {
+    public RedefinePerformer(PlayGround playGround, String newBody) {
         this.playGround = playGround;
-        this.newSource = newSource;
+        this.newBody = newBody;
     }
 
     @Override
@@ -21,9 +21,13 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
 
         CtMethod method = this.findMethod(aClass, playGround);
 
-        method.setBody(newSource);
+        method.setBody(newBody);
         Logger.info("redefinePerformer", "finished redefining method:" + playGround.methodFullName);
 
         return aClass;
+    }
+
+    public String getNewBody() {
+        return newBody;
     }
 }

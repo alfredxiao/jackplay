@@ -36,7 +36,7 @@ public class BoxOffice extends Thread {
     private void initContextMap() {
         this.contextMap = new HashMap<>();
         this.contextMap.put("/", new RootHandler());
-        this.contextMap.put("/program", new ProgramHandler(this.jack, this.infoCenter));
+        this.contextMap.put("/program", new ProgramHandler(this.jack));
         this.contextMap.put("/info", new InfoHandler(infoCenter));
     }
 

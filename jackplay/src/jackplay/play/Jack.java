@@ -7,6 +7,7 @@ import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.LeadPerformer;
 import jackplay.play.performers.Performer;
+import jackplay.play.performers.RedefinePerformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -49,22 +50,46 @@ public class Jack {
         return true;
     }
 
-    public void handleRetransformationError(Throwable t, Class clazz, Genre genre, PlayGround pg) throws PlayException {
+    public void handleRetransformationError(Throwable t, Class clazz, Genre genre, PlayGround pg, String previousBody) throws PlayException {
         // if an agenda causes problem, we do our best by removing it and
         // re-transform with this agenda removed - in other words, undo it
 
         Logger.error("jack", t);
         pm.removeAgenda(genre, pg);
+
+        if (previousBody != null) {
+            pm.addAgenda(METHOD_REDEFINE, pg, previousBody);
+        }
+
         try {
             Logger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
             inst.retransformClasses(clazz);
-        } catch(Exception bestEffort) {}
+        } catch(Exception betterEffort) {
+            Logger.error("jack", betterEffort);
+            if (genre == METHOD_REDEFINE && previousBody != null) {
+                // this means even the previously working method redefinition does not work,
+                // we have to remove it completely, unfortunately
+                pm.removeAgenda(METHOD_REDEFINE, pg);
+                try {
+                    Logger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
+                    inst.retransformClasses(clazz);
+                } catch(Exception bestEffort) {
+                    Logger.error("jack", bestEffort);
+                }
+            }
+        }
 
         throw new PlayException("An " + t.getClass().getName() + " error occurred while attempting to retransform "
                 + pg.classFullName + ": " + t.getMessage());
     }
 
     private synchronized void play(Genre genre, PlayGround pg, String newBody) throws PlayException {
+        String previousBody = null;
+        if (genre == METHOD_REDEFINE) {
+            RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(genre, pg.classFullName, pg.methodFullName);
+            previousBody = performer == null ? null : performer.getNewBody();
+        }
+
         if (pm.addAgenda(genre, pg, newBody)) {
             boolean matched = false;
             List<Class> loadedMatchedClasses = infoCenter.findLoadedClasses(pg.classFullName);
@@ -79,7 +104,7 @@ public class Jack {
                         inst.retransformClasses(clazz);
                         Logger.info("jack", "finished retransforming class:" + pg.classFullName);
                     } catch(Throwable t) {
-                        handleRetransformationError(t, clazz, genre, pg);
+                        handleRetransformationError(t, clazz, genre, pg, previousBody);
                     }
                 }
             }
@@ -121,16 +146,16 @@ public class Jack {
     }
 
     public void undoClass(Genre genre, String className) throws PlayException {
-        Map<String, ?> plays = pm.program.get(genre).get(className);
+        Map<Genre, Map<String, Performer>> plays = pm.agendaForClass(className);
         if (plays != null && !plays.isEmpty()) {
-            for (String methodFullName : plays.keySet()) {
+            for (String methodFullName : plays.get(genre).keySet()) {
                 this.undoPlay(genre, new PlayGround(methodFullName));
             }
         }
     }
 
     public void undoAll(Genre genre) throws PlayException {
-        Map<String,?> traces = pm.program.get(genre);
+        Map<String,?> traces = pm.agendaOfGenre(genre);
         if (!traces.isEmpty()) {
             for (String className : traces.keySet()) {
                 this.undoClass(genre, className);
@@ -141,9 +166,5 @@ public class Jack {
     public void undoAll() throws PlayException {
         this.undoAll(METHOD_TRACE);
         this.undoAll(METHOD_REDEFINE);
-    }
-
-    public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
-        return Collections.unmodifiableMap(pm.program);
     }
 }

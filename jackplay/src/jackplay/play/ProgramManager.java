@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 // singleton
 public class ProgramManager {
-    Map<Genre, Map<String, Map<String, Performer>>> program;
+    private Map<Genre, Map<String, Map<String, Performer>>> program;
 
     public ProgramManager() {
         this.program = new ConcurrentHashMap<>();
@@ -22,7 +22,7 @@ public class ProgramManager {
         this.prepareGenre(METHOD_REDEFINE);
     }
 
-    public boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
+    public synchronized boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
         if (METHOD_TRACE == genre && this.existsAgenda(genre, pg)) {
             Logger.debug("program-manager", "not create new agenda as it already exists:" + pg.methodFullName);
             return false;
@@ -32,7 +32,7 @@ public class ProgramManager {
         }
     }
 
-    public boolean removeAgenda(Genre genre, PlayGround pg) {
+    public synchronized boolean removeAgenda(Genre genre, PlayGround pg) {
         if (!this.existsAgenda(genre, pg)) {
             return false;
         } else {
@@ -41,10 +41,11 @@ public class ProgramManager {
         }
     }
 
-    private synchronized void createNewAgenda(Genre genre, PlayGround pg, String newBody) {
+    private void createNewAgenda(Genre genre, PlayGround pg, String newBody) {
         prepareClass(genre, pg.classFullName);
 
         Performer performer = createPerformer(pg, genre, newBody);
+
         // todo, use method shortname + argslist instead of method full name
         program.get(genre).get(pg.classFullName).put(pg.methodFullName, performer);
 
@@ -92,7 +93,7 @@ public class ProgramManager {
         }
     }
 
-    public Map<Genre, Map<String, Performer>> agendaForClass(String classFullName) {
+    public synchronized Map<Genre, Map<String, Performer>> agendaForClass(String classFullName) {
         Map<Genre, Map<String, Performer>> agenda = new HashMap<>();
         agenda.put(METHOD_TRACE, this.program.get(METHOD_TRACE).get(classFullName));
         agenda.put(METHOD_REDEFINE, this.program.get(METHOD_REDEFINE).get(classFullName));
@@ -100,7 +101,7 @@ public class ProgramManager {
         return agenda;
     }
 
-    public void addTraces(String[] methodFullNames) {
+    public synchronized void addTraces(String[] methodFullNames) {
         if (methodFullNames == null || methodFullNames.length == 0) return;
 
         for (String mfn : methodFullNames) {
@@ -110,6 +111,39 @@ public class ProgramManager {
             if (trimmed.length() == 0) continue;
 
             this.addAgenda(METHOD_TRACE, new PlayGround(mfn), null);
+        }
+    }
+
+    public synchronized Performer existingPerformer(Genre genre, String classFullName, String methodFullName) {
+        try {
+            return program.get(genre).get(classFullName).get(methodFullName);
+        } catch (NullPointerException npe) {
+            return null;
+        }
+    }
+
+    public synchronized Map<String, ?> agendaOfGenre(Genre genre) {
+        return this.program.get(genre);
+    }
+
+    public synchronized Map<Genre, Map<String, Map<String, Performer>>> copyOfCurrentProgram() {
+        Map<Genre, Map<String, Map<String, Performer>>> copy = new HashMap<>();
+        deepMapCopy(program, copy);
+
+        return copy;
+    }
+
+    private void deepMapCopy(Map source, Map target) {
+        for (Object key : source.keySet()) {
+            Object value = source.get(key);
+            if (value instanceof Map) {
+                Map valueCopy = new HashMap();
+                deepMapCopy((Map) value, valueCopy);
+
+                target.put(key, valueCopy);
+            } else {
+                target.put(key, value);
+            }
         }
     }
 }

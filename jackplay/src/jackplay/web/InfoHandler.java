@@ -38,6 +38,10 @@ public class InfoHandler extends BaseHandler {
                 infoCenter.updateOption("autoSuggestLimit", params.get("autoSuggestLimit"));
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
                 break;
+            case "/info/currentProgram":
+                CommonHandling.willReturnJson(http);
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getCurrentProgram()));
+                break;
             default:
                 CommonHandling.error_404(http);
         }

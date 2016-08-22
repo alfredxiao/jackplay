@@ -11,11 +11,9 @@ import java.util.Map;
 
 public class ProgramHandler extends BaseHandler {
     Jack jack;
-    InfoCenter infoCenter;
 
-    public ProgramHandler(Jack jack, InfoCenter infoCenter) {
+    public ProgramHandler(Jack jack) {
         this.jack = jack;
-        this.infoCenter = infoCenter;
     }
 
     @SuppressWarnings("unchecked")
@@ -32,10 +30,6 @@ public class ProgramHandler extends BaseHandler {
                 break;
             case "/program/undoMethod":
                 undoMethod(http, params);
-                break;
-            case "/program/currentProgram":
-                CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(this.jack.getCurrentProgram()));
                 break;
             default:
                 CommonHandling.error_404(http);

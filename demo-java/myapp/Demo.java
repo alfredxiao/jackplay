@@ -22,6 +22,10 @@ public class Demo implements Runnable {
       Thread t = new Thread(new Demo());
       t.start();
     }
+
+    Thread.sleep(30000);
+    Thread t = new Thread(new LateLoadingDemo());
+    t.start();
   }
 
   static void visitGreeters() {
