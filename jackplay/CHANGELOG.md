@@ -1,6 +1,13 @@
 # Jackplay Change Logs
 
+## To be released
 - Can trace constructor?
+
+## 0.9.2 (22-Aug-2016)
+- Added a feature where a failure in adding new redefinition does not affect previously working redefinition
+
+## 0.9.1 (22-Aug-2016)
+- bug fix where redefinition can't be added again and again
 
 ## 0.9.0 (21-Aug-2016)
 - Added unit and integration tests
