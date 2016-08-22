@@ -3,6 +3,9 @@
 ## To be released
 - Can trace constructor?
 
+## 0.9.3 (22-Aug-2016)
+- bug fix where the URI for loading currentProgram has changed to be /info/currentProgram
+
 ## 0.9.2 (22-Aug-2016)
 - Added a feature where a failure in adding new redefinition does not affect previously working redefinition
 

@@ -1292,12 +1292,12 @@ let JackPlay = React.createClass({
   },
   loadProgram: function() {
     $.ajax({
-      url: '/program/currentProgram',
+      url: '/info/currentProgram',
       success: function(program) {
         this.setState(Object.assign(this.state, {program: program}));
       }.bind(this),
       error: function(res) {
-        console.log("Ajax call /program/currentProgram with ERROR", res);
+        console.log("Ajax call /info/currentProgram with ERROR", res);
       }
     });
   },
