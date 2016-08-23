@@ -133,6 +133,7 @@ public class ProgramManager {
         return copy;
     }
 
+    @SuppressWarnings("unchecked")
     private void deepMapCopy(Map source, Map target) {
         for (Object key : source.keySet()) {
             Object value = source.get(key);
