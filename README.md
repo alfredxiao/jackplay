@@ -6,7 +6,7 @@
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 ## Latest Version
-  ```com.github.alfredxiao/jackplay 0.9.2```
+  ```com.github.alfredxiao/jackplay 0.9.3```
 
 ## Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
