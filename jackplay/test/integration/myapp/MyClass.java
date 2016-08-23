@@ -1,7 +1,7 @@
 package integration.myapp;
 
 
-public class MyClass extends MyAbstractClass {
+public class MyClass extends MyBaseClass {
     @Override
     public void myAbstract() {
 

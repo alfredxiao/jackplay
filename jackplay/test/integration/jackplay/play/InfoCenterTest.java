@@ -1,6 +1,6 @@
 package integration.jackplay.play;
 
-import integration.myapp.MyAbstractClass;
+import integration.myapp.MyBaseClass;
 import jackplay.TheatreRep;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.InfoCenter;
@@ -14,29 +14,29 @@ import java.util.Map;
 
 public class InfoCenterTest {
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
-    final Class MYCLASS = MyAbstractClass.class;
+    final Class MYCLASS = MyBaseClass.class;
     final Class JAVA_UTIL_ARRAY_LIST = java.util.ArrayList.class;
 
     @Test
     public void shouldFindLoadedClasses() {
-        List<Class> myclasses = infoCenter.findLoadedClasses("integration.myapp.MyAbstractClass");
+        List<Class> myclasses = infoCenter.findLoadedClasses("integration.myapp.MyBaseClass");
         assertEquals(1, myclasses.size());
         assertEquals(MYCLASS, myclasses.get(0));
     }
 
     @Test
     public void shouldFindMatchingMethod() {
-        Method myfunction1 = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myfunction1(int,java.lang.String)"));
+        Method myfunction1 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.test1(int,java.lang.String)"));
         assertNotNull(myfunction1);
-        assertEquals("myfunction1", myfunction1.getName());
+        assertEquals("test1", myfunction1.getName());
 
-        Method myfunction2 = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myfunction2(java.lang.Object,java.util.List)"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
         assertNotNull(myfunction2);
-        assertEquals("myfunction2", myfunction2.getName());
+        assertEquals("test2", myfunction2.getName());
 
-        Method myfunction3 = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myfunction3(java.lang.Object[],int[][])"));
+        Method myfunction3 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.test3(java.lang.Object[],int[][])"));
         assertNotNull(myfunction3);
-        assertEquals("myfunction3", myfunction3.getName());
+        assertEquals("test3", myfunction3.getName());
     }
 
     @Test
@@ -44,9 +44,9 @@ public class InfoCenterTest {
         List<Map<String, String>> loadedMethods = infoCenter.getLoadedMethods();
 
         Map<String, String> myfunction1 = new HashMap<>();
-        myfunction1.put("classFullName", "integration.myapp.MyAbstractClass");
-        myfunction1.put("methodFullName", "integration.myapp.MyAbstractClass.myfunction1(int,java.lang.String)");
-        myfunction1.put("methodLongName", "integration.myapp.MyAbstractClass.myfunction1");
+        myfunction1.put("classFullName", "integration.myapp.MyBaseClass");
+        myfunction1.put("methodFullName", "integration.myapp.MyBaseClass.test1(int,java.lang.String)");
+        myfunction1.put("methodLongName", "integration.myapp.MyBaseClass.test1");
         myfunction1.put("returnType", "java.lang.String");
 
         assertTrue(loadedMethods.contains(myfunction1));
@@ -62,9 +62,9 @@ public class InfoCenterTest {
 
     @Test
     public void shouldRecogniseExistenceOfMethodBody() {
-        Method myAbstract = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myAbstract()"));
-        Method myNative = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myNative()"));
-        Method myfunction2 = infoCenter.findMatchingMethod(MyAbstractClass.class, new PlayGround("integration.myapp.MyAbstractClass.myfunction2(java.lang.Object,java.util.List)"));
+        Method myAbstract = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.myAbstract()"));
+        Method myNative = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.myNative()"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("integration.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
 
         assertFalse(infoCenter.hasMethodBody(myAbstract));
         assertFalse(infoCenter.hasMethodBody(myNative));

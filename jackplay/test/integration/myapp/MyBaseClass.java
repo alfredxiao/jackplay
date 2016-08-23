@@ -1,17 +1,17 @@
 package integration.myapp;
 
-public abstract class MyAbstractClass {
+public abstract class MyBaseClass {
 
-    public String myfunction1(int arg1, String arg2) {
+    public String test1(int arg1, String arg2) {
         return arg1 + "." + arg2;
     }
 
     // will throw exception, for testing tracing exception
-    public void myfunction2(Object arg1, java.util.List<String> arg2) {
+    public void test2(Object arg1, java.util.List<String> arg2) {
         int size = arg2.size();
     }
 
-    public Object[] myfunction3(Object[] arg1, int[][] arg2) {
+    public Object[] test3(Object[] arg1, int[][] arg2) {
         return arg1;
     }
 
