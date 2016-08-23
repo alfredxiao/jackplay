@@ -8,7 +8,7 @@
   <property name="groupId" value="com.github.alfredxiao" />
   <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
-  <property name="version" value="0.9.3" />
+  <property name="version" value="0.9.5-SNAPSHOT" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
   <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
@@ -104,24 +104,38 @@
 
   <target name="javadoc-jar">
     <!-- build the javadoc jar -->
-    <javadoc sourcepath="src" destdir="dist/javadoc" >
-      <classpath refid="project.classpath"/>
+    <javadoc destdir="dist/javadoc/bootstrap" >
+      <packageset dir="src" defaultexcludes="yes">
+        <include name="jackplay/bootstrap/**"/>
+      </packageset>
     </javadoc>
     <jar jarfile="${bootstrap-javadoc-jar}">
-      <fileset dir="dist/javadoc" />
+      <fileset dir="dist/javadoc/bootstrap" />
     </jar>
+
+    <javadoc destdir="dist/javadoc/agent" >
+      <classpath refid="project.classpath"/>
+      <packageset dir="src" defaultexcludes="yes">
+        <exclude name="jackplay/bootstrap/**"/>
+      </packageset>
+    </javadoc>
     <jar jarfile="${agent-javadoc-jar}">
-      <fileset dir="dist/javadoc" />
+      <fileset dir="dist/javadoc/agent" />
     </jar>
   </target>
 
   <target name="sources-jar">
     <!-- build the sources jar -->
     <jar jarfile="${bootstrap-sources-jar}">
-      <fileset dir="src" />
+      <fileset dir="src">
+        <filename name="jackplay/bootstrap/**/*.java"/>
+      </fileset>
     </jar>
     <jar jarfile="${agent-sources-jar}">
-      <fileset dir="src" />
+      <fileset dir="src">
+        <exclude name="jackplay/bootstrap" />
+        <exclude name="jackplay/bootstrap/**/*.java" />
+      </fileset>
       <fileset dir="resources" />
     </jar>
   </target>
