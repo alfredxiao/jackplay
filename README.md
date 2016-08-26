@@ -4,7 +4,7 @@
   It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 # Latest Version
-  ```com.github.alfredxiao/jackplay 0.9.3```
+  ```com.github.alfredxiao/jackplay 0.9.5```
 
 # Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
@@ -79,6 +79,8 @@ If you have ever run into any situation as mentioned above, you would benefit fr
   ```
   java -Xbootclasspath/a:../jackplay/dist/jackplay-bootstrap-latest.jar -javaagent:../jackplay/dist/jackplay-agent-latest.jar="logLevel=debug,blacklist=java.net:java.nio,defaultTrace=myapp.greeter.NiceGreeter.greet(java.lang.String):myapp.Demo.main(java.lang.String[])" -cp . myapp.Demo
   ```
+
+  3. *logFile* is used to write debug/info/error log from the Jackplay Java agent, not the trace logs themselves.
 
 ## Open Jackplay control panel
 
