@@ -1,8 +1,8 @@
 package integration.jackplay.play;
 
-import integration.myapp.MyBaseClass;
-import integration.myapp.MyClass;
-import integration.myapp.MyLateLoadingClass;
+import testedapp.myapp.MyBaseClass;
+import testedapp.myapp.MyClass;
+import testedapp.myapp.MyLateLoadingClass;
 import jackplay.TheatreRep;
 import static jackplay.bootstrap.Genre.*;
 
@@ -26,10 +26,10 @@ public class JackTest {
     Jack jack = TheatreRep.getJack();
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
 
-    PlayGround test1 = new PlayGround("integration.myapp.MyBaseClass.test1(int,java.lang.String)");
-    PlayGround test2 = new PlayGround("integration.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
-    PlayGround test3 = new PlayGround("integration.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
-    PlayGround lateLoading = new PlayGround("integration.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
+    PlayGround test1 = new PlayGround("testedapp.myapp.MyBaseClass.test1(int,java.lang.String)");
+    PlayGround test2 = new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
+    PlayGround test3 = new PlayGround("testedapp.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    PlayGround lateLoading = new PlayGround("testedapp.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
 
     MyClass myObj;
 
@@ -57,7 +57,7 @@ public class JackTest {
         assertEquals(TracePoint.MethodReturns.toString(), traceLogOfMethodReturns.get("tracePoint"));
         assertNull(traceLogOfMethodReturns.get("arguments"));
         assertEquals(2, traceLogOfMethodReturns.get("argumentsCount"));
-        assertEquals("integration.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
+        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
         assertEquals("test1", traceLogOfMethodReturns.get("methodShortName"));
         assertEquals("\"123.ABC\"", traceLogOfMethodReturns.get("returnedValue"));
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodReturns.get("threadName"));
@@ -69,7 +69,7 @@ public class JackTest {
         assertEquals("123", ((String[]) traceLogOfMethodEntry.get("arguments"))[0]);
         assertEquals("\"ABC\"", ((String[]) traceLogOfMethodEntry.get("arguments"))[1]);
         assertEquals(2, traceLogOfMethodEntry.get("argumentsCount"));
-        assertEquals("integration.myapp.MyBaseClass", traceLogOfMethodEntry.get("classFullName"));
+        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodEntry.get("classFullName"));
         assertEquals("test1", traceLogOfMethodEntry.get("methodShortName"));
         assertEquals(null, traceLogOfMethodEntry.get("returnedValue"));
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodEntry.get("threadName"));
@@ -126,7 +126,7 @@ public class JackTest {
         assertEquals(TracePoint.MethodThrowsException.toString(), traceLogOfMethodThrowsException.get("tracePoint"));
         assertNull(traceLogOfMethodThrowsException.get("arguments"));
         assertEquals(2, traceLogOfMethodThrowsException.get("argumentsCount"));
-        assertEquals("integration.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
+        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
         assertEquals("test2", traceLogOfMethodThrowsException.get("methodShortName"));
         assertEquals(null, traceLogOfMethodThrowsException.get("returnedValue"));
         assertTrue(((String) traceLogOfMethodThrowsException.get("exceptionStackTrace")).contains("java.lang.NullPointerException"));

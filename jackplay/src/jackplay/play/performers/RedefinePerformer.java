@@ -3,6 +3,7 @@ package jackplay.play.performers;
 import jackplay.Logger;
 import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.CtClass;
+import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtMethod;
 
 
@@ -16,7 +17,7 @@ public class RedefinePerformer implements jackplay.play.performers.Performer {
     }
 
     @Override
-    public CtClass perform(CtClass aClass, String mode) throws Exception {
+    public CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception {
         Logger.debug("redefinePerformer", "[" + mode + "] starts redefining method:" + playGround.methodFullName);
 
         CtMethod method = this.findMethod(aClass, playGround);

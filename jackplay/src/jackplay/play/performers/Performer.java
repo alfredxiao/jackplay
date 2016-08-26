@@ -3,6 +3,7 @@ package jackplay.play.performers;
 
 import jackplay.bootstrap.PlayGround;
 import jackplay.javassist.CtClass;
+import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtMethod;
 import jackplay.play.PlayException;
 
@@ -10,7 +11,7 @@ import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;
 
 public interface Performer {
-    CtClass perform(CtClass aClass, String mode) throws Exception;
+    CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception;
 
     default CtMethod findMethod(CtClass ctClass, PlayGround pg) throws Exception {
         CtMethod[] methods;

@@ -46,6 +46,8 @@
     <mkdir dir="build/classes"/>
     <mkdir dir="build/test-classes"/>
     <mkdir dir="build/test-reports"/>
+    <mkdir dir="build/soak-agent-reports"/>
+    <mkdir dir="build/soak-app-reports"/>
   </target>
 
   <target name="compile" depends="init" description="compile the source">
@@ -58,7 +60,6 @@
   </target>
 
   <target name="test" depends="compile,dist">
-
     <junit printsummary="yes" haltonfailure="no">
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
@@ -72,12 +73,11 @@
           <include name="unit/**/*Test*.java" />
         </fileset>
       </batchtest>
-
     </junit>
 
     <junit printsummary="yes" haltonfailure="no">
       <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
-      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug,port=8179"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug,port=8171"/>
 
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
@@ -91,7 +91,6 @@
           <include name="integration/**/*Test*.java" />
         </fileset>
       </batchtest>
-
     </junit>
 
     <junitreport todir="build/test-reports">
@@ -99,6 +98,66 @@
         <include name="TEST-*.xml"/>
       </fileset>
       <report format="frames" todir="build/test-reports/html"/>
+    </junitreport>
+  </target>
+
+  <target name="soak-agent" depends="compile,dist">
+    <junit printsummary="yes" haltonfailure="no" fork="true">
+      <jvmarg value="-XX:DumpLoadedClassList=soak-agent.classlist"/>
+      <jvmarg value="-XX:NativeMemoryTracking=summary"/>
+      <jvmarg value="-XX:+TraceClassLoading"/>
+      <jvmarg value="-XX:+TraceClassUnloading"/>
+      <!--<jvmarg value="-XX:MetaspaceSize=12m" />-->
+      <!--<jvmarg value="-XX:MaxMetaspaceSize=12m" />-->
+      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logFile=soak-agent.log,logLevel=debug,port=8172"/>
+
+      <classpath refid="project.classpath" />
+      <classpath refid="test.classpath" />
+      <classpath location="build/test-classes" />
+
+      <formatter type="xml" />
+      <formatter type="plain" />
+
+      <batchtest fork="yes" todir="build/soak-agent-reports">
+        <fileset dir="test">
+          <include name="soak/JackSoakAgentTest.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+
+    <junitreport todir="build/soak-agent-reports">
+      <fileset dir="build/soak-agent-reports">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="build/soak-agent-reports/html"/>
+    </junitreport>
+  </target>
+
+  <target name="soak-app" depends="compile,dist">
+    <junit printsummary="yes" haltonfailure="no">
+      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
+      <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug,port=8173"/>
+
+      <classpath refid="project.classpath" />
+      <classpath refid="test.classpath" />
+      <classpath location="build/test-classes" />
+
+      <formatter type="xml" />
+      <formatter type="plain" />
+
+      <batchtest fork="yes" todir="build/soak-app-reports">
+        <fileset dir="test">
+          <include name="soak/JackSoakAppTest.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+
+    <junitreport todir="build/soak-app-reports">
+      <fileset dir="build/soak-app-reports">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="build/soak-app-reports/html"/>
     </junitreport>
   </target>
 

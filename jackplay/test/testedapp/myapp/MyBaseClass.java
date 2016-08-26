@@ -1,4 +1,4 @@
-package integration.myapp;
+package testedapp.myapp;
 
 public abstract class MyBaseClass {
 

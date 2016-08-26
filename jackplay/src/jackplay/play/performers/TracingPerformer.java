@@ -14,16 +14,16 @@ public class TracingPerformer implements Performer {
     }
 
     @Override
-    public CtClass perform(CtClass aClass, String mode) throws Exception {
+    public CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception {
         Logger.debug("tracingPerformer", "[" + mode + "] starts tracing for method:" + playGround.methodFullName);
 
         CtMethod method = this.findMethod(aClass, playGround);
 
         method.addLocalVariable("_jackplay_elapsed$", CtClass.longType);
-        method.addLocalVariable("_jackplay_uuid$", ClassPool.getDefault().get("java.lang.String"));
+        method.addLocalVariable("_jackplay_uuid$", cp.get("java.lang.String"));
         method.insertBefore(traceMethodEntry(method));
 
-        CtClass throwableType = ClassPool.getDefault().get("java.lang.Throwable");
+        CtClass throwableType = cp.get("java.lang.Throwable");
         method.addCatch(traceMethodThrowingException(method), throwableType);
 
         boolean isVoid = "void".equals(method.getReturnType().getName());
