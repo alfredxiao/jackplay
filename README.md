@@ -1,7 +1,7 @@
 # What is Jackplay?
   Jackplay is a **JVM tracing tool** that helps you troubleshoot application behaviour. It works at JVM level and supports languages like Java, Groovy, Clojure, etc.
 
-  It allows you to **trace** method execution in a JVM. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
+  It allows you to **trace** method execution in a JVM such that you know exactly the ins and outs coming through your method. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
 # Latest Version
   ```com.github.alfredxiao/jackplay 0.9.5```
