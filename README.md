@@ -130,6 +130,10 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 
   Open [http://localhost:8181](http://localhost:8181), and try to play with it.
 
+4. Try out tracing, for Example
+
+  In the 'Method:' input box, type 'RudeGreeter', select 'myapp.greeter.RudeGreeter.greet(java.lang.String)' and click 'Trace'.
+
 # Limitations
 
  - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
