@@ -62,19 +62,19 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 |------------------|---------------------------------------------------------------------------|---------|--------------|
 |*port*            | port number the web server listens on                                     | 8181    |              |
 |*https*           | whether to use https                                                      | true    |              |
-|*keystoreFilepath*| when using https, this is used to set the file path to your keystore file |         |              |
-|*keystorePassword*| when using https, this is used to set the password for your keystore file |         |              |
 |*logLevel*        | can be either info, debug, or error, default is info                      | info    | error, debug |
-|*traceLogLimit*   | how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity | 200 | |
+|*traceLogLimit*   | how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity | 300 | |
 |*autoSuggestLimit*| specifies the limit of items auto suggestion displays | 100 | |
-|*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
-|*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
 |*defaultTrace*    | colon separated full method names that we want Jackplay to trace by default | | ```myapp.Math.add(int)``` |
 |*logFile*         | file path to write Jackplay logs to. Note if file size grows over 100M, it will be truncated | | ```./jackplay.log``` |
+|*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
+|*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
+|*keystoreFilepath*| when using https, this is used to set the file path to your keystore file |         |              |
+|*keystorePassword*| when using https, this is used to set the password for your keystore file |         |              |
 
   **Note**:
   1. When *https* is set to true, but no password or keystore path provided, a built-in demo self-signed keystore would be used instead.
-  2. When you define *defaultTrace*, the way you specifiy JVM argument might need to be quoted, e.g.
+  2. When you define *defaultTrace*, the way you specify JVM argument might need to be quoted, e.g.
 
   ```
   java -Xbootclasspath/a:../jackplay/dist/jackplay-bootstrap-latest.jar -javaagent:../jackplay/dist/jackplay-agent-latest.jar="logLevel=debug,blacklist=java.net:java.nio,defaultTrace=myapp.greeter.NiceGreeter.greet(java.lang.String):myapp.Demo.main(java.lang.String[])" -cp . myapp.Demo
@@ -131,7 +131,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 
  - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
  - Does not support constructor method yet
- - When redefining a method, you can only use Java. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
+ - When redefining a method, you can only use Java language. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
 
 # License
 
