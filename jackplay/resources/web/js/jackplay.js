@@ -1094,21 +1094,21 @@ let LogHistory = React.createClass({
       switch (entry.tracePoint) {
         case TRIGGER_POINT_ENTER:
           iconClass = 'fa fa-sign-in';
-          methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.map(arg => arg == null ? 'null' : arg).join(', ') : ''})</span>
+          methodArgs = <span className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.map(arg => arg == null ? 'null' : arg).join(', ') : ''})</span>
           break;
         case TRIGGER_POINT_RETURNS:
           iconClass = 'fa fa-reply';
           hasElapsedTime = true && entry.elapsed >= 0;
           methodArgs = <span>({dots})</span>;
           arrow = <span> {RETURNS_ARROW} </span>;
-          message = <span title={entry.type} className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
+          message = <span className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
           break;
         case TRIGGER_POINT_THROWS_EXCEPTION:
           iconClass = 'fa fa-exclamation-triangle';
           hasElapsedTime = true && entry.elapsed >= 0;
           methodArgs = <span>({dots})</span>;
           arrow = <span> {THROWS_ARROW} </span>;
-          message = <span title={entry.type} className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
+          message = <span className='traceLogExceptionStackTrace' title='exception stack trace'>{entry.exceptionStackTrace}</span>
           break;
       }
 
@@ -1132,7 +1132,7 @@ let LogHistory = React.createClass({
         <tr className={clsNames} title={entry.tracePoint} onClick={() => toggleTraceLogBroughtToFront(entry.uuid)}
             onMouseOver={() => highlightLogRecord(entry.uuid)} onMouseOut={() => highlightLogRecord('no_such_id')} >
           <td style={{width: '1%'}}>{icon}</td>
-          <td style={{width: '1%'}}><span title={entry.tracePoint} className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
+          <td style={{width: '1%'}}><span className='traceLogWhen' style={{whiteSpace: 'nowrap'}} title='when this happened'>{entry.when}</span></td>
           <td style={{width: '1%'}}><span className='traceLogThreadName'>[{entry.threadName}]</span></td>
           <td title='class name'
               style={{width: '180px', paddingLeft: '3px', paddingRight: '0px', textAlign: 'right'}}><span className='traceLogClassFullName'>{entry.classFullName}.</span></td>

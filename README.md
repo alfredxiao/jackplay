@@ -139,7 +139,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
  - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
  - Does not support constructor method yet
  - When redefining a method, you can only use Java language. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
- - The web interface does not work in IE due to compatibility issues in underling libraries. It is recommended to use **Chrome**. (This browser compatibility problem existed 20 years ago, and it is still there).
+ - The web interface does not work in IE due to compatibility issues in underling libraries. It is recommended to use *latest* **Chrome**. (This browser compatibility problem existed 20 years ago, and it is still there).
 
 # License
 
