@@ -797,7 +797,7 @@ let SystemSettings = React.createClass({
           let methodInfo = extractMethodInfo(methodFullName);
           return (
             <li style={{marginLeft: '-38px', fontSize: '14px'}}>
-              <button className='removePlayTarget' onClick={() => removeMethod(genre, methodFullName)} title='Remove the trace or redefinition on this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+              <button className='removePlayTarget' onClick={() => removeMethod(genre, methodFullName)} title='Undo this method'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
               <span style={{marginLeft: '4px'}}><span style={{color: 'green'}}>{methodInfo.methodName}</span>(<span style={{fontStyle: 'italic'}}>{methodInfo.methodArgsList}</span>)</span>
             </li>
           )
@@ -805,7 +805,7 @@ let SystemSettings = React.createClass({
         return (
            <li style={{marginTop: '2px', marginLeft: '-5px'}}>
              <span>
-               <button className='removePlayTarget' onClick={() => removeClass(genre, clsName)} title='Remove the trace or redefinition on this class'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
+               <button className='removePlayTarget' onClick={() => removeClass(genre, clsName)} title='Undo this class'><span style={{fontSize:'13px'}}>{CROSS}</span></button>
                <span style={{fontSize: '16px', marginLeft: '4px'}}>{clsName}</span>
              </span>
              <ul style={{marginLeft: '20px', listStyle: 'none'}}>{methodList}</ul>
