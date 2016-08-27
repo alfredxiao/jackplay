@@ -1094,7 +1094,7 @@ let LogHistory = React.createClass({
       switch (entry.tracePoint) {
         case TRIGGER_POINT_ENTER:
           iconClass = 'fa fa-sign-in';
-          methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.join(', ') : ''})</span>
+          methodArgs = <span title={entry.type} className='traceLogArgsList' title='arguments'>({entry.arguments ? entry.arguments.map(arg => arg == null ? 'null' : arg).join(', ') : ''})</span>
           break;
         case TRIGGER_POINT_RETURNS:
           iconClass = 'fa fa-reply';
