@@ -13,6 +13,7 @@
  - Can blacklist or whitelist specified packages
  - No need to change application code
  - No need to restart a JVM
+ - Runs an embedded lightweight HTTP server
 
 # Q and A
 
