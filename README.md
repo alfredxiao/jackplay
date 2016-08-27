@@ -6,7 +6,7 @@
   If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you you, Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment.
 
 # Latest Version
-  ```com.github.alfredxiao/jackplay 0.9.5```
+  ```com.github.alfredxiao/jackplay 0.9.6```
 
 # Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
