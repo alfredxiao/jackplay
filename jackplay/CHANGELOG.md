@@ -3,6 +3,11 @@
 ## To be released
 - Can trace constructor?
 
+## 0.9.5 (27-Aug-2016)
+- added soak test, testing agent and application run with agent
+- added tests to verify program menu changes
+- refine UI styles
+
 ## 0.9.3 (22-Aug-2016)
 - bug fix where the URI for loading currentProgram has changed to be /info/currentProgram
 
