@@ -3,6 +3,12 @@
 ## To be released
 - Can trace constructor?
 
+## 0.9.6 
+- fix bug in jackplay.js where duplicate 'title' attributes makes the UI stop working in some browsers
+- remove highlight.js which is not used
+- handle displaying null value in UI
+- handle displaying return value when return type is void
+
 ## 0.9.5 (27-Aug-2016)
 - added soak test, testing agent and application run with agent
 - added tests to verify program menu changes

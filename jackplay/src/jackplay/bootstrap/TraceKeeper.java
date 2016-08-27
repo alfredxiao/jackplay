@@ -35,6 +35,7 @@ public class TraceKeeper {
                 map.put("threadName", traceLog.threadName);
                 map.put("arguments", traceLog.arguments);
                 map.put("returnedValue", traceLog.returnedValue);
+                map.put("returningVoid", traceLog.returningVoid);
                 map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
                 map.put("elapsed", traceLog.elapsed);
                 map.put("argumentsCount", traceLog.argumentsCount);
@@ -73,6 +74,7 @@ public class TraceKeeper {
         TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
         entry.elapsed = elapsed;
         entry.argumentsCount = argsLen;
+        entry.returningVoid = true;
 
         addTraceLog(entry);
     }

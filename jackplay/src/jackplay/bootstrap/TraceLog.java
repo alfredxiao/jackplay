@@ -19,8 +19,11 @@ public class TraceLog {
     // for method return or exception
     public long elapsed = -1;
     public int argumentsCount;
-    public String returnedValue;        // return only
-    public String exceptionStackTrace;  // exception only
+
+    public String returnedValue;            // return only
+    public boolean returningVoid = false;   // return only
+
+    public String exceptionStackTrace;      // exception only
 
     public TraceLog(TracePoint tracePoint, PlayGround pg, String uuid) {
         this.when = new Date();

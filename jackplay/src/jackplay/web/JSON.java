@@ -14,6 +14,12 @@ public class JSON {
             return iterableToJson(Arrays.asList((Object[]) obj));
         } else if (obj instanceof Iterable) {
             return iterableToJson((List) obj);
+        } else if (obj instanceof Boolean) {
+            return obj.toString();
+        } else if (obj instanceof Character) {
+            return obj.toString();
+        } else if (obj instanceof Number) {
+            return obj.toString();
         } else {
             return obj == null ? "null" : escape(obj.toString());
         }

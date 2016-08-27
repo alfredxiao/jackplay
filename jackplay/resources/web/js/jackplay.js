@@ -1101,7 +1101,7 @@ let LogHistory = React.createClass({
           hasElapsedTime = true && entry.elapsed >= 0;
           methodArgs = <span>({dots})</span>;
           arrow = <span> {RETURNS_ARROW} </span>;
-          message = <span className='traceLogReturnedValue' title='return value'>{entry.returnedValue}</span>
+          message = <span className='traceLogReturnedValue' title='return value'>{entry.returningVoid ? 'void' : (entry.returnedValue == null ? 'null' : entry.returnedValue)}</span>
           break;
         case TRIGGER_POINT_THROWS_EXCEPTION:
           iconClass = 'fa fa-exclamation-triangle';
@@ -1252,12 +1252,7 @@ let JackPlay = React.createClass({
       tryCount : 0,
       retryLimit : 3,
       success: function(history) {
-        this.setState(Object.assign(this.state, {logHistory: history.map(function(e) {
-                                                   if (e.returnedValue == null && e.tracePoint == TRIGGER_POINT_RETURNS) {
-                                                     e.returnedValue = 'void';
-                                                   }
-                                                   return e;
-                                                 }),
+        this.setState(Object.assign(this.state, {logHistory: history,
                                                  traceStarted: history.length > 0 || this.state.traceStarted,
                                                  traceLogHovered: ''}));
         this.updateLogHistoryWithFilter();
