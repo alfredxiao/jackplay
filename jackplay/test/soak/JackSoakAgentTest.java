@@ -11,59 +11,59 @@ public class JackSoakAgentTest {
 
     @Test
     public void runForOneHour() throws Exception {
-        JackSoapCommon.prepareRunning();
+        JackSoakCommon.prepareRunning();
 
         long start = System.currentTimeMillis();
 
-        JackSoapCommon.startRunning();
+        JackSoakCommon.startRunning();
 
         while (System.currentTimeMillis() - start < RUN_LENGTH_MS) {
-            JackSoapCommon.jack.trace(JackSoapCommon.test1);
+            JackSoakCommon.jack.trace(JackSoakCommon.test1);
             restAndCount();
 
-            JackSoapCommon.jack.trace(JackSoapCommon.test2);
+            JackSoakCommon.jack.trace(JackSoakCommon.test2);
             restAndCount();
 
-            JackSoapCommon.jack.trace(JackSoapCommon.test3);
+            JackSoakCommon.jack.trace(JackSoakCommon.test3);
             restAndCount();
 
-            JackSoapCommon.jack.trace(JackSoapCommon.lateLoading);
+            JackSoakCommon.jack.trace(JackSoakCommon.lateLoading);
             restAndCount();
 
-            JackSoapCommon.jack.redefine(JackSoapCommon.test1, "{ return \"REDEFINED\"; }");
+            JackSoakCommon.jack.redefine(JackSoakCommon.test1, "{ return \"REDEFINED\"; }");
             restAndCount();
 
-            JackSoapCommon.jack.redefine(JackSoapCommon.test2, "{ int a = 2; }");
+            JackSoakCommon.jack.redefine(JackSoakCommon.test2, "{ int a = 2; }");
             restAndCount();
 
             try {
-                JackSoapCommon.jack.redefine(JackSoapCommon.test1, "{ return no_such_thing; }");
+                JackSoakCommon.jack.redefine(JackSoakCommon.test1, "{ return no_such_thing; }");
             } catch(Exception ignore) {}
             restAndCount();
 
             try {
-                JackSoapCommon.jack.redefine(JackSoapCommon.test3, "{ return 3; }");
+                JackSoakCommon.jack.redefine(JackSoakCommon.test3, "{ return 3; }");
             } catch(Exception ignore) {}
             restAndCount();
 
-            JackSoapCommon.jack.redefine(JackSoapCommon.test2, "{ int c = 6; }");
+            JackSoakCommon.jack.redefine(JackSoakCommon.test2, "{ int c = 6; }");
             restAndCount();
 
-            JackSoapCommon.jack.undoTrace(JackSoapCommon.test1);
+            JackSoakCommon.jack.undoTrace(JackSoakCommon.test1);
             restAndCount();
 
-            JackSoapCommon.jack.undoRedefine(JackSoapCommon.test1);
+            JackSoakCommon.jack.undoRedefine(JackSoakCommon.test1);
             restAndCount();
 
             Logger.info("soak-agent", "retransformationCount:" + retransformationCount);
         }
 
-        JackSoapCommon.stopRunning();
+        JackSoakCommon.stopRunning();
     }
 
     private void restAndCount() {
         retransformationCount++;
 //        System.gc();
-        JackSoapCommon.sleepSmallRandom(5);
+        JackSoakCommon.sleepSmallRandom(5);
     }
 }

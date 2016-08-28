@@ -15,6 +15,17 @@ public abstract class MyBaseClass {
         return arg1;
     }
 
+    public Object test4() {
+        return null;
+    }
+
+    public String test5(String arg1) {
+        RuntimeException e = new IllegalArgumentException("arg1 is invalid");
+        e.initCause(new NullPointerException("because I don't like arg1"));
+
+        throw e;
+    }
+
     public abstract void myAbstract();
 
     public native void myNative();

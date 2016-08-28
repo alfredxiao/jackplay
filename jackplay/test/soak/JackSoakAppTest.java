@@ -2,7 +2,7 @@ package soak;
 
 import org.junit.Test;
 
-import static soak.JackSoapCommon.changeOnce;
+import static soak.JackSoakCommon.changeOnce;
 
 public class JackSoakAppTest {
 
@@ -10,18 +10,18 @@ public class JackSoakAppTest {
 
     @Test
     public void runAppSoapTest() throws Exception {
-        JackSoapCommon.prepareRunning();
+        JackSoakCommon.prepareRunning();
 
         changeOnce();
 
         long start = System.currentTimeMillis();
 
-        JackSoapCommon.startRunning();
+        JackSoakCommon.startRunning();
 
-        while (System.currentTimeMillis() - start < 10 * RUN_LENGTH_MS) {
+        while (System.currentTimeMillis() - start < RUN_LENGTH_MS) {
             Thread.sleep(3000);
         }
 
-        JackSoapCommon.stopRunning();
+        JackSoakCommon.stopRunning();
     }
 }

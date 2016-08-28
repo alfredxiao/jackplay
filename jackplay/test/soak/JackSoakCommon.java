@@ -11,11 +11,13 @@ import testedapp.myapp.MyLateLoadingClass;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class JackSoapCommon {
+public class JackSoakCommon {
     static Jack jack = TheatreRep.getJack();
     static PlayGround test1 = new PlayGround("testedapp.myapp.MyBaseClass.test1(int,java.lang.String)");
     static PlayGround test2 = new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
     static PlayGround test3 = new PlayGround("testedapp.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    static PlayGround test4 = new PlayGround("testedapp.myapp.MyBaseClass.test4()");
+    static PlayGround test5 = new PlayGround("testedapp.myapp.MyBaseClass.test5(java.lang.String)");
     static PlayGround lateLoading = new PlayGround("testedapp.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
     static MyClass myObj = new MyClass();
     static int runCount = 0;
@@ -25,6 +27,8 @@ public class JackSoapCommon {
         jack.trace(test1);
         jack.trace(test2);
         jack.trace(test3);
+        jack.trace(test4);
+        jack.trace(test5);
         jack.trace(lateLoading);
         jack.redefine(test1, "{ return \"REDEFINED\"; }");
         jack.redefine(test2, "{ int a = 2; }");
@@ -53,7 +57,7 @@ public class JackSoapCommon {
     }
 
     static void prepareRunning() throws Exception {
-        JackSoapCommon.jack.undoAll();
+        JackSoakCommon.jack.undoAll();
         TraceKeeper.clearLogHistory();
         Class myAbstractClass = MyBaseClass.class;
         Class myClass = MyClass.class;
@@ -63,6 +67,8 @@ public class JackSoapCommon {
         startTest1();
         startTest2();
         startTest3();
+        startTest4();
+        startTest5();
     }
 
     private static void startTest1() {
@@ -96,8 +102,34 @@ public class JackSoapCommon {
             public void run() {
                 while (!stoppable) {
                     myObj.test3(new Object[]{}, null);
+                    sleepSmallRandom();
                     MyLateLoadingClass late = new MyLateLoadingClass();
                     late.lateLoadingFunction("ha");
+                }
+            }
+        }).start();
+    }
+
+    private static void startTest4() {
+        new Thread(new Runnable() {
+            public void run() {
+                while (!stoppable) {
+                    myObj.test4();
+                    sleepSmallRandom();
+                }
+            }
+        }).start();
+    }
+
+    private static void startTest5() {
+        new Thread(new Runnable() {
+            public void run() {
+                while (!stoppable) {
+                    try {
+                        myObj.test5("haha");
+                    } catch(Exception e) {
+
+                    }
                     sleepSmallRandom();
                 }
             }
