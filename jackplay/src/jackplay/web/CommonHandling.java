@@ -1,9 +1,7 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
-import jackplay.Logger;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,7 +35,6 @@ public class CommonHandling {
 
     private static InputStream loadResource(String resourcePath) throws IOException {
         InputStream resourceStream = CommonHandling.class.getResourceAsStream("/web" + resourcePath);
-//        InputStream resourceStream = new FileInputStream("/home/alfred/development/jackplay/jackplay/resources/web" + resourcePath);
 
         if (null == resourceStream) {
             resourceStream = CommonHandling.class.getResourceAsStream("/web/404.html");
@@ -52,5 +49,8 @@ public class CommonHandling {
 
     static void willReturnJson(HttpExchange http) {
         http.getResponseHeaders().add("Content-Type", "application/json");
+        http.getResponseHeaders().add("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        http.getResponseHeaders().add("Pragma", "no-cache"); // HTTP 1.0.
+        http.getResponseHeaders().add("Expires", "0"); // Proxies.
     }
 }
