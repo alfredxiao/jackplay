@@ -3,7 +3,10 @@
 ## To be released
 - Can trace constructor?
 
-## 0.9.6 
+## 0.9.7 (28-Aug-2016)
+- disable browser cache for json endpoints
+
+## 0.9.6 (27-Aug-2016)
 - fix bug in jackplay.js where duplicate 'title' attributes makes the UI stop working in some browsers
 - remove highlight.js which is not used
 - handle displaying null value in UI
