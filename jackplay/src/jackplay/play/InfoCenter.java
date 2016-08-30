@@ -1,5 +1,6 @@
 package jackplay.play;
 
+import jackplay.Logger;
 import jackplay.bootstrap.Genre;
 import static jackplay.bootstrap.Genre.*;
 import static jackplay.play.MetadataFailureCause.ReferencedClassDefFoundError;
@@ -108,10 +109,12 @@ public class InfoCenter {
             } catch(NoClassDefFoundError ncdf) {
                 if (!classesFailedMetadataLoading.containsKey(clazz.getName())) {
                     classesFailedMetadataLoading.put(clazz.getName(), ReferencedClassDefFoundError);
+                    Logger.error("infocenter", ncdf);
                 }
             } catch(Throwable t) {
                 if (!classesFailedMetadataLoading.containsKey(clazz.getName())) {
                     classesFailedMetadataLoading.put(clazz.getName(), Unknown);
+                    Logger.error("infocenter", t);
                 }
             }
         }
