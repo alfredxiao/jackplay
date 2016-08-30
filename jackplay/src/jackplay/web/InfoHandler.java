@@ -22,7 +22,7 @@ public class InfoHandler extends BaseHandler {
                 break;
             case "/info/loadedMethods":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getLoadedMethods()));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getAllLoadedMethods()));
                 break;
             case "/info/clearTraceLogs":
                 TraceKeeper.clearLogHistory();

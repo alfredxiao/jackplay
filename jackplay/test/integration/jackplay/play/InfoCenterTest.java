@@ -1,6 +1,7 @@
 package integration.jackplay.play;
 
 import testedapp.myapp.MyBaseClass;
+import testedapp.myapp.MyClass;
 import jackplay.TheatreRep;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.InfoCenter;
@@ -14,14 +15,15 @@ import java.util.Map;
 
 public class InfoCenterTest {
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
-    final Class MYCLASS = MyBaseClass.class;
+    final Class MYBASECLASS = MyBaseClass.class;
+    final Class MYCLASS = MyClass.class;
     final Class JAVA_UTIL_ARRAY_LIST = java.util.ArrayList.class;
 
     @Test
     public void shouldFindLoadedClasses() {
-        List<Class> myclasses = infoCenter.findLoadedClasses("testedapp.myapp.MyBaseClass");
+        List<Class> myclasses = infoCenter.findLoadedModifiableClass("testedapp.myapp.MyBaseClass");
         assertEquals(1, myclasses.size());
-        assertEquals(MYCLASS, myclasses.get(0));
+        assertEquals(MYBASECLASS, myclasses.get(0));
     }
 
     @Test
@@ -41,7 +43,7 @@ public class InfoCenterTest {
 
     @Test
     public void shouldGiveLoadedMethods() throws Exception {
-        List<Map<String, String>> loadedMethods = infoCenter.getLoadedMethods();
+        List<Map<String, String>> loadedMethods = infoCenter.getAllLoadedMethods();
 
         Map<String, String> myfunction1 = new HashMap<>();
         myfunction1.put("classFullName", "testedapp.myapp.MyBaseClass");
@@ -69,5 +71,19 @@ public class InfoCenterTest {
         assertFalse(infoCenter.hasMethodBody(myAbstract));
         assertFalse(infoCenter.hasMethodBody(myNative));
         assertTrue(infoCenter.hasMethodBody(myfunction2));
+    }
+
+    @Test
+    public void shouldIgnorePrivateInnerClass() throws Exception {
+        MyClass.load();
+        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateInnerClass").size());
+        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateStaticInnerClass").size());
+    }
+
+    @Test
+    public void shouldIncludeProtectedInnerClass() throws Exception {
+        MyClass.load();
+        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedStaticInnerClass").size());
     }
 }

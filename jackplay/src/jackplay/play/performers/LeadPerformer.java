@@ -40,7 +40,7 @@ public class LeadPerformer implements ClassFileTransformer {
     }
 
     public void rehearsal(Class clazz) throws Exception {
-        String className = clazz.getCanonicalName();
+        String className = clazz.getName();
         Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
 
         if (!isAgendaEmpty(agenda)) {

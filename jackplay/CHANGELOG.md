@@ -2,6 +2,11 @@
 
 ## To be released
 - Can trace constructor?
+- Added label to two log filter and matched record count in UI
+- Widened method search box's width
+
+## 0.9.8 (30-Aug-2016)
+- Ignore classes that we cannot query meta data, including private class and broken class (e.g. class A is loaded, but A references B but we cannot find B in classpath)
 
 ## 0.9.7 (28-Aug-2016)
 - disable browser cache for json endpoints

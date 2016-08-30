@@ -27,4 +27,11 @@ public class RudeGreeter implements Greeter {
             throw new RuntimeException(name + ", can you tell me what the hell is cloud computing!");
         }
     }
+
+    public static void main(String[] args) {
+        Class c = QAGreeter.class;
+        System.out.println( QAGreeter.QAProtectedInnerClass.class.getCanonicalName() );
+        System.out.println( QAGreeter.QAProtectedInnerClass.class.getName() );
+    }
+
 }

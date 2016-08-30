@@ -123,5 +123,32 @@ public class QAGreeter implements Greeter {
         Demo.sleepSmallRandom();
     }
 
+    private class QAPrivateInnerClass {
+        public String test1() {
+            return "test1";
+        }
+    }
 
+    protected class QAProtectedInnerClass {
+        public String test2() {
+            return "test2";
+        }
+    }
+
+    static Class c1;
+    static Class c2;
+    static {
+        c1 = QAProtectedInnerClass.class;
+        c2 = QAPrivateInnerClass.class;
+//        System.out.println(c1.getName());
+//        System.out.println(c1.getCanonicalName());
+//        System.out.println(c2.getName());
+//        System.out.println(c2.getCanonicalName());
+    }
+
+    public static void main(String[] args) {
+        Class c = QAGreeter.class;
+        //System.out.println( QAGreeter.QAProtectedInnerClass.class.getCanonicalName() );
+//        System.out.println( QAGreeter.QAProtectedInnerClass.class.getName() );
+    }
 }

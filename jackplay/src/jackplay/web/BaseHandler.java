@@ -18,7 +18,7 @@ public abstract class BaseHandler implements HttpHandler {
         } catch (Throwable t) {
             Logger.error("baseHandler", t);
             CommonHandling.serveStringBody(http, 500,
-                                           (t.getMessage() == null ? t.getClass().getCanonicalName() : t.getMessage()));
+                                           (t.getMessage() == null ? t.getClass().getName() : t.getMessage()));
         }
     }
 

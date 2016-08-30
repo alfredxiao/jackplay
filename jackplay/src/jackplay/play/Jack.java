@@ -11,7 +11,6 @@ import jackplay.play.performers.RedefinePerformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class Jack {
             throw new PlayException("package not allowed: " + packageName);
         }
 
-        String className = method.getDeclaringClass().getCanonicalName();
+        String className = method.getDeclaringClass().getName();
         if (!infoCenter.hasMethodBody(method)) {
             throw new PlayException("method has no body (either native or abstract): " +
                     className + "." + method.getName());
@@ -92,7 +91,7 @@ public class Jack {
 
         if (pm.addAgenda(genre, pg, newBody)) {
             boolean matched = false;
-            List<Class> loadedMatchedClasses = infoCenter.findLoadedClasses(pg.classFullName);
+            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClass(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {
                 Method method = infoCenter.findMatchingMethod(clazz, pg);
                 if (method != null && verifyPlayability(method)) {
@@ -117,7 +116,7 @@ public class Jack {
 
     public synchronized void undoPlay(Genre genre, PlayGround pg) throws PlayException {
         if (pm.removeAgenda(genre, pg)) {
-            List<Class> loadedMatchedClasses = infoCenter.findLoadedClasses(pg.classFullName);
+            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClass(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {
                 try {
                     inst.retransformClasses(clazz);
