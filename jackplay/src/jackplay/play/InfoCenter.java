@@ -198,7 +198,7 @@ public class InfoCenter {
     }
 
     private boolean isClassTypeAccessible(Class clazz) {
-        return !Modifier.isPrivate(clazz.getModifiers());
+        return true;//!Modifier.isPrivate(clazz.getModifiers());
     }
 
     private boolean isClassTypeSupported(Class clazz) {

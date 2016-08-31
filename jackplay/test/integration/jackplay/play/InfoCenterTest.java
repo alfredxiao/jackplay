@@ -76,8 +76,8 @@ public class InfoCenterTest {
     @Test
     public void shouldIgnorePrivateInnerClass() throws Exception {
         MyClass.load();
-        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateInnerClass").size());
-        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateStaticInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateStaticInnerClass").size());
     }
 
     @Test
@@ -85,5 +85,12 @@ public class InfoCenterTest {
         MyClass.load();
         assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedInnerClass").size());
         assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedStaticInnerClass").size());
+    }
+
+    @Test
+    public void shouldNotUseCanonicalNameForClassName() throws Exception {
+        MyClass.load();
+        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedInnerClass").size());
+        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass.MyProtectedInnerClass").size());
     }
 }
