@@ -1,4 +1,4 @@
-package testedapp.myapp;
+package fortest.myapp;
 
 public abstract class MyBaseClass {
 

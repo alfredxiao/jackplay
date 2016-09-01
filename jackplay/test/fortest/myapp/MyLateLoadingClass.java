@@ -1,4 +1,4 @@
-package testedapp.myapp;
+package fortest.myapp;
 
 public class MyLateLoadingClass {
     public static long whenLoaded = System.currentTimeMillis();

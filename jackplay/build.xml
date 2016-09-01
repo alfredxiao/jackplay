@@ -8,7 +8,7 @@
   <property name="groupId" value="com.github.alfredxiao" />
   <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
-  <property name="version" value="0.9.8" />
+  <property name="version" value="0.9.9" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
   <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
@@ -82,6 +82,7 @@
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
       <classpath location="build/test-classes" />
+      <classpath location="test-resources" />
 
       <formatter type="xml" />
       <formatter type="plain" />

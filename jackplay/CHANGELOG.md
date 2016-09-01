@@ -5,6 +5,10 @@
 - Added label to two log filter and matched record count in UI
 - Widened method search box's width
 
+## 0.9.8 (01-Sep-2016)
+- support classes loaded by custom classloader
+- undo the ignoring of private classes, since they appear to be searchable
+
 ## 0.9.8 (30-Aug-2016)
 - Ignore classes that we cannot query meta data, including private class and broken class (e.g. class A is loaded, but A references B but we cannot find B in classpath)
 

@@ -2,11 +2,16 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
+import jackplay.javassist.ClassClassPath;
+import jackplay.javassist.LoaderClassPath;
+import jackplay.javassist.NotFoundException;
 import jackplay.play.ProgramManager;
 import static jackplay.bootstrap.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
+import java.io.ByteArrayInputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -14,6 +19,8 @@ import java.util.*;
 
 public class LeadPerformer implements ClassFileTransformer {
     ProgramManager pm;
+    public boolean transformSuccess = true;
+    public Throwable transformFailure = null;
 
     final static String REHEARSAL_MODE = "REHEARSAL";
     final static String STAGING_MODE = "STAGING";
@@ -39,24 +46,6 @@ public class LeadPerformer implements ClassFileTransformer {
                 && (agenda.get(METHOD_REDEFINE) == null || agenda.get(METHOD_REDEFINE).isEmpty()));
     }
 
-    public void rehearsal(Class clazz) throws Exception {
-        String className = clazz.getName();
-        Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
-
-        if (!isAgendaEmpty(agenda)) {
-            Logger.debug("leadPerformer", "starting rehearsal on class:" + className);
-            CtClass cc = null;
-
-            try {
-                ClassPool cp = new ClassPool(true);
-                cc = performAsPerAgenda(cp, className, agenda, REHEARSAL_MODE);
-                Logger.debug("leadPerformer", "finished rehearsal on class:" + className);
-            } finally {
-                if (cc != null) cc.detach();
-            }
-        }
-    }
-
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
@@ -72,11 +61,13 @@ public class LeadPerformer implements ClassFileTransformer {
                 // we are here if we undo plays for a class
                 CtClass cc = null;
                 try {
-                    cc = cp.get(className);
+                    cc = getCtClass(cp, classBeingRedefined, classfileBuffer);
+                    this.transformSuccess = true;
                     return cc.toBytecode();
                 } catch(Exception e) {
                     Logger.error("leadPerfomer", e);
-                    return classfileBuffer;
+                    this.transformSuccess = true;
+                    return null;
                 } finally {
                     if (cc != null) cc.detach();
                 }
@@ -89,13 +80,16 @@ public class LeadPerformer implements ClassFileTransformer {
 
             try {
                 Logger.debug("leadPerformer", "starts retransform class:" + className);
-                cc = performAsPerAgenda(cp, className, agenda, STAGING_MODE);
+                cc = performAsPerAgenda(cp, classBeingRedefined, classfileBuffer, agenda, STAGING_MODE);
                 Logger.debug("leadPerformer", "finished retransform class:" + className);
 
                 byteCode = cc.toBytecode();
-            } catch(Exception e) {
-                Logger.error("leadPerfomer", e);
-                byteCode = classfileBuffer;
+                this.transformSuccess = true;
+            } catch(Throwable t) {
+                Logger.error("leadPerfomer", t);
+                byteCode = null;
+                this.transformSuccess = false;
+                this.transformFailure = t;
             } finally {
                 if (cc != null) cc.detach();
             }
@@ -104,11 +98,28 @@ public class LeadPerformer implements ClassFileTransformer {
         }
     }
 
-    private CtClass performAsPerAgenda(ClassPool cp, String className, Map<Genre, Map<String, Performer>> agenda, String mode) throws Exception {
-        CtClass cc = cp.get(className);
+    private CtClass performAsPerAgenda(ClassPool cp, Class clazz, byte[] bytes, Map<Genre, Map<String, Performer>> agenda, String mode) throws Exception {
+        CtClass cc = getCtClass(cp, clazz, bytes);
 
         cc = performAgenda(cp, agenda.get(METHOD_REDEFINE), cc, mode);
         cc = performAgenda(cp, agenda.get(METHOD_TRACE), cc, mode);
         return cc;
+    }
+
+    private CtClass getCtClass(ClassPool cp, Class clazz, byte[] bytes) throws Exception {
+        try {
+            if (clazz == null) {
+                // class loaded the first time, not being redefined
+                return cp.makeClass(new ByteArrayInputStream(bytes));
+            } else {
+                return cp.get(clazz.getName());
+            }
+        } catch(NotFoundException e) {
+            // class loaded by a custom class loader
+            // cp.appendClassPath(new ClassClassPath(clazz));
+            // cp.insertClassPath(new LoaderClassPath(clazz.getClassLoader()));
+            // above two lines does not work it work
+            return cp.makeClass(new ByteArrayInputStream(bytes));
+        }
     }
 }

@@ -45,7 +45,7 @@ public class InfoCenter {
         options.updateOption(key, value.toString());
     }
 
-    public List<Class> findLoadedModifiableClass(String className) {
+    public List<Class> findLoadedModifiableClasses(String className) {
         List<Class> classes = this.getAllLoadedModifiableClasses();
         List<Class> matched = new LinkedList<>();
         for (Class clz : classes) {

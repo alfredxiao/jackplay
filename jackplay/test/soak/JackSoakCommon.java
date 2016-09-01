@@ -5,20 +5,20 @@ import jackplay.TheatreRep;
 import jackplay.bootstrap.PlayGround;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.play.Jack;
-import testedapp.myapp.MyBaseClass;
-import testedapp.myapp.MyClass;
-import testedapp.myapp.MyLateLoadingClass;
+import fortest.myapp.MyBaseClass;
+import fortest.myapp.MyClass;
+import fortest.myapp.MyLateLoadingClass;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class JackSoakCommon {
     static Jack jack = TheatreRep.getJack();
-    static PlayGround test1 = new PlayGround("testedapp.myapp.MyBaseClass.test1(int,java.lang.String)");
-    static PlayGround test2 = new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
-    static PlayGround test3 = new PlayGround("testedapp.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
-    static PlayGround test4 = new PlayGround("testedapp.myapp.MyBaseClass.test4()");
-    static PlayGround test5 = new PlayGround("testedapp.myapp.MyBaseClass.test5(java.lang.String)");
-    static PlayGround lateLoading = new PlayGround("testedapp.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
+    static PlayGround test1 = new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
+    static PlayGround test2 = new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
+    static PlayGround test3 = new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    static PlayGround test4 = new PlayGround("fortest.myapp.MyBaseClass.test4()");
+    static PlayGround test5 = new PlayGround("fortest.myapp.MyBaseClass.test5(java.lang.String)");
+    static PlayGround lateLoading = new PlayGround("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
     static MyClass myObj = new MyClass();
     static int runCount = 0;
     static boolean stoppable = false;

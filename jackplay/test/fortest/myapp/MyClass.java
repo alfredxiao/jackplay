@@ -1,4 +1,4 @@
-package testedapp.myapp;
+package fortest.myapp;
 
 
 public class MyClass extends MyBaseClass {
@@ -32,5 +32,19 @@ public class MyClass extends MyBaseClass {
         c2 = MyProtectedInnerClass.class;
         c3 = MyPrivateStaticInnerClass.class;
         c4 = MyProtectedStaticInnerClass.class;
+    }
+
+    public void invokeInnerClassMethods() {
+        MyPrivateInnerClass o1 = new MyPrivateInnerClass();
+        o1.test1();
+
+        MyPrivateStaticInnerClass o3 = new MyPrivateStaticInnerClass();
+        o3.test3();
+
+        MyProtectedInnerClass o2 = new MyProtectedInnerClass();
+        o2.test2();
+
+        MyProtectedStaticInnerClass o4 = new MyProtectedStaticInnerClass();
+        o4.test4();
     }
 }

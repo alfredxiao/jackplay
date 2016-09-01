@@ -3,6 +3,7 @@ package jackplay.play;
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
 import static jackplay.bootstrap.Genre.*;
+
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.LeadPerformer;
@@ -31,7 +32,7 @@ public class Jack {
     }
 
     private boolean verifyPlayability(Method method) throws PlayException {
-        String packageName = method.getDeclaringClass().getPackage().getName();
+        String packageName = getPackageName(method.getDeclaringClass().getName());
         if (!options.packageAllowed(packageName)) {
             throw new PlayException("package not allowed: " + packageName);
         }
@@ -47,6 +48,11 @@ public class Jack {
         if (!inst.isRetransformClassesSupported()) throw new PlayException("RetransformClass not supported");
 
         return true;
+    }
+
+    private String getPackageName(String className) {
+        int lastDot = className.lastIndexOf('.');
+        return lastDot < 0 ? "" : className.substring(0, lastDot);
     }
 
     public void handleRetransformationError(Throwable t, Class clazz, Genre genre, PlayGround pg, String previousBody) throws PlayException {
@@ -70,7 +76,7 @@ public class Jack {
                 // we have to remove it completely, unfortunately
                 pm.removeAgenda(METHOD_REDEFINE, pg);
                 try {
-                    Logger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
+                    Logger.debug("jack", "attempting to restore retransformation for class:" + pg.classFullName);
                     inst.retransformClasses(clazz);
                 } catch(Exception bestEffort) {
                     Logger.error("jack", bestEffort);
@@ -91,17 +97,23 @@ public class Jack {
 
         if (pm.addAgenda(genre, pg, newBody)) {
             boolean matched = false;
-            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClass(pg.classFullName);
+            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClasses(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {
                 Method method = infoCenter.findMatchingMethod(clazz, pg);
                 if (method != null && verifyPlayability(method)) {
                     matched = true;
                     try {
-                        leadPerformer.rehearsal(clazz);
+                        leadPerformer.transformSuccess = false;
+                        leadPerformer.transformFailure = null;
 
                         Logger.debug("jack", "starts retransforming class:" + pg.classFullName);
                         inst.retransformClasses(clazz);
-                        Logger.info("jack", "finished retransforming class:" + pg.classFullName);
+
+                        if (leadPerformer.transformSuccess) {
+                            Logger.info("jack", "finished retransforming class:" + pg.classFullName);
+                        } else {
+                            handleRetransformationError(leadPerformer.transformFailure, clazz, genre, pg, previousBody);
+                        }
                     } catch(Throwable t) {
                         handleRetransformationError(t, clazz, genre, pg, previousBody);
                     }
@@ -116,7 +128,7 @@ public class Jack {
 
     public synchronized void undoPlay(Genre genre, PlayGround pg) throws PlayException {
         if (pm.removeAgenda(genre, pg)) {
-            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClass(pg.classFullName);
+            List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClasses(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {
                 try {
                     inst.retransformClasses(clazz);

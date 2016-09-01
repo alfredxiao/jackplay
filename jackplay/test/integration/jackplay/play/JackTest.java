@@ -1,8 +1,9 @@
 package integration.jackplay.play;
 
-import testedapp.myapp.MyBaseClass;
-import testedapp.myapp.MyClass;
-import testedapp.myapp.MyLateLoadingClass;
+import fortest.myapp.MyBaseClass;
+import fortest.myapp.MyClass;
+import fortest.myapp.MyClassLoader;
+import fortest.myapp.MyLateLoadingClass;
 import jackplay.TheatreRep;
 import static jackplay.bootstrap.Genre.*;
 
@@ -26,10 +27,10 @@ public class JackTest {
     Jack jack = TheatreRep.getJack();
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
 
-    PlayGround test1 = new PlayGround("testedapp.myapp.MyBaseClass.test1(int,java.lang.String)");
-    PlayGround test2 = new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
-    PlayGround test3 = new PlayGround("testedapp.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
-    PlayGround lateLoading = new PlayGround("testedapp.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
+    PlayGround test1 = new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
+    PlayGround test2 = new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
+    PlayGround test3 = new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    PlayGround lateLoading = new PlayGround("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
 
     MyClass myObj;
 
@@ -57,7 +58,7 @@ public class JackTest {
         assertEquals(TracePoint.MethodReturns.toString(), traceLogOfMethodReturns.get("tracePoint"));
         assertNull(traceLogOfMethodReturns.get("arguments"));
         assertEquals(2, traceLogOfMethodReturns.get("argumentsCount"));
-        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
         assertEquals("test1", traceLogOfMethodReturns.get("methodShortName"));
         assertEquals("\"123.ABC\"", traceLogOfMethodReturns.get("returnedValue"));
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodReturns.get("threadName"));
@@ -69,7 +70,7 @@ public class JackTest {
         assertEquals("123", ((String[]) traceLogOfMethodEntry.get("arguments"))[0]);
         assertEquals("\"ABC\"", ((String[]) traceLogOfMethodEntry.get("arguments"))[1]);
         assertEquals(2, traceLogOfMethodEntry.get("argumentsCount"));
-        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodEntry.get("classFullName"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodEntry.get("classFullName"));
         assertEquals("test1", traceLogOfMethodEntry.get("methodShortName"));
         assertEquals(null, traceLogOfMethodEntry.get("returnedValue"));
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodEntry.get("threadName"));
@@ -126,7 +127,7 @@ public class JackTest {
         assertEquals(TracePoint.MethodThrowsException.toString(), traceLogOfMethodThrowsException.get("tracePoint"));
         assertNull(traceLogOfMethodThrowsException.get("arguments"));
         assertEquals(2, traceLogOfMethodThrowsException.get("argumentsCount"));
-        assertEquals("testedapp.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
         assertEquals("test2", traceLogOfMethodThrowsException.get("methodShortName"));
         assertEquals(null, traceLogOfMethodThrowsException.get("returnedValue"));
         assertTrue(((String) traceLogOfMethodThrowsException.get("exceptionStackTrace")).contains("java.lang.NullPointerException"));
@@ -322,6 +323,7 @@ public class JackTest {
     @Test
     public void compilationErrorShouldNotAffectRedefinitionInAnotherMethod() throws PlayException {
         jack.redefine(test1, "{ return \"REDEFINED1\"; }");
+        assertEquals("REDEFINED1", myObj.test1(100, "ACD"));
         try {
             jack.redefine(test3, "{ return no_such_var2; }");
         } catch(Exception e) {}
@@ -463,5 +465,43 @@ public class JackTest {
         assertNotNull(myObj.test3(new Object[]{"A"}, null));
 
         assertProgramSize(0);
+    }
+
+    @Test
+    public void canTracePrivateInnerClass() throws Exception {
+        MyClass.load();
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        jack.trace(new PlayGround("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
+        myObj.invokeInnerClassMethods();
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+
+        assertEquals(2, logsAfter.size() - logsBefore.size());
+    }
+
+    @Test
+    public void canTraceCustomLoadedClass() throws Exception {
+        MyClassLoader loader = new MyClassLoader();
+        Class clz = loader.findClass("CustomLoadedClass");
+
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        jack.trace(new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
+
+        Object obj = clz.newInstance();
+        clz.getDeclaredMethods()[0].invoke(obj, "A");
+
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+
+        assertEquals(2, logsAfter.size() - logsBefore.size());
+    }
+
+    @Test
+    public void canRedefineCustomLoadedClass() throws Exception {
+        MyClassLoader loader = new MyClassLoader();
+        Class clz = loader.findClass("CustomLoadedClass");
+
+        jack.redefine(new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"), "{ return \"AA\";}");
+
+        Object obj = clz.newInstance();
+        assertEquals("AA", clz.getDeclaredMethods()[0].invoke(obj, "1111"));
     }
 }

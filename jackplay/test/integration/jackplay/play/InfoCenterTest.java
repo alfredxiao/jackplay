@@ -1,7 +1,8 @@
 package integration.jackplay.play;
 
-import testedapp.myapp.MyBaseClass;
-import testedapp.myapp.MyClass;
+import fortest.myapp.MyBaseClass;
+import fortest.myapp.MyClass;
+import fortest.myapp.MyClassLoader;
 import jackplay.TheatreRep;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.InfoCenter;
@@ -21,22 +22,22 @@ public class InfoCenterTest {
 
     @Test
     public void shouldFindLoadedClasses() {
-        List<Class> myclasses = infoCenter.findLoadedModifiableClass("testedapp.myapp.MyBaseClass");
+        List<Class> myclasses = infoCenter.findLoadedModifiableClasses("fortest.myapp.MyBaseClass");
         assertEquals(1, myclasses.size());
         assertEquals(MYBASECLASS, myclasses.get(0));
     }
 
     @Test
     public void shouldFindMatchingMethod() {
-        Method myfunction1 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.test1(int,java.lang.String)"));
+        Method myfunction1 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)"));
         assertNotNull(myfunction1);
         assertEquals("test1", myfunction1.getName());
 
-        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
         assertNotNull(myfunction2);
         assertEquals("test2", myfunction2.getName());
 
-        Method myfunction3 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.test3(java.lang.Object[],int[][])"));
+        Method myfunction3 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])"));
         assertNotNull(myfunction3);
         assertEquals("test3", myfunction3.getName());
     }
@@ -46,9 +47,9 @@ public class InfoCenterTest {
         List<Map<String, String>> loadedMethods = infoCenter.getAllLoadedMethods();
 
         Map<String, String> myfunction1 = new HashMap<>();
-        myfunction1.put("classFullName", "testedapp.myapp.MyBaseClass");
-        myfunction1.put("methodFullName", "testedapp.myapp.MyBaseClass.test1(int,java.lang.String)");
-        myfunction1.put("methodLongName", "testedapp.myapp.MyBaseClass.test1");
+        myfunction1.put("classFullName", "fortest.myapp.MyBaseClass");
+        myfunction1.put("methodFullName", "fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
+        myfunction1.put("methodLongName", "fortest.myapp.MyBaseClass.test1");
         myfunction1.put("returnType", "java.lang.String");
 
         assertTrue(loadedMethods.contains(myfunction1));
@@ -64,9 +65,9 @@ public class InfoCenterTest {
 
     @Test
     public void shouldRecogniseExistenceOfMethodBody() {
-        Method myAbstract = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.myAbstract()"));
-        Method myNative = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.myNative()"));
-        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("testedapp.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
+        Method myAbstract = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.myAbstract()"));
+        Method myNative = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.myNative()"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
 
         assertFalse(infoCenter.hasMethodBody(myAbstract));
         assertFalse(infoCenter.hasMethodBody(myNative));
@@ -74,23 +75,45 @@ public class InfoCenterTest {
     }
 
     @Test
-    public void shouldIgnorePrivateInnerClass() throws Exception {
+    public void shouldIncludePrivateInnerClass() throws Exception {
         MyClass.load();
-        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateInnerClass").size());
-        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyPrivateStaticInnerClass").size());
+
+        List<Class> privateInnerClasses = infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyPrivateInnerClass");
+        assertEquals(1, privateInnerClasses.size());
+
+        Method test1 = infoCenter.findMatchingMethod(privateInnerClasses.get(0), new PlayGround("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
+        assertNotNull(test1);
+
+        List<Class> privateStaticInnerClasses = infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyPrivateStaticInnerClass");
+        assertEquals(1, privateStaticInnerClasses.size());
+
+        Method test2 = infoCenter.findMatchingMethod(privateStaticInnerClasses.get(0), new PlayGround("fortest.myapp.MyClass$MyPrivateStaticInnerClass.test3()"));
+        assertNotNull(test2);
     }
 
     @Test
     public void shouldIncludeProtectedInnerClass() throws Exception {
         MyClass.load();
-        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedInnerClass").size());
-        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedStaticInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyProtectedInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyProtectedStaticInnerClass").size());
     }
 
     @Test
     public void shouldNotUseCanonicalNameForClassName() throws Exception {
         MyClass.load();
-        assertEquals(1, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass$MyProtectedInnerClass").size());
-        assertEquals(0, infoCenter.findLoadedModifiableClass("testedapp.myapp.MyClass.MyProtectedInnerClass").size());
+        assertEquals(1, infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyProtectedInnerClass").size());
+        assertEquals(0, infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass.MyProtectedInnerClass").size());
+    }
+
+    @Test
+    public void shouldFindClassesLoadedByCustomClassLoader() throws Exception {
+        MyClassLoader loader = new MyClassLoader();
+        Class clz = loader.findClass("CustomLoadedClass");
+
+        List<Class> customLoadedClasses = infoCenter.findLoadedModifiableClasses("fortest.dynaloaded.CustomLoadedClass");
+        assertEquals(1, customLoadedClasses.size());
+
+        Method test1 = infoCenter.findMatchingMethod(customLoadedClasses.get(0), new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
+        assertNotNull(test1);
     }
 }
