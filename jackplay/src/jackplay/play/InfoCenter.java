@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-
 public class InfoCenter {
 
     private final static Comparator<Class> CLASS_COMPARATOR = new ClassComparatorByName();
@@ -116,9 +115,7 @@ public class InfoCenter {
             PlayGround pg = new PlayGround(getMethodFullName(m));
             Map<String, String> loadedMethod = new HashMap<>();
 
-            loadedMethod.put("classFullName", pg.classFullName);
             loadedMethod.put("methodFullName", pg.methodFullName);
-            loadedMethod.put("methodLongName", pg.methodLongName);
             loadedMethod.put("returnType", getFriendlyClassName(m.getReturnType()));
 
             loadedMethods.add(loadedMethod);

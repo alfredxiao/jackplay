@@ -444,7 +444,17 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSuggestions(allTargets, inputValue, limit) {
+function getClassFullName(methodFullName) {
+  let methodInfo = extractMethodInfo(methodFullName);
+  return methodInfo.className;
+}
+
+function getMethodLongName(methodFullName) {
+  let methodInfo = extractMethodInfo(methodFullName);
+  return methodInfo.className + "." + methodInfo.methodName;
+}
+
+function getSuggestions(modifiableMethods, inputValue, limit) {
   const escapedValue = escapeRegexCharacters(inputValue.trim());
 
   if (escapedValue === '') {
@@ -453,8 +463,8 @@ function getSuggestions(allTargets, inputValue, limit) {
 
   const regex = new RegExp(escapedValue, 'i');
 
-  let hitByMethodLongName = Lazy(allTargets).filter(entry => regex.test(entry.methodLongName)).take(limit).toArray();
-  let hitByMethodFullName = Lazy(allTargets).filter(entry => regex.test(entry.methodFullName)).take(limit);
+  let hitByMethodLongName = Lazy(modifiableMethods).filter(entry => regex.test(getMethodLongName(entry.methodFullName))).take(limit).toArray();
+  let hitByMethodFullName = Lazy(modifiableMethods).filter(entry => regex.test(entry.methodFullName)).take(limit);
   let hit = hitByMethodLongName.length > 0 ?  hitByMethodLongName : hitByMethodFullName.toArray();
   if (hit.length == limit) {
     hit[limit] = {indicatorForMore: true,
@@ -1313,7 +1323,7 @@ let JackPlay = React.createClass({
   setTraceStarted: function(v) {
     this.setState(Object.assign(this.state, {traceStarted: v}));
   },
-  filterEntry: function(filter, entry) {
+  filterTraceLogEntry: function(filter, entry) {
     if (!filter || filter == '') {
       return true;
     } else {
@@ -1333,7 +1343,7 @@ let JackPlay = React.createClass({
   getFilteredLogHistory: function(filter) {
     let executionUuidSet = new Set();
     let filteredLogHistory = this.state.logHistory.map(function(entry, idx) {
-      if (this.filterEntry(filter, entry)) {
+      if (this.filterTraceLogEntry(filter, entry)) {
         executionUuidSet.add(entry.uuid);
         return entry;
       };

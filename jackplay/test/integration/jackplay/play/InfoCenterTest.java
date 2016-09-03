@@ -47,17 +47,13 @@ public class InfoCenterTest {
         List<Map<String, String>> loadedMethods = infoCenter.allModifiableMethods();
 
         Map<String, String> myfunction1 = new HashMap<>();
-        myfunction1.put("classFullName", "fortest.myapp.MyBaseClass");
         myfunction1.put("methodFullName", "fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
-        myfunction1.put("methodLongName", "fortest.myapp.MyBaseClass.test1");
         myfunction1.put("returnType", "java.lang.String");
 
         assertTrue(loadedMethods.contains(myfunction1));
 
         Map<String, String> clear = new HashMap<>();
-        clear.put("classFullName", "java.util.ArrayList");
         clear.put("methodFullName", "java.util.ArrayList.clear()");
-        clear.put("methodLongName", "java.util.ArrayList.clear");
         clear.put("returnType", "void");
 
         assertTrue(loadedMethods.contains(clear));

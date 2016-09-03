@@ -19,7 +19,6 @@ public class LeadPerformer implements ClassFileTransformer {
     public boolean transformSuccess = true;
     public Throwable transformFailure = null;
 
-    final static String REHEARSAL_MODE = "REHEARSAL";
     final static String STAGING_MODE = "STAGING";
 
     public void init(ProgramManager pm) {
@@ -43,8 +42,6 @@ public class LeadPerformer implements ClassFileTransformer {
                 && (agenda.get(REDEFINE) == null || agenda.get(REDEFINE).isEmpty()));
     }
 
-    List<byte[]> bufferList = new LinkedList<>();
-    List<Long> totalList = new LinkedList<>();
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
@@ -52,21 +49,6 @@ public class LeadPerformer implements ClassFileTransformer {
         Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
 
         ClassPool cp = new ClassPool(true);
-
-        if (className.equals("myapp.greeter.NiceGreeter")) {
-            byte[] buf = new byte[classfileBuffer.length];
-            long total = 0L;
-            for (int i=0; i<buf.length; i++) {
-                buf[i] = classfileBuffer[i];
-                total += buf[i];
-            }
-            bufferList.add(buf);
-            totalList.add(total);
-        }
-
-        for (int i=0; i<bufferList.size(); i++) {
-            System.out.println("total[" + i + ":" + totalList.get(i));
-        }
 
         if (isAgendaEmpty(agenda)) {
             if (classBeingRedefined == null) {
