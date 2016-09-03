@@ -21,10 +21,8 @@ public class RudeGreeter implements Greeter {
             Exception e2 = new Exception("Shit happens without notice given");
             e1.initCause(e2);
             throw e1;
-        } else if (mood < 16) {
-            throw new RuntimeException(name + ", I don't wanna go to school, I just wanna break the rule.");
         } else {
-            throw new RuntimeException(name + ", can you tell me what the hell is cloud computing!");
+            throw new RuntimeException(name + ", " + getRandomCommentsOnLife());
         }
     }
 
@@ -32,6 +30,24 @@ public class RudeGreeter implements Greeter {
         Class c = QAGreeter.class;
         System.out.println( QAGreeter.QAProtectedInnerClass.class.getCanonicalName() );
         System.out.println( QAGreeter.QAProtectedInnerClass.class.getName() );
+    }
+
+    final static String[] COMMENTS_ON_LIFE = new String[]
+            {"Can you tell me what the hell is cloud computing!",
+             "I don't wanna go to school, I just wanna break the rule.",
+             "Sometimes you win, sometimes you learn.",
+             "Life is simple, but we insist on making it complicated.",
+             "Life is too short to be following the rules",
+             "Life is simple, it is just not easy",
+             "Catch the exception or perish.",
+             "Rules and models destroy genius and art.",
+             "I believe in rules. Sure I do. If there weren't any rules, how could you break them?",
+             "I cried because I had no shoes, then I met a man who had no feet.",
+             "When you think there is a problem, you can act like an ostrich that sticks its head in the sand and pretend there is no problem"
+            };
+
+    public static String getRandomCommentsOnLife() {
+        return COMMENTS_ON_LIFE[Demo.nextInt(0, COMMENTS_ON_LIFE.length)];
     }
 
 }

@@ -46,10 +46,14 @@ public class Demo implements Runnable {
     }
   }
 
-  final static String[] NAMES = new String[] {"Alfred", "Brian", "Cameron", "David", "Emily", "Fendy", "Gary",
-                                              "Hayden", "Ivory", "Joe", "Kian", "Lawrence", "Max", "Nick",
-                                              "Osaka", "Paul", "Quinn", "Ryan", "Sally", "Tina", "Ugo", "Vivien",
-                                              "Xavier", "Yancy", "Zach"};
+  private final static String[] NAMES = new String[]
+          {"Alex", "Alfred", "Andrew", "Ashley", "Brian", "Cam", "Cameron", "Chad",
+           "Dan", "David", "Daniel", "Emily", "Fendy", "Gary", "George", "Hayden",
+           "Ivory", "John", "Joe", "Kian", "Lawrence", "Max", "Mark", "Matt",
+           "Michael", "Nick", "Nhi", "Osaka", "Paul", "Quinn", "Ryan", "Ravi",
+           "Sam", "Scott", "Tina", "Ugo", "Vivian", "Vesa", "Wade", "Xavier",
+           "Yancy", "Zach"};
+
   static String getRandomName() {
     int idx = nextInt(0, NAMES.length);
     return NAMES[idx];
