@@ -114,7 +114,7 @@ public class ProgramManager {
         }
     }
 
-    public synchronized Performer existingPerformer(Genre genre, String classFullName, String methodFullName) {
+    synchronized Performer existingPerformer(Genre genre, String classFullName, String methodFullName) {
         try {
             return program.get(genre).get(classFullName).get(methodFullName);
         } catch (NullPointerException npe) {
@@ -122,11 +122,11 @@ public class ProgramManager {
         }
     }
 
-    public synchronized Map<String, ?> agendaOfGenre(Genre genre) {
+    synchronized Map<String, ?> agendaOfGenre(Genre genre) {
         return this.program.get(genre);
     }
 
-    public synchronized Map<Genre, Map<String, Map<String, Performer>>> copyOfCurrentProgram() {
+    synchronized Map<Genre, Map<String, Map<String, Performer>>> copyOfCurrentProgram() {
         Map<Genre, Map<String, Map<String, Performer>>> copy = new HashMap<>();
         deepMapCopy(program, copy);
 

@@ -22,7 +22,7 @@ public class InfoHandler extends BaseHandler {
                 break;
             case "/info/loadedMethods":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getAllLoadedMethods()));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.allModifiableMethods()));
                 break;
             case "/info/clearTraceLogs":
                 TraceKeeper.clearLogHistory();
@@ -30,13 +30,13 @@ public class InfoHandler extends BaseHandler {
                 break;
             case "/info/settings":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
                 break;
             case "/info/updateSettings":
                 CommonHandling.willReturnJson(http);
-                infoCenter.updateOption("traceLogLimit", params.get("traceLogLimit"));
-                infoCenter.updateOption("autoSuggestLimit", params.get("autoSuggestLimit"));
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getServerSettings()));
+                infoCenter.configOption("traceLogLimit", params.get("traceLogLimit"));
+                infoCenter.configOption("autoSuggestLimit", params.get("autoSuggestLimit"));
+                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
                 break;
             case "/info/currentProgram":
                 CommonHandling.willReturnJson(http);

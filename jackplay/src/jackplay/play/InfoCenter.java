@@ -2,30 +2,29 @@ package jackplay.play;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
-import static jackplay.bootstrap.Genre.*;
 import static jackplay.play.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.play.MetadataFailureCause.Unknown;
 
 import jackplay.bootstrap.Options;
 import jackplay.bootstrap.PlayGround;
 import jackplay.play.performers.Performer;
-import jackplay.play.performers.RedefinePerformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 public class InfoCenter {
 
-    Instrumentation inst;
-    ProgramManager pm;
-    final static ClassComparator classComparator = new ClassComparator();
-    final static MethodComparator methodComparator = new MethodComparator();
+    private final static Comparator<Class> CLASS_COMPARATOR = new ClassComparatorByName();
+    private final static Comparator<Method> METHOD_COMPARATOR = new MethodComparatorByName();
+    private Instrumentation inst;
+    private ProgramManager pm;
     private Options options;
-    private Map<String, MetadataFailureCause> classesFailedMetadataLoading = new ConcurrentHashMap<>();
+    private Map<String, MetadataFailureCause> metadataInaccessibleClasses = new ConcurrentHashMap<>();
 
     public void init(Instrumentation inst, ProgramManager pm, Options options) {
         this.inst = inst;
@@ -33,28 +32,21 @@ public class InfoCenter {
         this.options = options;
     }
 
-    public Map<String, Object> getServerSettings() {
-        Map<String, Object> serverSettings = new HashMap<>();
-        serverSettings.put("traceLogLimit", options.traceLogLimit());
-        serverSettings.put("autoSuggestLimit", options.autoSuggestLimit());
+    public Map<String, Object> getConfigurableOptions() {
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("traceLogLimit", options.traceLogLimit());
+        settings.put("autoSuggestLimit", options.autoSuggestLimit());
 
-        return serverSettings;
+        return settings;
     }
 
-    public void updateOption(String key, Object value) {
+    public void configOption(String key, Object value) {
         options.updateOption(key, value.toString());
     }
 
     public List<Class> findLoadedModifiableClasses(String className) {
-        List<Class> classes = this.getAllLoadedModifiableClasses();
-        List<Class> matched = new LinkedList<>();
-        for (Class clz : classes) {
-            if (clz.getName().equals(className)) {
-                matched.add(clz);
-            }
-        }
-
-        return matched;
+        return this.allModifiableClasses().stream()
+                .filter(clz -> clz.getName().equals(className)).collect(Collectors.toList());
     }
 
     public Method findMatchingMethod(Class clazz, PlayGround pg) {
@@ -87,33 +79,22 @@ public class InfoCenter {
                 || parameterType.equals(paramClass.getName());
     }
 
-    static class ClassComparator implements Comparator<Class> {
-        public int compare(Class o1, Class o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    }
+    public List<Map<String, String>> allModifiableMethods() throws Exception {
+        List<Class> classes = allModifiableClasses();
 
-    static class MethodComparator implements Comparator<Method> {
-        public int compare(Method o1, Method o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    }
-
-    public List<Map<String, String>> getAllLoadedMethods() throws Exception {
         List<Map<String, String>> loadedMethods = new ArrayList<>();
-        List<Class> classes = getAllLoadedModifiableClasses();
 
         for (Class clazz : classes) {
             try {
-                loadedMethods.addAll(getAllLoadedMethods(clazz));
+                loadedMethods.addAll(modifiableMethodsInClass(clazz));
             } catch(NoClassDefFoundError ncdf) {
-                if (!classesFailedMetadataLoading.containsKey(clazz.getName())) {
-                    classesFailedMetadataLoading.put(clazz.getName(), ReferencedClassDefFoundError);
+                if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
+                    metadataInaccessibleClasses.put(clazz.getName(), ReferencedClassDefFoundError);
                     Logger.error("infocenter", ncdf);
                 }
             } catch(Throwable t) {
-                if (!classesFailedMetadataLoading.containsKey(clazz.getName())) {
-                    classesFailedMetadataLoading.put(clazz.getName(), Unknown);
+                if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
+                    metadataInaccessibleClasses.put(clazz.getName(), Unknown);
                     Logger.error("infocenter", t);
                 }
             }
@@ -122,27 +103,23 @@ public class InfoCenter {
         return loadedMethods;
     }
 
-    private List<Map<String, String>> getAllLoadedMethods(Class clazz) {
+    private List<Map<String, String>> modifiableMethodsInClass(Class clazz) {
 
         List<Map<String, String>> loadedMethods = new ArrayList<>();
 
         Method[] methods = clazz.getDeclaredMethods();
-        Arrays.sort(methods, methodComparator);
+        Arrays.sort(methods, METHOD_COMPARATOR);
+
         for (Method m : methods) {
             if (!hasMethodBody(m)) continue;
 
             PlayGround pg = new PlayGround(getMethodFullName(m));
             Map<String, String> loadedMethod = new HashMap<>();
+
             loadedMethod.put("classFullName", pg.classFullName);
             loadedMethod.put("methodFullName", pg.methodFullName);
             loadedMethod.put("methodLongName", pg.methodLongName);
             loadedMethod.put("returnType", getFriendlyClassName(m.getReturnType()));
-            RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(REDEFINE,
-                    pg.classFullName,
-                    pg.methodFullName);
-            if (performer != null) {
-                loadedMethod.put("newBody", performer.getNewBody());
-            }
 
             loadedMethods.add(loadedMethod);
         }
@@ -177,10 +154,10 @@ public class InfoCenter {
         return !Modifier.isNative(flags) && !Modifier.isAbstract(flags);
     }
 
-    private List<Class> getAllLoadedModifiableClasses() {
+    private List<Class> allModifiableClasses() {
         List<Class> modifiableClasses = new ArrayList<>();
         Class[] classes = inst.getAllLoadedClasses();
-        Arrays.sort(classes, classComparator);
+        Arrays.sort(classes, CLASS_COMPARATOR);
 
         for (Class clazz : classes) {
             String packageName = (clazz.getPackage() == null) ? "" : clazz.getPackage().getName();
@@ -198,7 +175,13 @@ public class InfoCenter {
     }
 
     private boolean isClassTypeAccessible(Class clazz) {
-        return true;//!Modifier.isPrivate(clazz.getModifiers());
+        try {
+            clazz.getName();
+            clazz.getCanonicalName();
+            return true;
+        } catch(Throwable t) {
+            return false;
+        }
     }
 
     private boolean isClassTypeSupported(Class clazz) {
@@ -222,4 +205,16 @@ enum MetadataFailureCause {
 //    ClassNotModifiable,
     ReferencedClassDefFoundError,
     Unknown
+}
+
+class ClassComparatorByName implements Comparator<Class> {
+    public int compare(Class o1, Class o2) {
+        return o1.getName().compareTo(o2.getName());
+    }
+}
+
+class MethodComparatorByName implements Comparator<Method> {
+    public int compare(Method o1, Method o2) {
+        return o1.getName().compareTo(o2.getName());
+    }
 }

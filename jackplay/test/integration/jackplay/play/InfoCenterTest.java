@@ -44,7 +44,7 @@ public class InfoCenterTest {
 
     @Test
     public void shouldGiveLoadedMethods() throws Exception {
-        List<Map<String, String>> loadedMethods = infoCenter.getAllLoadedMethods();
+        List<Map<String, String>> loadedMethods = infoCenter.allModifiableMethods();
 
         Map<String, String> myfunction1 = new HashMap<>();
         myfunction1.put("classFullName", "fortest.myapp.MyBaseClass");
