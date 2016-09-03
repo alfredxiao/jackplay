@@ -41,7 +41,7 @@ public class TraceKeeper {
                 map.put("argumentsCount", traceLog.argumentsCount);
 
                 listOfLogs.add(map);
-            } catch(ConcurrentModificationException e) {}
+            } catch(ConcurrentModificationException ignore) {}
         }
 
         return listOfLogs;
@@ -148,7 +148,7 @@ public class TraceKeeper {
                     return entry;
                 }
             }
-        } catch(ConcurrentModificationException cme) {}
+        } catch(ConcurrentModificationException ignore) {}
 
         return null;
     }
@@ -192,7 +192,7 @@ public class TraceKeeper {
         return builder.toString();
     }
 
-    public static String throwableToString(Throwable t) {
+    private static String throwableToString(Throwable t) {
         if (null == t) {
             return null;
         } else {

@@ -76,7 +76,7 @@ public class JackTest {
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodEntry.get("threadName"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_TRACE, test1);
+        assertProgramContains(TRACE, test1);
     }
 
     private int assertProgramSize(int size) {
@@ -170,7 +170,7 @@ public class JackTest {
         assertEquals("HAS_BEEN_REDEFINED1", returnValue);
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -213,8 +213,8 @@ public class JackTest {
         assertEquals(4, logCountEnd - logCountBegin);
 
         assertProgramSize(2);
-        assertProgramContains(METHOD_TRACE, test1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(TRACE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -242,8 +242,8 @@ public class JackTest {
         assertEquals(2, logCountEnd - logCountBegin);
 
         assertProgramSize(2);
-        assertProgramContains(METHOD_REDEFINE, test1);
-        assertProgramContains(METHOD_TRACE, test1);
+        assertProgramContains(REDEFINE, test1);
+        assertProgramContains(TRACE, test1);
     }
 
     @Test
@@ -317,7 +317,7 @@ public class JackTest {
         assertEquals(2, logCountEnd - logCountBegin);
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_TRACE, test1);
+        assertProgramContains(TRACE, test1);
     }
 
     @Test
@@ -331,7 +331,7 @@ public class JackTest {
         assertEquals("REDEFINED1", myObj.test1(200, "BCD"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -344,7 +344,7 @@ public class JackTest {
         assertEquals("REDEFINED1", myObj.test1(200, "BCD"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -355,8 +355,8 @@ public class JackTest {
         jack.redefine(lateLoading, "{ return \"REDEFINED2\";}");
 
         assertProgramSize(2);
-        assertProgramContains(METHOD_TRACE, lateLoading);
-        assertProgramContains(METHOD_REDEFINE, lateLoading);
+        assertProgramContains(TRACE, lateLoading);
+        assertProgramContains(REDEFINE, lateLoading);
 
         int logCountStart = getTraceLogSize();
         Thread.currentThread().sleep(10);
@@ -371,8 +371,8 @@ public class JackTest {
         assertEquals(2, logCountEnd - logCountStart);
 
         assertProgramSize(2);
-        assertProgramContains(METHOD_TRACE, this.lateLoading);
-        assertProgramContains(METHOD_REDEFINE, this.lateLoading);
+        assertProgramContains(TRACE, this.lateLoading);
+        assertProgramContains(REDEFINE, this.lateLoading);
     }
 
     @Test
@@ -388,7 +388,7 @@ public class JackTest {
         assertEquals(2, logCountEnd - logCountStart);
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_TRACE, test1);
+        assertProgramContains(TRACE, test1);
     }
 
     @Test
@@ -400,7 +400,7 @@ public class JackTest {
         assertEquals("B", myObj.test1(1, "A"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -412,7 +412,7 @@ public class JackTest {
         assertEquals("B", myObj.test1(2, "AA"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -426,7 +426,7 @@ public class JackTest {
         assertEquals("A", myObj.test1(3, "AA"));
 
         assertProgramSize(1);
-        assertProgramContains(METHOD_REDEFINE, test1);
+        assertProgramContains(REDEFINE, test1);
     }
 
     @Test
@@ -438,7 +438,7 @@ public class JackTest {
         assertProgramSize(3);
 
         int logCountStart = getTraceLogSize();
-        jack.undoClass(METHOD_TRACE, MyBaseClass.class.getName());
+        jack.undoClass(TRACE, MyBaseClass.class.getName());
 
         myObj.test1(1, "A");
         myObj.test2("A", new LinkedList<>());
@@ -458,7 +458,7 @@ public class JackTest {
 
         assertProgramSize(3);
 
-        jack.undoClass(METHOD_REDEFINE, MyBaseClass.class.getName());
+        jack.undoClass(REDEFINE, MyBaseClass.class.getName());
 
         assertEquals("1.A", myObj.test1(1, "A"));
         myObj.test2("A", new LinkedList<>());

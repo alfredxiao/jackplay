@@ -2,7 +2,6 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.bootstrap.PlayGround;
-import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
 import jackplay.bootstrap.Genre;
 
@@ -61,7 +60,7 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private static String getGenreDescriptor(Genre genre) {
-        if (genre == Genre.METHOD_TRACE) {
+        if (genre == Genre.TRACE) {
             return "Traced";
         } else {
             return "Redefined";

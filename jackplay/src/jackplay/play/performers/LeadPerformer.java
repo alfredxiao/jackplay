@@ -2,14 +2,11 @@ package jackplay.play.performers;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
-import jackplay.javassist.ClassClassPath;
-import jackplay.javassist.LoaderClassPath;
 import jackplay.javassist.NotFoundException;
 import jackplay.play.ProgramManager;
 import static jackplay.bootstrap.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.io.ByteArrayInputStream;
 import java.lang.instrument.ClassFileTransformer;
@@ -42,10 +39,12 @@ public class LeadPerformer implements ClassFileTransformer {
     }
 
     private boolean isAgendaEmpty(Map<Genre, Map<String, Performer>> agenda) {
-        return agenda == null || ((agenda.get(METHOD_TRACE) == null || agenda.get(METHOD_TRACE).isEmpty())
-                && (agenda.get(METHOD_REDEFINE) == null || agenda.get(METHOD_REDEFINE).isEmpty()));
+        return agenda == null || ((agenda.get(TRACE) == null || agenda.get(TRACE).isEmpty())
+                && (agenda.get(REDEFINE) == null || agenda.get(REDEFINE).isEmpty()));
     }
 
+    List<byte[]> bufferList = new LinkedList<>();
+    List<Long> totalList = new LinkedList<>();
     public byte[] transform(ClassLoader loader, String classNameWithSlash, Class classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
@@ -53,6 +52,21 @@ public class LeadPerformer implements ClassFileTransformer {
         Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
 
         ClassPool cp = new ClassPool(true);
+
+        if (className.equals("myapp.greeter.NiceGreeter")) {
+            byte[] buf = new byte[classfileBuffer.length];
+            long total = 0L;
+            for (int i=0; i<buf.length; i++) {
+                buf[i] = classfileBuffer[i];
+                total += buf[i];
+            }
+            bufferList.add(buf);
+            totalList.add(total);
+        }
+
+        for (int i=0; i<bufferList.size(); i++) {
+            System.out.println("total[" + i + ":" + totalList.get(i));
+        }
 
         if (isAgendaEmpty(agenda)) {
             if (classBeingRedefined == null) {
@@ -101,8 +115,8 @@ public class LeadPerformer implements ClassFileTransformer {
     private CtClass performAsPerAgenda(ClassPool cp, Class clazz, byte[] bytes, Map<Genre, Map<String, Performer>> agenda, String mode) throws Exception {
         CtClass cc = getCtClass(cp, clazz, bytes);
 
-        cc = performAgenda(cp, agenda.get(METHOD_REDEFINE), cc, mode);
-        cc = performAgenda(cp, agenda.get(METHOD_TRACE), cc, mode);
+        cc = performAgenda(cp, agenda.get(REDEFINE), cc, mode);
+        cc = performAgenda(cp, agenda.get(TRACE), cc, mode);
         return cc;
     }
 

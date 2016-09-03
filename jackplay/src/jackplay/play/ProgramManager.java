@@ -18,12 +18,12 @@ public class ProgramManager {
 
     public ProgramManager() {
         this.program = new ConcurrentHashMap<>();
-        this.prepareGenre(METHOD_TRACE);
-        this.prepareGenre(METHOD_REDEFINE);
+        this.prepareGenre(TRACE);
+        this.prepareGenre(REDEFINE);
     }
 
     public synchronized boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
-        if (METHOD_TRACE == genre && this.existsAgenda(genre, pg)) {
+        if (TRACE == genre && this.existsAgenda(genre, pg)) {
             Logger.debug("program-manager", "not create new agenda as it already exists:" + pg.methodFullName);
             return false;
         } else {
@@ -84,9 +84,9 @@ public class ProgramManager {
 
     private Performer createPerformer(PlayGround pg, Genre genre, String methodSource) {
         switch (genre) {
-            case METHOD_TRACE:
+            case TRACE:
                 return new TracingPerformer(pg);
-            case METHOD_REDEFINE:
+            case REDEFINE:
                 return new RedefinePerformer(pg, methodSource);
             default:
                 throw new RuntimeException("unknown genre " + genre.toString());
@@ -95,8 +95,8 @@ public class ProgramManager {
 
     public synchronized Map<Genre, Map<String, Performer>> agendaForClass(String classFullName) {
         Map<Genre, Map<String, Performer>> agenda = new HashMap<>();
-        agenda.put(METHOD_TRACE, this.program.get(METHOD_TRACE).get(classFullName));
-        agenda.put(METHOD_REDEFINE, this.program.get(METHOD_REDEFINE).get(classFullName));
+        agenda.put(TRACE, this.program.get(TRACE).get(classFullName));
+        agenda.put(REDEFINE, this.program.get(REDEFINE).get(classFullName));
 
         return agenda;
     }
@@ -110,7 +110,7 @@ public class ProgramManager {
             String trimmed = mfn.trim();
             if (trimmed.length() == 0) continue;
 
-            this.addAgenda(METHOD_TRACE, new PlayGround(mfn), null);
+            this.addAgenda(TRACE, new PlayGround(mfn), null);
         }
     }
 

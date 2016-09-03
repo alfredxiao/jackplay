@@ -63,7 +63,7 @@ public class Jack {
         pm.removeAgenda(genre, pg);
 
         if (previousBody != null) {
-            pm.addAgenda(METHOD_REDEFINE, pg, previousBody);
+            pm.addAgenda(REDEFINE, pg, previousBody);
         }
 
         try {
@@ -71,10 +71,10 @@ public class Jack {
             inst.retransformClasses(clazz);
         } catch(Exception betterEffort) {
             Logger.error("jack", betterEffort);
-            if (genre == METHOD_REDEFINE && previousBody != null) {
+            if (genre == REDEFINE && previousBody != null) {
                 // this means even the previously working method redefinition does not work,
                 // we have to remove it completely, unfortunately
-                pm.removeAgenda(METHOD_REDEFINE, pg);
+                pm.removeAgenda(REDEFINE, pg);
                 try {
                     Logger.debug("jack", "attempting to restore retransformation for class:" + pg.classFullName);
                     inst.retransformClasses(clazz);
@@ -90,7 +90,7 @@ public class Jack {
 
     private synchronized void play(Genre genre, PlayGround pg, String newBody) throws PlayException {
         String previousBody = null;
-        if (genre == METHOD_REDEFINE) {
+        if (genre == REDEFINE) {
             RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(genre, pg.classFullName, pg.methodFullName);
             previousBody = performer == null ? null : performer.getNewBody();
         }
@@ -141,19 +141,19 @@ public class Jack {
     }
 
     public void trace(PlayGround pg) throws PlayException {
-        this.play(METHOD_TRACE, pg, null);
+        this.play(TRACE, pg, null);
     }
 
     public void undoTrace(PlayGround pg) throws PlayException {
-        this.undoPlay(METHOD_TRACE, pg);
+        this.undoPlay(TRACE, pg);
     }
 
     public void redefine(PlayGround pg, String newBody) throws PlayException {
-        this.play(METHOD_REDEFINE, pg, newBody);
+        this.play(REDEFINE, pg, newBody);
     }
 
     public void undoRedefine(PlayGround pg) throws PlayException {
-        this.undoPlay(METHOD_REDEFINE, pg);
+        this.undoPlay(REDEFINE, pg);
     }
 
     public void undoClass(Genre genre, String className) throws PlayException {
@@ -175,7 +175,7 @@ public class Jack {
     }
 
     public void undoAll() throws PlayException {
-        this.undoAll(METHOD_TRACE);
-        this.undoAll(METHOD_REDEFINE);
+        this.undoAll(TRACE);
+        this.undoAll(REDEFINE);
     }
 }

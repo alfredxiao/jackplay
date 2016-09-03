@@ -15,7 +15,7 @@ public class PlayGround {
     // [ "java.lang.String", "int" ]
     public final List<String> parameterList = new LinkedList<>();
 
-    final static String INVALID_MESSAGE = "invalid format, correct format is className.methodName()";
+    final static String MESSAGE_INVALID_FORMAT = "invalid format, correct format is className.methodName()";
 
     public PlayGround(String methodFullName) {
         if (null == methodFullName
@@ -52,7 +52,7 @@ public class PlayGround {
     }
 
     private void throwInvalidFormatMessage(String methodFullName) {
-        throw new IllegalArgumentException("[" + methodFullName + "] is " + INVALID_MESSAGE);
+        throw new IllegalArgumentException("[" + methodFullName + "] is " + MESSAGE_INVALID_FORMAT);
     }
 
     @Override

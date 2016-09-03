@@ -137,7 +137,7 @@ public class InfoCenter {
             loadedMethod.put("methodFullName", pg.methodFullName);
             loadedMethod.put("methodLongName", pg.methodLongName);
             loadedMethod.put("returnType", getFriendlyClassName(m.getReturnType()));
-            RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(METHOD_REDEFINE,
+            RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(REDEFINE,
                     pg.classFullName,
                     pg.methodFullName);
             if (performer != null) {

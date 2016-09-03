@@ -6,13 +6,13 @@ import java.util.regex.Pattern;
 
 // singleton
 public class Options {
-    final static String OPTION_SPLIT = ",";
-    final static char OPTION_EQ_SIGN = '=';
+    final static String OPTION_SEPARATOR = ",";
+    final static char EQUALS_CHAR = '=';
     final static Map<String, String> DEFAULTS = new HashMap<>();
     Map<String, String> options;
     Set<String> blacklist;
     Set<String> whitelist;
-    public final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     static {
         DEFAULTS.put("port", "8181");
@@ -23,11 +23,11 @@ public class Options {
         DEFAULTS.put("defaultTrace", "");
     }
 
-    public static boolean isEmpty(String s) {
+    private static boolean isEmpty(String s) {
         return null == s || s.isEmpty();
     }
 
-    Options(Map<String, String> options) {
+    private Options(Map<String, String> options) {
         this.options = options;
     }
 
@@ -38,9 +38,9 @@ public class Options {
     private static Map<String, String> parseArguments(String args) {
         Map<String, String> options = new HashMap<>();
         if (!isEmpty(args)) {
-            String[] parts = args.split(OPTION_SPLIT);
+            String[] parts = args.split(OPTION_SEPARATOR);
             for (String part : parts) {
-                int eq = part.indexOf(OPTION_EQ_SIGN);
+                int eq = part.indexOf(EQUALS_CHAR);
                 String name = part.substring(0, eq).trim();
                 String value = part.substring(eq + 1).trim();
 
@@ -63,7 +63,7 @@ public class Options {
         return merged;
     }
 
-    public static String formatDate(Date when) {
+    static String formatDate(Date when) {
         return SIMPLE_DATE_FORMAT.format(when);
     }
 
