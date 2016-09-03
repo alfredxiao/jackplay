@@ -621,7 +621,7 @@ class AutoClassLookup extends React.Component { // eslint-disable-line no-undef
 
     return (
       <span>
-        <span style={{paddingRight: '5px'}}>Method:</span>
+        <span style={{paddingRight: '5px', fontSize: '14px'}}>Method:</span>
         <Autosuggest suggestions={suggestions} // eslint-disable-line react/jsx-no-undef
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
@@ -1032,8 +1032,9 @@ let PlayPanel = React.createClass({
             <button onClick={this.submitMethodTrace} title='trace this method'>Trace</button>
             <button onClick={this.showMethodRedefine} title='Redefine a method using Java code'>Redefine...</button>
             <div style={{display:'inline', paddingRight: '20px', float: 'right'}}>
-              <span className='executionCount' title='Count of matched method execution'>{this.props.executionCount > 0 ? this.props.executionCount : ''}</span>
+              <label className='executionCount' title='Count of matched method execution'>{this.props.executionCount > 0 ? 'Count: ' + this.props.executionCount + ', ' : ''}</label>
               <span style={{marginRight: '-8px'}}>
+                <label htmlFor='logFilter' style={{fontSize:'14px'}}>Filter:</label>
                 <input name='logFilter' id='logFilter' placeholder='filter trace logs' onChange={this.props.updateLogHistoryWithFilter}
                        type='text' style={{width: '133px', paddingRight: '25px'}} />
                 <span style={{display:'inline-block', position: 'relative', textAlign: 'center', top: '-7px',
