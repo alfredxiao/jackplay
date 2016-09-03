@@ -4,7 +4,7 @@
 }
 
 .react-autosuggest__input {
-  width: 438px;
+  width: 588px;
   height: 18px;
   padding: 6px 8px;
   font-family: 'Open Sans', sans-serif;
@@ -26,7 +26,7 @@
   position: absolute;
   left: 0px;
   /*top: -1px;*/
-  width: 454px;
+  width: 604px;
   margin: 0;
   padding: 0;
   list-style-type: none;
@@ -54,7 +54,7 @@
 #autoSuggestMore {
   display: block;
   font-size: 11px;
-  width: 442px;
+  width: 586px;
   padding-left: 0px;
   border-top: 1px dashed #aaa;
   font-style: italic;
