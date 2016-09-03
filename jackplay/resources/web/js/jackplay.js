@@ -433,9 +433,8 @@ const LONG_DASH = '\u2014';
 const TRACE_MODE = 'TRACE';
 const REDEFINE_MODE = 'REDEFINE';
 const CONTROL = 'CONTROL';
-const TRACE_OR_REDEFINE = 'PLAY{TRACE, REDEFINE}';
-const METHOD_TRACE = 'METHOD_TRACE';
-const METHOD_REDEFINE = 'METHOD_REDEFINE';
+const METHOD_TRACE = 'TRACE';
+const METHOD_REDEFINE = 'REDEFINE';
 const TRIGGER_POINT_ENTER = 'MethodEntry';
 const TRIGGER_POINT_RETURNS = 'MethodReturns';
 const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
@@ -851,10 +850,10 @@ let SystemSettings = React.createClass({
                 </legend>
                 <div className='settingsTabContainer'>
                   <div className='settingsTab' id='manageTracedMethods'>
-                    {($.isEmptyObject(program.METHOD_TRACE)) ? <p>There are no methods being traced.</p> : programList(METHOD_TRACE)}
+                    {($.isEmptyObject(program[METHOD_TRACE])) ? <p>There are no methods being traced.</p> : programList(METHOD_TRACE)}
                   </div>
                   <div className='settingsTab' id='manageRedefinedMethods' style={{display: 'none'}}>
-                    {($.isEmptyObject(program.METHOD_REDEFINE)) ? <p>There are no methods being redefined.</p> : programList(METHOD_REDEFINE)}
+                    {($.isEmptyObject(program[METHOD_REDEFINE])) ? <p>There are no methods being redefined.</p> : programList(METHOD_REDEFINE)}
                   </div>
                   <div className='settingsTab' id='configurations' style={{display: 'none'}}>
                     <Configuration autoSuggestLimit={this.props.autoSuggestLimit}
