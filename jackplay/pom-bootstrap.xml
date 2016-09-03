@@ -6,7 +6,7 @@
 
   <groupId>com.github.alfredxiao</groupId>
   <artifactId>jackplay-bootstrap</artifactId>
-  <version>0.9.9</version>
+  <version>0.9.10</version>
   <packaging>jar</packaging>
 
   <name>jackplay-bootstrap</name>
