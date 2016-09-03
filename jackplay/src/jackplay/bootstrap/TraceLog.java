@@ -2,30 +2,30 @@ package jackplay.bootstrap;
 
 import java.util.Date;
 
-public class TraceLog {
-    public Date when;
-    public long whenAsTimeMs;
+class TraceLog {
+    Date when;
+    long whenAsTimeMs;
 
     // mandatory for all entries
-    public TracePoint tracePoint;
-    public PlayGround pg;
-    public long threadId;
-    public String threadName;
-    public String uuid;
+    TracePoint tracePoint;
+    PlayGround pg;
+    long threadId;
+    String threadName;
+    String uuid;
 
     // for method entrance
-    public String[] arguments;
+    String[] arguments;
 
     // for method return or exception
-    public long elapsed = -1;
-    public int argumentsCount;
+    long elapsed = -1;
+    int argumentsCount;
 
-    public String returnedValue;            // return only
-    public boolean returningVoid = false;   // return only
+    String returnedValue;            // return only
+    boolean returningVoid = false;   // return only
 
-    public String exceptionStackTrace;      // exception only
+    String exceptionStackTrace;      // exception only
 
-    public TraceLog(TracePoint tracePoint, PlayGround pg, String uuid) {
+    TraceLog(TracePoint tracePoint, PlayGround pg, String uuid) {
         this.when = new Date();
         this.whenAsTimeMs = System.currentTimeMillis();
         this.tracePoint = tracePoint;

@@ -10,6 +10,8 @@ public class TraceKeeper {
     private static List<TraceLog> traceLogs = new LinkedList<>();
     private static Options options;
 
+    private TraceKeeper() {}
+
     private synchronized static List<TraceLog> copyTraceLogs() {
         List<TraceLog> copyList = new ArrayList<>(traceLogs.size());
         copyList.addAll(traceLogs);
