@@ -35,6 +35,8 @@ public class InfoCenter {
         Map<String, Object> settings = new HashMap<>();
         settings.put("traceLogLimit", options.traceLogLimit());
         settings.put("autoSuggestLimit", options.autoSuggestLimit());
+        settings.put("intervalSyncTraceLogs", options.intervalSyncTraceLogs());
+        settings.put("intervalSyncModifiableMethods", options.intervalSyncModifiableMethods());
 
         return settings;
     }

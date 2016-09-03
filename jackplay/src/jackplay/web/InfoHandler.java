@@ -36,6 +36,8 @@ public class InfoHandler extends BaseHandler {
                 CommonHandling.willReturnJson(http);
                 infoCenter.configOption("traceLogLimit", params.get("traceLogLimit"));
                 infoCenter.configOption("autoSuggestLimit", params.get("autoSuggestLimit"));
+                infoCenter.configOption("intervalSyncTraceLogs", params.get("intervalSyncTraceLogs"));
+                infoCenter.configOption("intervalSyncModifiableMethods", params.get("intervalSyncModifiableMethods"));
                 CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
                 break;
             case "/info/currentProgram":

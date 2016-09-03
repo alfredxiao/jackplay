@@ -1,4 +1,25 @@
-//import {App} from 'auto-class-lookup';
+const ERROR = 'ERROR';
+const INFO = 'INFO';
+const SUNG= '\u266A';
+const BULLET = '\u2022';
+const dTriangle = '\u25BE';
+const uTriangle = '\u25B4';
+const CROSS = '\u2717';
+const STAR = '\u2605';
+const RETURNS_ARROW = '\u27F9';
+const THROWS_ARROW = '\u27FF';
+const LONG_DASH = '\u2014';
+const TRACE_MODE = 'TRACE';
+const REDEFINE_MODE = 'REDEFINE';
+const CONTROL = 'CONTROL';
+const METHOD_TRACE = 'TRACE';
+const METHOD_REDEFINE = 'REDEFINE';
+const TRIGGER_POINT_ENTER = 'MethodEntry';
+const TRIGGER_POINT_RETURNS = 'MethodReturns';
+const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
+const INTERVAL_SYNC_TRACE_LOGS = 'intervalSyncTraceLogs';
+const INTERVAL_SYNC_MODIFIABLE_METHODS = 'intervalSyncModifiableMethods';
+
 let alertGlobal = {};
 let ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
@@ -419,25 +440,6 @@ class Modal extends React.Component{
     )
   }
 }
-const ERROR = 'ERROR';
-const INFO = 'INFO';
-const SUNG= '\u266A';
-const BULLET = '\u2022';
-const dTriangle = '\u25BE';
-const uTriangle = '\u25B4';
-const CROSS = '\u2717';
-const STAR = '\u2605';
-const RETURNS_ARROW = '\u27F9';
-const THROWS_ARROW = '\u27FF';
-const LONG_DASH = '\u2014';
-const TRACE_MODE = 'TRACE';
-const REDEFINE_MODE = 'REDEFINE';
-const CONTROL = 'CONTROL';
-const METHOD_TRACE = 'TRACE';
-const METHOD_REDEFINE = 'REDEFINE';
-const TRIGGER_POINT_ENTER = 'MethodEntry';
-const TRIGGER_POINT_RETURNS = 'MethodReturns';
-const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -745,8 +747,7 @@ let Configuration = React.createClass({
               <label title='Max Number of Auto Suggestions being Displayed' htmlFor='autoSuggestLimit'>Max Number of Auto Suggest:</label>
             </td>
             <td>
-              <input id='autoSuggestLimit' size='10' type='number' min='10' max='300' step='10'
-                     defaultValue={this.props.autoSuggestLimit}/>
+              <input id='autoSuggestLimit' className='configInput' type='number' min='10' max='300' step='10' defaultValue={this.props.autoSuggestLimit}/>
             </td>
           </tr>
           <tr>
@@ -754,7 +755,23 @@ let Configuration = React.createClass({
               <label title='Max Number of Trace Logs to Keep' htmlFor='traceLogLimit'>Max Number of Kept Trace Logs:</label>
             </td>
             <td>
-              <input id='traceLogLimit' size='10' type='number' min='50' max='800' step='50' defaultValue={this.props.traceLogLimit}/>
+              <input id='traceLogLimit' className='configInput' type='number' min='50' max='800' step='50' defaultValue={this.props.traceLogLimit}/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label title='Interval to download trace logs (millis second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Trace Logs (ms):</label>
+            </td>
+            <td>
+              <input id={INTERVAL_SYNC_TRACE_LOGS} className='configInput' type='number' min='1000' max='30000' step='500' defaultValue={this.props.intervalSyncTraceLogs}/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label title='Interval to download tracible method list (millis second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Method List (ms):</label>
+            </td>
+            <td>
+              <input id={INTERVAL_SYNC_MODIFIABLE_METHODS} className='configInput' type='number' min='10000' max='300000' step='10000' defaultValue={this.props.intervalSyncModifiableMethods}/>
             </td>
           </tr>
         </table>
@@ -766,7 +783,9 @@ let SystemSettings = React.createClass({
   getInitialState: function() {
     return {currentTab: 'manageTracedMethods',
             autoSuggestLimit: this.props.autoSuggestLimit,
-            traceLogLimit: this.props.traceLogLimit};
+            traceLogLimit: this.props.traceLogLimit,
+            intervalSyncTraceLogs: this.props.intervalSyncTraceLogs,
+            intervalSyncModifiableMethods: this.props.intervalSyncModifiableMethods};
   },
   componentDidMount: function() {
     this.props.loadServerSideSettings();
@@ -857,7 +876,9 @@ let SystemSettings = React.createClass({
                   </div>
                   <div className='settingsTab' id='configurations' style={{display: 'none'}}>
                     <Configuration autoSuggestLimit={this.props.autoSuggestLimit}
-                                   traceLogLimit={this.props.traceLogLimit}/>
+                                   traceLogLimit={this.props.traceLogLimit}
+                                   intervalSyncTraceLogs={this.props.intervalSyncTraceLogs}
+                                   intervalSyncModifiableMethods={this.props.intervalSyncModifiableMethods}/>
                   </div>
                 </div>
               </fieldset>
@@ -1072,6 +1093,8 @@ let PlayPanel = React.createClass({
                       program={this.props.program}
                       autoSuggestLimit={this.props.autoSuggestLimit}
                       traceLogLimit={this.props.traceLogLimit}
+                      intervalSyncTraceLogs={this.props.intervalSyncTraceLogs}
+                      intervalSyncModifiableMethods={this.props.intervalSyncModifiableMethods}
                       applyConfigurations={this.props.applyConfigurations}
                       loadServerSideSettings={this.props.loadServerSideSettings}/>
             <AboutJackPlay aboutBeingShow={this.state.aboutBeingShow}
@@ -1198,9 +1221,11 @@ let JackPlay = React.createClass({
         time: 5000,
         transition: 'scale'
   },
-  defaultSystemSettings: {
-    traceLogLimit: 200,
-    autoSuggestLimit: 100
+  defaultSystemSettings: {   /* used when fails to load server side settings  */
+    traceLogLimit: 300,
+    autoSuggestLimit: 100,
+    intervalSyncTraceLogs: 4500,
+    intervalSyncModifiableMethods: 120000
   },
   getInitialState: function() {
     return {logHistory: [],
@@ -1215,22 +1240,56 @@ let JackPlay = React.createClass({
             traceLogBroughtToFront: null,
             isSyncWithServerPaused: false,
             serverSideSettings: this.defaultSystemSettings,
-            executionCount: null
+            executionCount: null,
+            serverSideDataLoadingCheckers: {}
     };
   },
   componentDidMount: function() {
-    this.syncDataWithServer();
     this.loadServerSideSettings();
-    setInterval(this.checkDataSync, 4200);
+    this.loadServerSideData();
+    this.setServerSideDataLoadingIntervals();
+  },
+  setServerSideDataLoadingIntervals: function() {
+    this.setServerSideDataLoadingInterval(INTERVAL_SYNC_TRACE_LOGS);
+    this.setServerSideDataLoadingInterval(INTERVAL_SYNC_MODIFIABLE_METHODS);
+  },
+  resetServerSideDataLoadingIntervals: function() {
+      clearInterval(this.state.serverSideDataLoadingCheckers[INTERVAL_SYNC_TRACE_LOGS]);
+      clearInterval(this.state.serverSideDataLoadingCheckers[INTERVAL_SYNC_MODIFIABLE_METHODS]);
+      this.setServerSideDataLoadingIntervals();
+  },
+  setServerSideDataLoadingInterval: function(intervalSettingName) {
+    let checkers = {};
+    checkers[intervalSettingName] = setInterval(this.serverSideDataLoadingChecker(intervalSettingName),
+                                                this.state.serverSideSettings[intervalSettingName]);;
+    Object.assign(this.state, { serverSideDataLoadingCheckers: (Object.assign(this.state.serverSideDataLoadingCheckers, checkers))});
+  },
+  serverSideDataLoadingChecker: function(intervalSettingName) {
+    return () => {
+      console.log('in checker', intervalSettingName);
+      clearInterval(this.state.serverSideDataLoadingCheckers[intervalSettingName]);
+      if (!this.state.isSyncWithServerPaused) {
+        if (intervalSettingName == INTERVAL_SYNC_TRACE_LOGS) {
+          this.loadTraceLogs();
+        } else if (intervalSettingName == INTERVAL_SYNC_MODIFIABLE_METHODS) {
+          this.loadModifiableMethods();
+        }
+      }
+      this.setServerSideDataLoadingInterval(intervalSettingName);
+    }.bind(this);
   },
   applyConfigurations: function() {
     $.ajax({
       url: '/info/updateSettings',
       data: {traceLogLimit: document.getElementById('traceLogLimit').value,
-             autoSuggestLimit: document.getElementById('autoSuggestLimit').value},
+             autoSuggestLimit: document.getElementById('autoSuggestLimit').value,
+             intervalSyncTraceLogs: document.getElementById(INTERVAL_SYNC_TRACE_LOGS).value,
+             intervalSyncModifiableMethods: document.getElementById(INTERVAL_SYNC_MODIFIABLE_METHODS).value
+             },
       success: function(settings) {
         this.setState(Object.assign(this.state, {serverSideSettings: settings}));
         this.setGlobalMessage(INFO, 'Settings Updated.');
+        this.resetServerSideDataLoadingIntervals();
       }.bind(this),
       error: function(res) {
         console.log("Ajax call /info/updateSettings with ERROR", res);
@@ -1244,6 +1303,7 @@ let JackPlay = React.createClass({
       retryLimit : 3,
       success: function(settings) {
         this.setState(Object.assign(this.state, {serverSideSettings: settings}));
+        this.resetServerSideDataLoadingIntervals();
       }.bind(this),
       error: function(res) {
         this.tryCount++;
@@ -1256,7 +1316,7 @@ let JackPlay = React.createClass({
       }
     });
   },
-  syncDataWithServer: function() {
+  loadTraceLogs: function() {
     $.ajax({
       url: '/info/traceLogs',
       tryCount : 0,
@@ -1277,6 +1337,8 @@ let JackPlay = React.createClass({
         }
       }
     });
+  },
+  loadModifiableMethods: function() {
     $.ajax({
       url: '/info/loadedMethods',
       tryCount : 0,
@@ -1295,6 +1357,10 @@ let JackPlay = React.createClass({
       }
     });
   },
+  loadServerSideData: function() {
+    this.loadTraceLogs();
+    this.loadModifiableMethods();
+  },
   loadProgram: function() {
     $.ajax({
       url: '/info/currentProgram',
@@ -1305,9 +1371,6 @@ let JackPlay = React.createClass({
         console.log("Ajax call /info/currentProgram with ERROR", res);
       }
     });
-  },
-  checkDataSync: function() {
-    if (!this.state.isSyncWithServerPaused) this.syncDataWithServer();
   },
   clearLogHistory: function() {
     this.setState(Object.assign(this.state, {logHistory: []}));
@@ -1466,6 +1529,8 @@ let JackPlay = React.createClass({
                  clearLogHistory={this.clearLogHistory}
                  autoSuggestLimit={this.state.serverSideSettings.autoSuggestLimit}
                  traceLogLimit={this.state.serverSideSettings.traceLogLimit}
+                 intervalSyncTraceLogs={this.state.serverSideSettings.intervalSyncTraceLogs}
+                 intervalSyncModifiableMethods={this.state.serverSideSettings.intervalSyncModifiableMethods}
                  applyConfigurations={this.applyConfigurations}
                  executionCount={this.state.executionCount}
                  loadServerSideSettings={this.loadServerSideSettings}/>

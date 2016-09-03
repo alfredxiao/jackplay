@@ -21,6 +21,8 @@ public class Options {
         DEFAULTS.put("autoSuggestLimit", "100");
         DEFAULTS.put("https", "false");
         DEFAULTS.put("defaultTrace", "");
+        DEFAULTS.put("intervalSyncTraceLogs", "4500");
+        DEFAULTS.put("intervalSyncModifiableMethods", "120000");
     }
 
     private static boolean isEmpty(String s) {
@@ -85,6 +87,14 @@ public class Options {
 
     public int autoSuggestLimit() {
         return Integer.parseInt(options.get("autoSuggestLimit"));
+    }
+
+    public int intervalSyncTraceLogs() {
+        return Integer.parseInt(options.get("intervalSyncTraceLogs"));
+    }
+
+    public int intervalSyncModifiableMethods() {
+        return Integer.parseInt(options.get("intervalSyncModifiableMethods"));
     }
 
     public boolean https() {
