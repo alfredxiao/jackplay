@@ -2,27 +2,65 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
-public class CommonHandling {
+class CommonHandling {
 
-    public static void serveStringBody(HttpExchange exchange, int status, String body) throws IOException {
-        byte[] bytes = body.getBytes();
-        exchange.sendResponseHeaders(status, bytes.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
+    static boolean clientSupportsGzip(HttpExchange http) {
+        List<String> accepted = http.getRequestHeaders().get("Accept-Encoding");
+        return accepted != null &&
+                accepted.size() >= 0 &&
+                accepted.get(0).contains("gzip");
     }
 
-    public static void serveStaticResource(HttpExchange exchange, int status, String resourcePath) throws IOException {
+    static void serveBody(HttpExchange exchange, int status, String body) throws IOException {
+        serveBody(exchange, status, new ByteArrayInputStream(body.getBytes()), clientSupportsGzip(exchange));
+    }
+
+    static void serveBody(HttpExchange exchange, int status, InputStream body) throws IOException {
+        serveBody(exchange, status, body, clientSupportsGzip(exchange));
+    }
+
+    private static void serveBody(HttpExchange exchange, int status, InputStream body, boolean gzip) throws IOException {
+        if (gzip) {
+            serveGZippedStringBody(exchange, status, body);
+        } else {
+            exchange.sendResponseHeaders(status, body.available());
+            OutputStream os = exchange.getResponseBody();
+            copy(body, os);
+            os.close();
+        }
+    }
+
+    private static void serveGZippedStringBody(HttpExchange exchange, int status, InputStream body) throws IOException {
+        exchange.getResponseHeaders().add("Content-Encoding", "gzip");
+        OutputStream os = exchange.getResponseBody();
+        try {
+            byte[] compressedData;
+            try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream(body.available())) {
+                try (GZIPOutputStream zipStream = new GZIPOutputStream(byteStream)) {
+                    copy(body, zipStream);
+                }
+                compressedData = byteStream.toByteArray();
+            }
+
+            exchange.sendResponseHeaders(status, compressedData.length);
+            os.write(compressedData);
+            os.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void serveStaticResource(HttpExchange exchange, int status, String resourcePath) throws IOException {
         InputStream resource = loadResource(resourcePath);
         if (resourcePath.endsWith("css")) exchange.getResponseHeaders().add("Content-Type", "text/css");
-        exchange.sendResponseHeaders(status, resource.available());
-        OutputStream os = exchange.getResponseBody();
-        copy(resource, os);
-        os.close();
+        if (resourcePath.endsWith("js")) exchange.getResponseHeaders().add("Content-Type", "application/javascript");
+        if (resourcePath.endsWith("html")) exchange.getResponseHeaders().add("Content-Type", "text/html");
+
+        serveBody(exchange, status, resource);
     }
 
     private static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {

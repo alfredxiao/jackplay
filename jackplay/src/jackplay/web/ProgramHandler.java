@@ -37,26 +37,26 @@ public class ProgramHandler extends BaseHandler {
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
         jack.redefine(new PlayGround(params.get("longMethodName")), params.get("src"));
-        CommonHandling.serveStringBody(http, 200, "Method is redefined");
+        CommonHandling.serveBody(http, 200, "Method is redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
         jack.trace(new PlayGround(params.get("methodFullName")));
-        CommonHandling.serveStringBody(http, 200, "Method trace is added");
+        CommonHandling.serveBody(http, 200, "Method trace is added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         String methodFullName = params.get("methodFullName");
         jack.undoPlay(g, new PlayGround(methodFullName));
-        CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
+        CommonHandling.serveBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         String className = params.get("classFullName");
         jack.undoClass(g, className);
-        CommonHandling.serveStringBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
+        CommonHandling.serveBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
     }
 
     private static String getGenreDescriptor(Genre genre) {

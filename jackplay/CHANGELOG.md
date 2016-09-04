@@ -5,7 +5,12 @@
 - Added label to two log filter and matched record count in UI
 - Widened method search box's width
 
-## 0.9.8 (01-Sep-2016)
+## 0.9.10 (04-Sep-2016)
+- Reduced payload size in /info/loadedMethods
+- Supported gzipping response 
+- Configurable data refresh interval
+
+## 0.9.9 (01-Sep-2016)
 - support classes loaded by custom classloader
 - undo the ignoring of private classes, since they appear to be searchable
 

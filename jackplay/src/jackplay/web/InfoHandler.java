@@ -18,19 +18,19 @@ public class InfoHandler extends BaseHandler {
         switch (getUriPath(uri)) {
             case "/info/traceLogs":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(TraceKeeper.getTraceLogs()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(TraceKeeper.getTraceLogs()));
                 break;
             case "/info/loadedMethods":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.allModifiableMethods()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(infoCenter.allModifiableMethods()));
                 break;
             case "/info/clearTraceLogs":
                 TraceKeeper.clearLogHistory();
-                CommonHandling.serveStringBody(http, 200, "OK");
+                CommonHandling.serveBody(http, 200, "OK");
                 break;
             case "/info/settings":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
                 break;
             case "/info/updateSettings":
                 CommonHandling.willReturnJson(http);
@@ -38,11 +38,11 @@ public class InfoHandler extends BaseHandler {
                 infoCenter.configOption("autoSuggestLimit", params.get("autoSuggestLimit"));
                 infoCenter.configOption("intervalSyncTraceLogs", params.get("intervalSyncTraceLogs"));
                 infoCenter.configOption("intervalSyncModifiableMethods", params.get("intervalSyncModifiableMethods"));
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(infoCenter.getConfigurableOptions()));
                 break;
             case "/info/currentProgram":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveStringBody(http, 200, JSON.objectToJson(infoCenter.getCurrentProgram()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(infoCenter.getCurrentProgram()));
                 break;
             default:
                 CommonHandling.error_404(http);
