@@ -39,6 +39,25 @@ let toErrorMessage = function(obj) {
   }
 }
 
+/* m: {'myapp.Class1': {'test1(int)': 'void', 'test2()': 'int'}, 'myapp.Class2' : {}}
+  convert to: [{'methodFullName': 'myapp.Class1.test1(int)', 'returnType': 'void'},
+               {'methodFullName': 'myapp.Class1.test2()', 'returnType': 'int'}]
+*/
+let normalizeModifiableMethods = function(all) {
+  let clsNames = Object.keys(all);
+  let converted = new Array();
+  for (let c = 0; c < clsNames.length; c++) {
+    let allMethods = Object.keys(all[clsNames[c]]);
+    for (let m = 0; m < allMethods.length; m++) {
+      converted[converted.length] = {
+        methodFullName: clsNames[c] + '.' + allMethods[m],
+        returnType: all[clsNames[c]][allMethods[m]]
+      }
+    }
+  }
+
+  return converted;
+}
 // the alert notification is based on http://schiehll.github.io/react-alert/
 // highlight is based on https://github.com/moroshko/react-autosuggest
 // modal dialog is based on https://github.com/sergiodxa/react-simple-modal
@@ -1266,7 +1285,6 @@ let JackPlay = React.createClass({
   },
   serverSideDataLoadingChecker: function(intervalSettingName) {
     return () => {
-      console.log('in checker', intervalSettingName);
       clearInterval(this.state.serverSideDataLoadingCheckers[intervalSettingName]);
       if (!this.state.isSyncWithServerPaused) {
         if (intervalSettingName == INTERVAL_SYNC_TRACE_LOGS) {
@@ -1344,7 +1362,7 @@ let JackPlay = React.createClass({
       tryCount : 0,
       retryLimit : 3,
       success: function(targets) {
-        this.setState(Object.assign(this.state, {loadedTargets: targets}));
+        this.setState(Object.assign(this.state, {loadedTargets: normalizeModifiableMethods(targets)}));
       }.bind(this),
       error: function(res) {
         this.tryCount++;

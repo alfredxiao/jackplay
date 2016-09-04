@@ -80,14 +80,14 @@ public class InfoCenter {
                 || parameterType.equals(paramClass.getName());
     }
 
-    public List<Map<String, String>> allModifiableMethods() throws Exception {
+    public Map<String, Map<String, String>> allModifiableMethods() throws Exception {
         List<Class> classes = allModifiableClasses();
 
-        List<Map<String, String>> loadedMethods = new ArrayList<>();
+        Map<String, Map<String, String>> loadedMethods = new TreeMap<>();
 
         for (Class clazz : classes) {
             try {
-                loadedMethods.addAll(modifiableMethodsInClass(clazz));
+                loadedMethods.put(clazz.getName(), modifiableMethodsInClass(clazz));
             } catch(NoClassDefFoundError ncdf) {
                 if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
                     metadataInaccessibleClasses.put(clazz.getName(), ReferencedClassDefFoundError);
@@ -104,9 +104,9 @@ public class InfoCenter {
         return loadedMethods;
     }
 
-    private List<Map<String, String>> modifiableMethodsInClass(Class clazz) {
+    private Map<String, String> modifiableMethodsInClass(Class clazz) {
 
-        List<Map<String, String>> loadedMethods = new ArrayList<>();
+        Map<String, String> loadedMethods = new TreeMap<>();
 
         Method[] methods = clazz.getDeclaredMethods();
         Arrays.sort(methods, METHOD_COMPARATOR);
@@ -115,12 +115,7 @@ public class InfoCenter {
             if (!hasMethodBody(m)) continue;
 
             PlayGround pg = new PlayGround(getMethodFullName(m));
-            Map<String, String> loadedMethod = new HashMap<>();
-
-            loadedMethod.put("methodFullName", pg.methodFullName);
-            loadedMethod.put("returnType", getFriendlyClassName(m.getReturnType()));
-
-            loadedMethods.add(loadedMethod);
+            loadedMethods.put(pg.methodShortNameWithSignature, getFriendlyClassName(m.getReturnType()));
         }
 
         return loadedMethods;

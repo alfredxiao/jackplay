@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class PlayGround {
-    public final String packageName;        // com.abc
-    public final String classFullName;      // com.abc.MyService
-    public final String methodFullName;     // com.abc.MyService.myfunction(java.lang.String,int)
-    public final String methodLongName;     // com.abc.MyService.myfunction
-    public final String methodShortName;    // myfunction
-    public final String parameters;         // "java.lang.String,int"
+    public final String packageName;                    // com.abc
+    public final String classFullName;                  // com.abc.MyService
+    public final String methodFullName;                 // com.abc.MyService.myfunction(java.lang.String,int)
+    public final String methodLongName;                 // com.abc.MyService.myfunction
+    public final String methodShortName;                // myfunction
+    public final String methodShortNameWithSignature;   // myfunction(java.lang.String,int)
+    public final String parameters;                     // "java.lang.String,int"
 
     // [ "java.lang.String", "int" ]
     public final List<String> parameterList = new LinkedList<>();
@@ -41,6 +42,7 @@ public class PlayGround {
         this.methodFullName = methodFullName;
         this.methodLongName = methodFullName.substring(0, firstParen);
         this.methodShortName = methodFullName.substring(dotBeforeMethodName + 1, firstParen);
+        this.methodShortNameWithSignature = methodFullName.substring(dotBeforeMethodName + 1);
 
         this.parameters = methodFullName.substring(firstParen + 1, secondParen);
         String[] parametersArray = this.parameters.split(",");

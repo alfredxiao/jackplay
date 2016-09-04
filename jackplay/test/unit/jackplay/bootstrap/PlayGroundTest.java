@@ -9,14 +9,15 @@ public class PlayGroundTest {
 
     @Test
     public void testNoPackage() {
-        PlayGround noPackage = new PlayGround("MyClass.myFunction()");
+        PlayGround noPackage = new PlayGround("MyClass.myFunction(int)");
 
         assertEquals("MyClass", noPackage.classFullName);
         assertEquals("", noPackage.packageName);
-        assertEquals("MyClass.myFunction()", noPackage.methodFullName);
+        assertEquals("MyClass.myFunction(int)", noPackage.methodFullName);
         assertEquals("MyClass.myFunction", noPackage.methodLongName);
         assertEquals("myFunction", noPackage.methodShortName);
-        assertEquals("", noPackage.parameters);
+        assertEquals("myFunction(int)", noPackage.methodShortNameWithSignature);
+        assertEquals("int", noPackage.parameters);
     }
 
     @Test

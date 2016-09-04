@@ -44,19 +44,11 @@ public class InfoCenterTest {
 
     @Test
     public void shouldGiveLoadedMethods() throws Exception {
-        List<Map<String, String>> loadedMethods = infoCenter.allModifiableMethods();
+        Map<String, Map<String, String>> loadedMethods = infoCenter.allModifiableMethods();
 
-        Map<String, String> myfunction1 = new HashMap<>();
-        myfunction1.put("methodFullName", "fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
-        myfunction1.put("returnType", "java.lang.String");
+        assertEquals("java.lang.String", loadedMethods.get("fortest.myapp.MyBaseClass").get("test1(int,java.lang.String)"));
 
-        assertTrue(loadedMethods.contains(myfunction1));
-
-        Map<String, String> clear = new HashMap<>();
-        clear.put("methodFullName", "java.util.ArrayList.clear()");
-        clear.put("returnType", "void");
-
-        assertTrue(loadedMethods.contains(clear));
+        assertEquals("void", loadedMethods.get("java.util.ArrayList").get("clear()"));
     }
 
     @Test
