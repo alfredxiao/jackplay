@@ -2,8 +2,8 @@
 
 ## To be released
 - Can trace constructor?
-- Added label to two log filter and matched record count in UI
-- Widened method search box's width
+- Widened method matching
+- Can Trace Interface and Abstract Method
 
 ## 0.9.10 (04-Sep-2016)
 - Reduced payload size in /info/loadedMethods
