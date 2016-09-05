@@ -4,6 +4,7 @@ import static jackplay.bootstrap.TracePoint.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class TraceKeeper {
@@ -58,36 +59,42 @@ public class TraceKeeper {
     }
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {
-        TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), uuid);
-        if (null == args || args.length == 0) {
-            entry.arguments = null;
-        } else {
-            entry.arguments = new String[args.length];
-            entry.argumentsCount = args.length;
-            for (int i=0; i<args.length; i++) {
-                entry.arguments[i] = objectToString(args[i]);
+        try {
+            TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), uuid);
+            if (null == args || args.length == 0) {
+                entry.arguments = null;
+            } else {
+                entry.arguments = new String[args.length];
+                entry.argumentsCount = args.length;
+                for (int i = 0; i < args.length; i++) {
+                    entry.arguments[i] = objectToString(args[i]);
+                }
             }
-        }
 
-        addTraceLog(entry);
+            addTraceLog(entry);
+        } catch(Throwable ignore) {}
     }
 
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
-        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
-        entry.elapsed = elapsed;
-        entry.argumentsCount = argsLen;
-        entry.returningVoid = true;
+        try {
+            TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
+            entry.elapsed = elapsed;
+            entry.argumentsCount = argsLen;
+            entry.returningVoid = true;
 
-        addTraceLog(entry);
+            addTraceLog(entry);
+        } catch(Throwable ignore) {}
     }
 
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
-        TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
-        entry.elapsed = elapsed;
-        entry.argumentsCount = argsLen;
-        entry.returnedValue = objectToString(result);
+        try {
+            TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
+            entry.elapsed = elapsed;
+            entry.argumentsCount = argsLen;
+            entry.returnedValue = objectToString(result);
 
-        addTraceLog(entry);
+            addTraceLog(entry);
+        } catch(Throwable ignore) {}
     }
 
     public static void returnsResult(String methodFullName, int argsLen, boolean result, String uuid, long elapsed) {
@@ -123,24 +130,26 @@ public class TraceKeeper {
     }
 
     public static void throwsException(String methodFullName, int argsLen, Throwable t) {
-        TraceLog correspondingMethodEntryLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
+        try {
+            TraceLog correspondingMethodEntryLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
 
-        long elapsed = -1;
-        String uuid;
-        if (correspondingMethodEntryLog != null) {
-            elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenAsTimeMs;
-            uuid = correspondingMethodEntryLog.uuid;
-        } else {
-            // this is for the client/browser's purpose
-            uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
-        }
+            long elapsed = -1;
+            String uuid;
+            if (correspondingMethodEntryLog != null) {
+                elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenAsTimeMs;
+                uuid = correspondingMethodEntryLog.uuid;
+            } else {
+                // this is for the client/browser's purpose
+                uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
+            }
 
-        TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), uuid);
-        entry.elapsed = elapsed;
-        entry.argumentsCount = argsLen;
-        entry.exceptionStackTrace = throwableToString(t);
+            TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), uuid);
+            entry.elapsed = elapsed;
+            entry.argumentsCount = argsLen;
+            entry.exceptionStackTrace = throwableToString(t);
 
-        addTraceLog(entry);
+            addTraceLog(entry);
+        } catch(Throwable ignore) {}
     }
 
     private static TraceLog findCorrespondingEntryLog(String methodFullName, long threadId) {
@@ -173,19 +182,41 @@ public class TraceKeeper {
         StringBuilder builder = new StringBuilder();
 
         if (obj instanceof String) {
-            builder.append("\"").append(obj).append("\"");
+            String str = (String) obj;
+            int lenToPrint = options.traceStringLength();
+            String strTraced = str.length() > lenToPrint ? str.substring(0, lenToPrint) : str;
+            if (lenToPrint < str.length()) {
+                strTraced += "..." + (str.length() - lenToPrint) + " more characters...";
+            }
+
+            builder.append("\"").append(strTraced).append("\"");
         } else if (obj.getClass().equals(Character.class)) {
             builder.append("\'").append(obj).append("\'");
         } else if (obj.getClass().isArray()) {
             builder.append(squareBracket ? "[" : "(");
 
+            int arrayLen = Array.getLength(obj);
+            int lenToPrint = Math.min(options.traceArrayLength(), arrayLen);
             boolean isFirst = true;
-            Object[] values = (Object[]) obj;
-            for (Object value : values) {
-                if (!isFirst) builder.append(",");
-                builder.append(objectToString(value, squareBracket));
+
+            Class componentType = obj.getClass().getComponentType();
+            for (int i=0; i<lenToPrint; i++) {
+                if (!isFirst) builder.append(", ");
+                Object element = Array.get(obj, i);
+
+                if (componentType.isPrimitive()) {
+                    builder.append(element);
+                } else {
+                    builder.append(objectToString(element, squareBracket));
+                }
+
                 isFirst = false;
             }
+
+            if (lenToPrint < arrayLen) {
+                builder.append(", ..").append(arrayLen - lenToPrint).append(" more..");
+            }
+
             builder.append(squareBracket ? "]" : ")");
         } else {
             builder.append(obj);

@@ -5,6 +5,9 @@
 - Widened method matching
 - Can Trace Interface and Abstract Method
 
+## 0.9.11 (06-Sep-2016)
+- bug fix regarding displaying of array type
+
 ## 0.9.10 (04-Sep-2016)
 - Reduced payload size in /info/loadedMethods
 - Supported gzipping response 

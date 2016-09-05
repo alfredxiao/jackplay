@@ -37,6 +37,8 @@ public class InfoCenter {
         settings.put("autoSuggestLimit", options.autoSuggestLimit());
         settings.put("intervalSyncTraceLogs", options.intervalSyncTraceLogs());
         settings.put("intervalSyncModifiableMethods", options.intervalSyncModifiableMethods());
+        settings.put("traceStringLength", options.traceStringLength());
+        settings.put("traceArrayLength", options.traceArrayLength());
 
         return settings;
     }

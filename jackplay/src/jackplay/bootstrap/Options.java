@@ -21,8 +21,10 @@ public class Options {
         DEFAULTS.put("autoSuggestLimit", "100");
         DEFAULTS.put("https", "false");
         DEFAULTS.put("defaultTrace", "");
-        DEFAULTS.put("intervalSyncTraceLogs", "4500");
-        DEFAULTS.put("intervalSyncModifiableMethods", "120000");
+        DEFAULTS.put("intervalSyncTraceLogs", "5");
+        DEFAULTS.put("intervalSyncModifiableMethods", "120");
+        DEFAULTS.put("traceStringLength", "36");
+        DEFAULTS.put("traceArrayLength", "3");
     }
 
     private static boolean isEmpty(String s) {
@@ -117,13 +119,23 @@ public class Options {
         return options.get("logFile");
     }
 
+    public int traceStringLength() {
+        return Integer.parseInt(options.get("traceStringLength"));
+    }
+
+    public int traceArrayLength() {
+        return Integer.parseInt(options.get("traceArrayLength"));
+    }
+
     public String[] defaultTraceAsArray() {
         String defaultTrace = this.defaultTrace();
         return (defaultTrace == null || defaultTrace.trim().length() == 0) ? null : defaultTrace.trim().split(":");
     }
 
     public void updateOption(String key, String value) {
-        options.put(key, value);
+        if (value != null && value.trim().length() > 0) {
+            options.put(key, value.trim());
+        }
     }
 
     public Set<String> whitelist() {

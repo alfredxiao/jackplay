@@ -3,6 +3,8 @@ package myapp.greeter;
 import myapp.Demo;
 
 public class QAGreeter implements Greeter {
+    private static String longlongString = "A123456789B123456789C123456789D123456789E123456789F123456789G123456789H123456789I123456789J123456789K123456789M123456789N123456789O123456789P123456789";
+
     public String greet(String name) {
         Demo.sleepSmallRandom();
         testScenarios();
@@ -14,7 +16,8 @@ public class QAGreeter implements Greeter {
 
         byte b = 10;
         short sh = 100;
-        testArguments(true, b, sh, 1000, 10000L, 2.3F, 3.8D, 'C', "String", new Object(), new QAGreeter(), new String[]{"S1", "S2"});
+        testArguments(true, b, sh, 1000, 10000L, 2.3F, 3.8D, 'C', "String", new Object(), new QAGreeter(), new String[]{"S1", "S2", longlongString},
+                new byte[] {33, 88}, new int[]{10, 20, 30, 40, 50});
         testReturningVoid("noth\"i'ng");
         testReturningBoolean();
         testReturningByte();
@@ -28,6 +31,8 @@ public class QAGreeter implements Greeter {
         testReturningObject();
         testReturningQAGreeter();
         testReturningArray();
+        testReturningByteArray();
+        testReturningIntArrayArray();
         testVarargs("A", "B", "C");
         try {
             testThrowingCheckException();
@@ -114,12 +119,22 @@ public class QAGreeter implements Greeter {
         return new String[]{"Result1", "Result2"};
     }
 
+    private byte[] testReturningByteArray() {
+        Demo.sleepSmallRandom();
+        return new byte[]{1,2,3,4,5,6,8,9,10};
+    }
+
+    private int[][] testReturningIntArrayArray() {
+        Demo.sleepSmallRandom();
+        return new int[][]{{1,2,3,4,5,6,8,9,10}, {10,20,30,40,50}, {100,200,300,400,500,600}, {1000,2000}};
+    }
+
     private void testReturningVoid(String arg1) {
         Demo.sleepSmallRandom();
     }
 
     private void testArguments(boolean bool, byte byt, short sh, int i, long l, float f, double d, char c,
-                               String str, Object o, QAGreeter qaGreeter, String[] strings) {
+                               String str, Object o, QAGreeter qaGreeter, String[] strings, byte[] bytes, int[] ints) {
         Demo.sleepSmallRandom();
     }
 

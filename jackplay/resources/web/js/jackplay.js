@@ -19,6 +19,8 @@ const TRIGGER_POINT_RETURNS = 'MethodReturns';
 const TRIGGER_POINT_THROWS_EXCEPTION = 'MethodThrowsException';
 const INTERVAL_SYNC_TRACE_LOGS = 'intervalSyncTraceLogs';
 const INTERVAL_SYNC_MODIFIABLE_METHODS = 'intervalSyncModifiableMethods';
+const TRACE_STRING_LENGTH = 'traceStringLength';
+const TRACE_ARRAY_LENGTH = 'traceArrayLength';
 
 let alertGlobal = {};
 let ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
@@ -779,18 +781,34 @@ let Configuration = React.createClass({
           </tr>
           <tr>
             <td>
-              <label title='Interval to download trace logs (millis second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Trace Logs (ms):</label>
+              <label title='Interval to download trace logs (second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Trace Logs (second):</label>
             </td>
             <td>
-              <input id={INTERVAL_SYNC_TRACE_LOGS} className='configInput' type='number' min='1000' max='30000' step='500' defaultValue={this.props.intervalSyncTraceLogs}/>
+              <input id={INTERVAL_SYNC_TRACE_LOGS} className='configInput' type='number' min='1' max='60' step='1' defaultValue={this.props.intervalSyncTraceLogs}/>
             </td>
           </tr>
           <tr>
             <td>
-              <label title='Interval to download tracible method list (millis second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Method List (ms):</label>
+              <label title='Interval to download tracible method list (second)' htmlFor={INTERVAL_SYNC_TRACE_LOGS}>Interval to Download Method List (second):</label>
             </td>
             <td>
-              <input id={INTERVAL_SYNC_MODIFIABLE_METHODS} className='configInput' type='number' min='10000' max='300000' step='10000' defaultValue={this.props.intervalSyncModifiableMethods}/>
+              <input id={INTERVAL_SYNC_MODIFIABLE_METHODS} className='configInput' type='number' min='10' max='300' step='10' defaultValue={this.props.intervalSyncModifiableMethods}/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label title='String(s) longer than this will be truncated when display' htmlFor={TRACE_STRING_LENGTH}>Display String Length Limit:</label>
+            </td>
+            <td>
+              <input id={TRACE_STRING_LENGTH} className='configInput' type='number' min='10' max='300' step='10' defaultValue={this.props.traceStringLength}/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label title='Array(s) longer than this will be truncated when display' htmlFor={TRACE_ARRAY_LENGTH}>Display Array Length Limit:</label>
+            </td>
+            <td>
+              <input id={TRACE_ARRAY_LENGTH} className='configInput' type='number' min='1' max='300' step='1' defaultValue={this.props.traceArrayLength}/>
             </td>
           </tr>
         </table>
@@ -804,7 +822,10 @@ let SystemSettings = React.createClass({
             autoSuggestLimit: this.props.autoSuggestLimit,
             traceLogLimit: this.props.traceLogLimit,
             intervalSyncTraceLogs: this.props.intervalSyncTraceLogs,
-            intervalSyncModifiableMethods: this.props.intervalSyncModifiableMethods};
+            intervalSyncModifiableMethods: this.props.intervalSyncModifiableMethods,
+            traceStringLength: this.props.traceStringLength,
+            traceArrayLength: this.props.traceArrayLength,
+            };
   },
   componentDidMount: function() {
     this.props.loadServerSideSettings();
@@ -897,7 +918,10 @@ let SystemSettings = React.createClass({
                     <Configuration autoSuggestLimit={this.props.autoSuggestLimit}
                                    traceLogLimit={this.props.traceLogLimit}
                                    intervalSyncTraceLogs={this.props.intervalSyncTraceLogs}
-                                   intervalSyncModifiableMethods={this.props.intervalSyncModifiableMethods}/>
+                                   intervalSyncModifiableMethods={this.props.intervalSyncModifiableMethods}
+                                   traceStringLength={this.props.traceStringLength}
+                                   traceArrayLength={this.props.traceArrayLength}
+                                   />
                   </div>
                 </div>
               </fieldset>
@@ -1114,6 +1138,8 @@ let PlayPanel = React.createClass({
                       traceLogLimit={this.props.traceLogLimit}
                       intervalSyncTraceLogs={this.props.intervalSyncTraceLogs}
                       intervalSyncModifiableMethods={this.props.intervalSyncModifiableMethods}
+                      traceStringLength={this.props.traceStringLength}
+                      traceArrayLength={this.props.traceArrayLength}
                       applyConfigurations={this.props.applyConfigurations}
                       loadServerSideSettings={this.props.loadServerSideSettings}/>
             <AboutJackPlay aboutBeingShow={this.state.aboutBeingShow}
@@ -1243,8 +1269,10 @@ let JackPlay = React.createClass({
   defaultSystemSettings: {   /* used when fails to load server side settings  */
     traceLogLimit: 300,
     autoSuggestLimit: 100,
-    intervalSyncTraceLogs: 4500,
-    intervalSyncModifiableMethods: 120000
+    intervalSyncTraceLogs: 5,
+    intervalSyncModifiableMethods: 120,
+    traceStringLength: 36,
+    traceArrayLength: 3
   },
   getInitialState: function() {
     return {logHistory: [],
@@ -1280,7 +1308,7 @@ let JackPlay = React.createClass({
   setServerSideDataLoadingInterval: function(intervalSettingName) {
     let checkers = {};
     checkers[intervalSettingName] = setInterval(this.serverSideDataLoadingChecker(intervalSettingName),
-                                                this.state.serverSideSettings[intervalSettingName]);;
+                                                this.state.serverSideSettings[intervalSettingName] * 1000);;
     Object.assign(this.state, { serverSideDataLoadingCheckers: (Object.assign(this.state.serverSideDataLoadingCheckers, checkers))});
   },
   serverSideDataLoadingChecker: function(intervalSettingName) {
@@ -1302,7 +1330,9 @@ let JackPlay = React.createClass({
       data: {traceLogLimit: document.getElementById('traceLogLimit').value,
              autoSuggestLimit: document.getElementById('autoSuggestLimit').value,
              intervalSyncTraceLogs: document.getElementById(INTERVAL_SYNC_TRACE_LOGS).value,
-             intervalSyncModifiableMethods: document.getElementById(INTERVAL_SYNC_MODIFIABLE_METHODS).value
+             intervalSyncModifiableMethods: document.getElementById(INTERVAL_SYNC_MODIFIABLE_METHODS).value,
+             traceStringLength: document.getElementById(TRACE_STRING_LENGTH).value,
+             traceArrayLength: document.getElementById(TRACE_ARRAY_LENGTH).value
              },
       success: function(settings) {
         this.setState(Object.assign(this.state, {serverSideSettings: settings}));
@@ -1549,6 +1579,8 @@ let JackPlay = React.createClass({
                  traceLogLimit={this.state.serverSideSettings.traceLogLimit}
                  intervalSyncTraceLogs={this.state.serverSideSettings.intervalSyncTraceLogs}
                  intervalSyncModifiableMethods={this.state.serverSideSettings.intervalSyncModifiableMethods}
+                 traceStringLength={this.state.serverSideSettings.traceStringLength}
+                 traceArrayLength={this.state.serverSideSettings.traceArrayLength}
                  applyConfigurations={this.applyConfigurations}
                  executionCount={this.state.executionCount}
                  loadServerSideSettings={this.loadServerSideSettings}/>
