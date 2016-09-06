@@ -169,9 +169,14 @@ public class Options {
     }
 
     public boolean packageAllowed(String packageName) {
+        if (packageName == null) return true;
+
         if ("java.lang".equals(packageName) ||
                 "jackplay".equals(packageName) ||
-                packageName.startsWith("jackplay.")) return false;
+                packageName.startsWith("jackplay.") ||
+                packageName.startsWith("java.lang.")) {
+            return false;
+        }
 
         Set<String> blacklist = this.blacklist();
         Set<String> whitelist = this.whitelist();
