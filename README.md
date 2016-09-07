@@ -7,6 +7,7 @@
 
 # Latest Version
   ```com.github.alfredxiao/jackplay-bootstrap 0.9.11```
+
   ```com.github.alfredxiao/jackplay-agent 0.9.11```
 # Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
@@ -139,7 +140,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
  - Cannot trace or redefine native, abstract method, or a method in an Interface, because they don't have body.
  - Does not support constructor method yet
  - When redefining a method, you can only use Java language. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
- - It is recommended to use *latest* **Chrome** to access the web UI. 
+ - It is recommended to use *latest* **Chrome** to access the web UI.
 
 # License
 
