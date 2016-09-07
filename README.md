@@ -9,6 +9,8 @@
   ```com.github.alfredxiao/jackplay-bootstrap 0.9.11```
 
   ```com.github.alfredxiao/jackplay-agent 0.9.11```
+
+  Can be found via [Maven Repository] (http://search.maven.org/#search%7Cga%7C1%7Cjackplay)
 # Features
  - Trace or redefine a method in a JVM live even after a class has been loaded
  - Trace method execution no matter there is exception thrown or not
