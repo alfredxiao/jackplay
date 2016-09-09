@@ -67,7 +67,6 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 | Option           | Description                                                               | Default | Example      |
 |------------------|---------------------------------------------------------------------------|---------|--------------|
 |*port*            | port number the web server listens on                                     | 8181    |              |
-|*https*           | whether to use https                                                      | true    |              |
 |*logLevel*        | can be either info, debug, or error, default is info                      | info    | error, debug |
 |*traceLogLimit*   | how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity | 300 | |
 |*autoSuggestLimit*| specifies the limit of items auto suggestion displays | 100 | |
@@ -75,6 +74,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 |*logFile*         | file path to write Jackplay logs to. Note if file size grows over 100M, it will be truncated | | ```./jackplay.log``` |
 |*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
 |*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
+|*https*           | whether to use https                                                      | true    |              |
 |*keystoreFilepath*| when using https, this is used to set the file path to your keystore file |         |              |
 |*keystorePassword*| when using https, this is used to set the password for your keystore file |         |              |
 |*traceStringLength*| when dealing with method arguments or return value, truncate String(s) that are too long for transferring or display purpose | 36 |  |
