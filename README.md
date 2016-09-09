@@ -149,3 +149,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 # License
 
   [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+# Contact
+
+  If you have any questions, suggestion, feel free to reach me at alfred.xiao@outlook.com .
