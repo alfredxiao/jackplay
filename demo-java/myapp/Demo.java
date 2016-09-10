@@ -60,11 +60,11 @@ public class Demo implements Runnable {
   }
 
   public static long getRandomSleep() {
-    return nextInt(4000, 12000);
+    return nextInt(4000, 13500);
   }
 
   public static void sleepSmallRandom() {
-    long r = nextInt(300, 900);
+    long r = nextInt(300, 1200);
     try {
       Thread.sleep(r);
     } catch(Exception e) {};
