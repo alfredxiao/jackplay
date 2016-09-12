@@ -14,11 +14,11 @@ public class RudeGreeter implements Greeter {
             return "What the hell are you doing? " + name;
         } else if (mood < 6) {
             return "Piss off";
-        } else if (mood < 8) {
+        } else if (mood < 9) {
             return "I am feeling violent";
-        } else if (mood < 10) {
-            return "I need more drugs, and Panadol.";
         } else if (mood < 12) {
+            return "I need more drugs, and Panadol.";
+        } else if (mood < 14) {
             RuntimeException e1 = new RuntimeException(name + ", I am sick of this");
             Exception e2 = new Exception("Shit happens without notice given");
             e1.initCause(e2);
