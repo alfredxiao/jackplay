@@ -68,13 +68,13 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 |------------------|---------------------------------------------------------------------------|---------|--------------|
 |*port*            | port number the web server listens on                                     | 8181    |              |
 |*logLevel*        | can be either info, debug, or error, default is info                      | info    | error, debug |
-|*traceLogLimit*   | how many entries of trace log the server holds, old log entries are removed when new entries come while we have run out of capacity | 300 | |
+|*traceLogLimit*   | how many entries of trace log Jackplay holds in memory and are displayed in its web UI, old log entries are removed when new entries come when we run out of capacity | 300 | |
 |*autoSuggestLimit*| specifies the limit of items auto suggestion displays | 100 | |
 |*defaultTrace*    | colon separated full method names that we want Jackplay to trace by default, this is a perfect place for tracing application initialization behaviour like configuration loading, etc. | | ```myapp.Main.loadConfig(String[] args)``` |
 |*logFile*         | file path to write Jackplay logs to. Note if file size grows over 100M, it will be truncated | | ```./jackplay.log``` |
 |*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
 |*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
-|*https*           | whether to use https                                                      | true    |              |
+|*https*           | whether to use https                                                      | false   |              |
 |*keystoreFilepath*| when using https, this is used to set the file path to your keystore file |         |              |
 |*keystorePassword*| when using https, this is used to set the password for your keystore file |         |              |
 |*traceStringLength*| when dealing with method arguments or return value, truncate String(s) that are too long for transferring or display purpose | 36 |  |
