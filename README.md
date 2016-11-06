@@ -145,6 +145,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
  - Does not support constructor method yet
  - When redefining a method, you can only use Java language. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
  - It is recommended to use *latest* **Chrome** to access the web UI.
+ - Supports JDK 8 (not JDK 7 yet)
 
 # License
 
