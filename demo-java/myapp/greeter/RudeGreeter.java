@@ -51,7 +51,9 @@ public class RudeGreeter implements Greeter {
          "When SOAP was created, we really thought it was simple?",
          "Haskell gets some resistance due to the complexity of using monads to control side effects. Wadler tries to appease critics by explaining that 'a monad is a monoid in the category of endofunctors, what's the problem?",
          "I was told to follow Agile practices, but I was also told that Agile is not a process. So what is it?",
-         "When you think there is a problem, you can act like an ostrich that sticks its head in the sand and pretend there is no problem"
+         "When you think there is a problem, you can act like an ostrich that sticks its head in the sand and pretend there is no problem",
+         "Fake it till you make it",
+         "Buddhism teaches that it’s the nature of things to come together and fall apart, and that struggling against this impermanent nature of things is what causes us pain and suffering."
         };
 
     public static String getRandomCommentsOnLife() {
