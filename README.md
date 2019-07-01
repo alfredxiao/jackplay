@@ -57,10 +57,12 @@ If you have ever run into any situation as mentioned above, you would benefit fr
   e.g. to set port number for the embedded web server to listen on, and specify blacklist, you append these parameters to -javaagent argument, as follows:
 
   ```
-  -javaagent:jackplay-agent-<version>.jar=port=8282,blacklist=java.net:java.nio
+  -javaagent:jackplay-agent-<version>.jar=port=8282;blacklist=java.net:java.nio
   ```
 
-  Notice that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
+  Note that multiple options are separated by ";" rather than ",".
+
+  Also note that package names in 'blacklist' are separated by ':', you can set whitelist as well, but you can't set both blacklist and whitelist at the same time.
 
   Options supported:
 
@@ -85,7 +87,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
   2. When you define *defaultTrace*, the way you specify JVM argument might need to be quoted, e.g.
 
   ```
-  java -Xbootclasspath/a:../jackplay/dist/jackplay-bootstrap-latest.jar -javaagent:../jackplay/dist/jackplay-agent-latest.jar="logLevel=debug,blacklist=java.net:java.nio,defaultTrace=myapp.greeter.NiceGreeter.greet(java.lang.String):myapp.Demo.main(java.lang.String[])" -cp . myapp.Demo
+  java -Xbootclasspath/a:../jackplay/dist/jackplay-bootstrap-latest.jar -javaagent:../jackplay/dist/jackplay-agent-latest.jar="logLevel=debug;blacklist=java.net:java.nio;defaultTrace=myapp.greeter.NiceGreeter.greet(java.lang.String):myapp.Demo.main(java.lang.String[])" -cp . myapp.Demo
   ```
 
   3. *logFile* is used to write debug/info/error log from the Jackplay Java agent, not the trace logs themselves.

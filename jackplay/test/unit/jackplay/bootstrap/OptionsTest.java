@@ -83,4 +83,20 @@ public class OptionsTest {
         assertFalse(blacklistOptions.packageAllowed("java.net"));
         assertFalse(blacklistOptions.packageAllowed("my.utils"));
     }
+
+    @Test
+    public void testMultipleOptions() {
+        Options options = Options.optionsMergedWithDefaults("whitelist=java.net;port=3355");
+        assertTrue(options.packageAllowed("java.net"));
+        assertEquals(3355, options.port());
+    }
+
+    @Test
+    public void testDefaultTrace() {
+        Options options = Options.optionsMergedWithDefaults("defaultTrace=myapp.Main.loadConfig(String[] args)");
+        assertEquals("myapp.Main.loadConfig(String[] args)", options.defaultTrace());
+
+        options = Options.optionsMergedWithDefaults("defaultTrace=myapp.Main.loadConfig(String,String)");
+        assertEquals("myapp.Main.loadConfig(String,String)", options.defaultTrace());
+    }
 }

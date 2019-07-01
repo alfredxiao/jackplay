@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 // singleton
 public class Options {
-    final static String OPTION_SEPARATOR = ",";
+    final static String OPTION_SEPARATOR = ";";
     final static char EQUALS_CHAR = '=';
     final static Map<String, String> DEFAULTS = new HashMap<>();
     Map<String, String> options;
