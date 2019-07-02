@@ -6,9 +6,9 @@
   If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
 
 # Latest Version
-  ```com.github.alfredxiao/jackplay-bootstrap 0.9.11```
+  ```com.github.alfredxiao/jackplay-bootstrap 0.10.0```
 
-  ```com.github.alfredxiao/jackplay-agent 0.9.11```
+  ```com.github.alfredxiao/jackplay-agent 0.10.0```
 
   Can be found via [Maven Repository] (http://search.maven.org/#search%7Cga%7C1%7Cjackplay)
 # Features
