@@ -27,14 +27,14 @@
 
   <path id="project.classpath" cache="true">
     <fileset dir="lib">
-      <include name="javassist-3.20.0-GA-jackplay.jar"/>
+      <include name="javassist-3.25.0-GA-jackplay.jar"/>
     </fileset>
   </path>
 
   <path id="test.classpath" cache="true">
     <fileset dir="lib">
       <include name="junit-4.12.jar"/>
-      <include name="javassist-3.20.0-GA-jackplay.jar"/>
+      <include name="javassist-3.25.0-GA-jackplay.jar"/>
       <include name="java-hamcrest-2.0.0.0.jar"/>
     </fileset>
     <pathelement location="build/classes"/>
@@ -60,6 +60,8 @@
   </target>
 
   <target name="test" depends="compile,dist">
+    <javac srcdir="test-resources">
+    </javac>
     <junit printsummary="yes" haltonfailure="no">
       <classpath refid="project.classpath" />
       <classpath refid="test.classpath" />
@@ -76,7 +78,6 @@
     </junit>
 
     <junit printsummary="yes" haltonfailure="no">
-      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
       <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug;port=8171"/>
 
       <classpath refid="project.classpath" />
@@ -110,7 +111,6 @@
       <jvmarg value="-XX:+TraceClassUnloading"/>
       <!--<jvmarg value="-XX:MetaspaceSize=12m" />-->
       <!--<jvmarg value="-XX:MaxMetaspaceSize=12m" />-->
-      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
       <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logFile=soak-agent.log,logLevel=debug,port=8172"/>
 
       <classpath refid="project.classpath" />
@@ -203,21 +203,9 @@
   <target name="dist" depends="compile" description="generate the distribution">
     <mkdir dir="dist"/>
 
-    <jar jarfile="dist/jackplay-bootstrap-${version}.jar">
-      <fileset dir="build/classes">
-        <include name="jackplay/bootstrap/*"/>
-        <exclude name="javaplay/play/**/*"/>
-        <exclude name="javaplay/web/**/*"/>
-        <exclude name="javaplay/*"/>
-      </fileset>
-    </jar>
-    <copy file="dist/jackplay-bootstrap-${version}.jar" tofile="dist/jackplay-bootstrap-latest.jar"/>
-
     <jar jarfile="dist/jackplay-agent-${version}.jar">
-      <zipfileset src="lib/javassist-3.20.0-GA-jackplay.jar"/>
+      <zipfileset src="lib/javassist-3.25.0-GA-jackplay.jar"/>
       <fileset dir="build/classes">
-        <exclude name="jackplay/bootstrap"/>
-        <exclude name="jackplay/bootstrap/*"/>
       </fileset>
       <fileset dir="resources"/>
       <manifest>
