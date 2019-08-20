@@ -18,7 +18,7 @@ public class InfoHandler extends BaseHandler {
         switch (getUriPath(uri)) {
             case "/info/traceLogs":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveBody(http, 200, JSON.objectToJson(TraceKeeper.getTraceLogs()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(TraceKeeper.getTraces()));
                 break;
             case "/info/loadedMethods":
                 CommonHandling.willReturnJson(http);

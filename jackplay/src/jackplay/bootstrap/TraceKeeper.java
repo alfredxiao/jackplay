@@ -1,6 +1,6 @@
 package jackplay.bootstrap;
 
-import static jackplay.bootstrap.TracePoint.*;
+import static jackplay.bootstrap.Site.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -8,40 +8,40 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class TraceKeeper {
-    private static List<TraceLog> traceLogs = new LinkedList<>();
+    private static List<Trace> traces = new LinkedList<>();
     private static Options options;
 
     private TraceKeeper() {}
 
-    private synchronized static List<TraceLog> copyTraceLogs() {
-        List<TraceLog> copyList = new ArrayList<>(traceLogs.size());
-        copyList.addAll(traceLogs);
+    private synchronized static List<Trace> copyTraceLogs() {
+        List<Trace> copyList = new ArrayList<>(traces.size());
+        copyList.addAll(traces);
 
         return copyList;
     }
 
-    public static List<Map<String, Object>> getTraceLogs() {
-        Iterator<TraceLog> it = TraceKeeper.copyTraceLogs().iterator();
+    public static List<Map<String, Object>> getTraces() {
+        Iterator<Trace> it = TraceKeeper.copyTraceLogs().iterator();
         List<Map<String, Object>> listOfLogs = new ArrayList<>();
 
         while (it.hasNext()) {
             try {
-                TraceLog traceLog = it.next();
+                Trace trace = it.next();
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("when", Options.formatDate(traceLog.when));
-                map.put("tracePoint", traceLog.tracePoint.toString());
-                map.put("classFullName", traceLog.pg.classFullName);
-                map.put("methodShortName", traceLog.pg.methodShortName);
-                map.put("uuid", traceLog.uuid);
-                map.put("threadId", traceLog.threadId);
-                map.put("threadName", traceLog.threadName);
-                map.put("arguments", traceLog.arguments);
-                map.put("returnedValue", traceLog.returnedValue);
-                map.put("returningVoid", traceLog.returningVoid);
-                map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
-                map.put("elapsed", traceLog.elapsed);
-                map.put("argumentsCount", traceLog.argumentsCount);
+                map.put("when", Options.formatDate(trace.when));
+                map.put("site", trace.site.toString());
+                map.put("classFullName", trace.pg.classFullName);
+                map.put("methodShortName", trace.pg.methodShortName);
+                map.put("uuid", trace.uuid);
+                map.put("threadId", trace.threadId);
+                map.put("threadName", trace.threadName);
+                map.put("arguments", trace.arguments);
+                map.put("returnedValue", trace.returnedValue);
+                map.put("returningVoid", trace.returningVoid);
+                map.put("exceptionStackTrace", trace.exceptionStackTrace);
+                map.put("elapsed", trace.elapsed);
+                map.put("argumentsCount", trace.argumentsCount);
 
                 listOfLogs.add(map);
             } catch(ConcurrentModificationException ignore) {}
@@ -50,17 +50,17 @@ public class TraceKeeper {
         return listOfLogs;
     }
 
-    private synchronized static void addTraceLog(TraceLog entry) {
-        while (traceLogs.size() >= options.traceLogLimit()) {
-            traceLogs.remove(traceLogs.size() - 1);
+    private synchronized static void addTraceLog(Trace entry) {
+        while (traces.size() >= options.traceLogLimit()) {
+            traces.remove(traces.size() - 1);
         }
 
-        traceLogs.add(0, entry);
+        traces.add(0, entry);
     }
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {
         try {
-            TraceLog entry = new TraceLog(MethodEntry, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodEntry, new PlayGround(methodFullName), uuid);
             if (null == args || args.length == 0) {
                 entry.arguments = null;
             } else {
@@ -77,7 +77,7 @@ public class TraceKeeper {
 
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
         try {
-            TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodReturns, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returningVoid = true;
@@ -88,7 +88,7 @@ public class TraceKeeper {
 
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
         try {
-            TraceLog entry = new TraceLog(MethodReturns, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodReturns, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returnedValue = objectToString(result);
@@ -131,19 +131,19 @@ public class TraceKeeper {
 
     public static void throwsException(String methodFullName, int argsLen, Throwable t) {
         try {
-            TraceLog correspondingMethodEntryLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
+            Trace correspondingEntranceLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
 
             long elapsed = -1;
             String uuid;
-            if (correspondingMethodEntryLog != null) {
-                elapsed = System.currentTimeMillis() - correspondingMethodEntryLog.whenAsTimeMs;
-                uuid = correspondingMethodEntryLog.uuid;
+            if (correspondingEntranceLog != null) {
+                elapsed = System.currentTimeMillis() - correspondingEntranceLog.whenAsTimeMs;
+                uuid = correspondingEntranceLog.uuid;
             } else {
                 // this is for the client/browser's purpose
                 uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
             }
 
-            TraceLog entry = new TraceLog(MethodThrowsException, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodThrowsException, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.exceptionStackTrace = throwableToString(t);
@@ -152,9 +152,9 @@ public class TraceKeeper {
         } catch(Throwable ignore) {}
     }
 
-    private static TraceLog findCorrespondingEntryLog(String methodFullName, long threadId) {
+    private static Trace findCorrespondingEntryLog(String methodFullName, long threadId) {
         try {
-            for (TraceLog entry : traceLogs) {
+            for (Trace entry : traces) {
                 if (entry.threadId == threadId && entry.pg.methodFullName.equals(methodFullName)) {
                     return entry;
                 }
@@ -169,7 +169,7 @@ public class TraceKeeper {
     }
 
     public synchronized static void clearLogHistory() {
-        traceLogs.clear();
+        traces.clear();
     }
 
     private static String objectToString(Object obj) {

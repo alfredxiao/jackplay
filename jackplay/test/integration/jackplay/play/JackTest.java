@@ -10,7 +10,6 @@ import static jackplay.bootstrap.Genre.*;
 import jackplay.bootstrap.Genre;
 import jackplay.bootstrap.PlayGround;
 import jackplay.bootstrap.TraceKeeper;
-import jackplay.bootstrap.TracePoint;
 import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
 import jackplay.play.PlayException;
@@ -45,17 +44,17 @@ public class JackTest {
 
     @Test
     public void canAddTraceAndProduceTraceLog() throws PlayException {
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
         jack.trace(test1);
         String returnValue = myObj.test1(123, "ABC");
         assertEquals("123.ABC", returnValue);
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
         Map<String, ?> traceLogOfMethodReturns = logsAfter.get(0);
-        assertEquals(TracePoint.MethodReturns.toString(), traceLogOfMethodReturns.get("tracePoint"));
+        assertEquals("MethodReturns", traceLogOfMethodReturns.get("site"));
         assertNull(traceLogOfMethodReturns.get("arguments"));
         assertEquals(2, traceLogOfMethodReturns.get("argumentsCount"));
         assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
@@ -64,7 +63,7 @@ public class JackTest {
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodReturns.get("threadName"));
 
         Map<String, ?> traceLogOfMethodEntry = logsAfter.get(1);
-        assertEquals(TracePoint.MethodEntry.toString(), traceLogOfMethodEntry.get("tracePoint"));
+        assertEquals("MethodEntry", traceLogOfMethodEntry.get("site"));
         assertTrue(traceLogOfMethodEntry.get("arguments").getClass().isArray());
         assertEquals(2, ((String[]) traceLogOfMethodEntry.get("arguments")).length);
         assertEquals("123", ((String[]) traceLogOfMethodEntry.get("arguments"))[0]);
@@ -108,7 +107,7 @@ public class JackTest {
 
     @Test
     public void canTraceException() throws PlayException {
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
         jack.trace(test2);
         Exception thrown = null;
         try {
@@ -119,12 +118,12 @@ public class JackTest {
 
         assertTrue(thrown instanceof NullPointerException);
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
         Map<String, ?> traceLogOfMethodThrowsException = logsAfter.get(0);
-        assertEquals(TracePoint.MethodThrowsException.toString(), traceLogOfMethodThrowsException.get("tracePoint"));
+        assertEquals("MethodThrowsException", traceLogOfMethodThrowsException.get("site"));
         assertNull(traceLogOfMethodThrowsException.get("arguments"));
         assertEquals(2, traceLogOfMethodThrowsException.get("argumentsCount"));
         assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
@@ -153,7 +152,7 @@ public class JackTest {
     }
 
     private int getTraceLogSize() {
-        return TraceKeeper.getTraceLogs().size();
+        return TraceKeeper.getTraces().size();
     }
 
     @Test
@@ -470,10 +469,10 @@ public class JackTest {
     @Test
     public void canTracePrivateInnerClass() throws Exception {
         MyClass.load();
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
         jack.trace(new PlayGround("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
         myObj.invokeInnerClassMethods();
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
     }
@@ -483,13 +482,13 @@ public class JackTest {
         MyClassLoader loader = new MyClassLoader();
         Class clz = loader.findClass("CustomLoadedClass");
 
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
         jack.trace(new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
 
         Object obj = clz.newInstance();
         clz.getDeclaredMethods()[0].invoke(obj, "A");
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraceLogs();
+        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
     }

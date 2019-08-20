@@ -66,7 +66,7 @@
 
 ## 0.8.4 (15-Aug-2016)
 - Auto focus method lookup input box when page is opened
-- Added threadId and threadName as part of traceLog
+- Added threadId and threadName as part of trace
 - Support for listening on HTTPS
 - Display trace log counts
 - Moved limit of autoSuggest to server side, such that it last during the entire session
