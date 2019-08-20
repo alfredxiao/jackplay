@@ -143,7 +143,7 @@ public class TraceKeeper {
                 uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
             }
 
-            Trace entry = new Trace(MethodThrowsException, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodTermination, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.exceptionStackTrace = throwableToString(t);

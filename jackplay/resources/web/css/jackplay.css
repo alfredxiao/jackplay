@@ -277,16 +277,16 @@ legend > div > span:last-child {
 .sameUuidHighlight.traceLogMethodExit {
   background-color: gold;
 }
-.sameUuidHighlight.traceLogMethodThrowsException {
+.sameUuidHighlight.traceLogMethodTermination {
   background-color: gold;
 }
 .sameUuidHighlight.traceLogMethodEntrance {
   background-color: orange;
 }
-.traceLogMethodThrowsException {
+.traceLogMethodTermination {
   color: red;
 }
-.shadedTraceLog.traceLogMethodThrowsException{
+.shadedTraceLog.traceLogMethodTermination{
   color: black;
 }
 .shadedTraceLog {
@@ -296,7 +296,7 @@ legend > div > span:last-child {
 .shadedTraceLog.sameUuidHighlight.traceLogMethodExit {
   background-color: rgba(0, 0, 0, 0.18);
 }
-.shadedTraceLog.sameUuidHighlight.traceLogMethodThrowsException {
+.shadedTraceLog.sameUuidHighlight.traceLogMethodTermination {
   background-color: rgba(0, 0, 0, 0.18);
 }
 .shadedTraceLog.sameUuidHighlight.traceLogMethodEntrance {
@@ -327,7 +327,7 @@ tr.broughtToFrontTraceLog > td:last-child {
 .broughtToFrontTraceLog.traceLogMethodExit {
   background-color: gold;
 }
-.broughtToFrontTraceLog.traceLogMethodThrowsException {
+.broughtToFrontTraceLog.traceLogMethodTermination {
   background-color: gold;
 }
 .broughtToFrontTraceLog.traceLogMethodEntrance {

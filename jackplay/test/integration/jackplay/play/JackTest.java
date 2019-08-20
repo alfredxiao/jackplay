@@ -122,15 +122,15 @@ public class JackTest {
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
-        Map<String, ?> traceLogOfMethodThrowsException = logsAfter.get(0);
-        assertEquals("MethodThrowsException", traceLogOfMethodThrowsException.get("site"));
-        assertNull(traceLogOfMethodThrowsException.get("arguments"));
-        assertEquals(2, traceLogOfMethodThrowsException.get("argumentsCount"));
-        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodThrowsException.get("classFullName"));
-        assertEquals("test2", traceLogOfMethodThrowsException.get("methodShortName"));
-        assertEquals(null, traceLogOfMethodThrowsException.get("returnedValue"));
-        assertTrue(((String) traceLogOfMethodThrowsException.get("exceptionStackTrace")).contains("java.lang.NullPointerException"));
-        assertEquals(Thread.currentThread().getName(), traceLogOfMethodThrowsException.get("threadName"));
+        Map<String, ?> traceLogOfMethodTermination = logsAfter.get(0);
+        assertEquals("MethodTermination", traceLogOfMethodTermination.get("site"));
+        assertNull(traceLogOfMethodTermination.get("arguments"));
+        assertEquals(2, traceLogOfMethodTermination.get("argumentsCount"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodTermination.get("classFullName"));
+        assertEquals("test2", traceLogOfMethodTermination.get("methodShortName"));
+        assertEquals(null, traceLogOfMethodTermination.get("returnedValue"));
+        assertTrue(((String) traceLogOfMethodTermination.get("exceptionStackTrace")).contains("java.lang.NullPointerException"));
+        assertEquals(Thread.currentThread().getName(), traceLogOfMethodTermination.get("threadName"));
     }
 
     @Test
