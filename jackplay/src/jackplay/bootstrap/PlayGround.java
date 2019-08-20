@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * PlayGround describes the target entity being traced. So far, the target entity must be a method.
+ */
 public class PlayGround {
     public final String packageName;                    // com.abc
     public final String classFullName;                  // com.abc.MyService
