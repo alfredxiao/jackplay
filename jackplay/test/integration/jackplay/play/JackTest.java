@@ -53,26 +53,26 @@ public class JackTest {
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
-        Map<String, ?> traceLogOfMethodReturns = logsAfter.get(0);
-        assertEquals("MethodReturns", traceLogOfMethodReturns.get("site"));
-        assertNull(traceLogOfMethodReturns.get("arguments"));
-        assertEquals(2, traceLogOfMethodReturns.get("argumentsCount"));
-        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodReturns.get("classFullName"));
-        assertEquals("test1", traceLogOfMethodReturns.get("methodShortName"));
-        assertEquals("\"123.ABC\"", traceLogOfMethodReturns.get("returnedValue"));
-        assertEquals(Thread.currentThread().getName(), traceLogOfMethodReturns.get("threadName"));
+        Map<String, ?> traceLogOfMethodExit = logsAfter.get(0);
+        assertEquals("MethodExit", traceLogOfMethodExit.get("site"));
+        assertNull(traceLogOfMethodExit.get("arguments"));
+        assertEquals(2, traceLogOfMethodExit.get("argumentsCount"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodExit.get("classFullName"));
+        assertEquals("test1", traceLogOfMethodExit.get("methodShortName"));
+        assertEquals("\"123.ABC\"", traceLogOfMethodExit.get("returnedValue"));
+        assertEquals(Thread.currentThread().getName(), traceLogOfMethodExit.get("threadName"));
 
-        Map<String, ?> traceLogOfMethodEntry = logsAfter.get(1);
-        assertEquals("MethodEntry", traceLogOfMethodEntry.get("site"));
-        assertTrue(traceLogOfMethodEntry.get("arguments").getClass().isArray());
-        assertEquals(2, ((String[]) traceLogOfMethodEntry.get("arguments")).length);
-        assertEquals("123", ((String[]) traceLogOfMethodEntry.get("arguments"))[0]);
-        assertEquals("\"ABC\"", ((String[]) traceLogOfMethodEntry.get("arguments"))[1]);
-        assertEquals(2, traceLogOfMethodEntry.get("argumentsCount"));
-        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodEntry.get("classFullName"));
-        assertEquals("test1", traceLogOfMethodEntry.get("methodShortName"));
-        assertEquals(null, traceLogOfMethodEntry.get("returnedValue"));
-        assertEquals(Thread.currentThread().getName(), traceLogOfMethodEntry.get("threadName"));
+        Map<String, ?> traceLogOfMethodEntrance = logsAfter.get(1);
+        assertEquals("MethodEntrance", traceLogOfMethodEntrance.get("site"));
+        assertTrue(traceLogOfMethodEntrance.get("arguments").getClass().isArray());
+        assertEquals(2, ((String[]) traceLogOfMethodEntrance.get("arguments")).length);
+        assertEquals("123", ((String[]) traceLogOfMethodEntrance.get("arguments"))[0]);
+        assertEquals("\"ABC\"", ((String[]) traceLogOfMethodEntrance.get("arguments"))[1]);
+        assertEquals(2, traceLogOfMethodEntrance.get("argumentsCount"));
+        assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodEntrance.get("classFullName"));
+        assertEquals("test1", traceLogOfMethodEntrance.get("methodShortName"));
+        assertEquals(null, traceLogOfMethodEntrance.get("returnedValue"));
+        assertEquals(Thread.currentThread().getName(), traceLogOfMethodEntrance.get("threadName"));
 
         assertProgramSize(1);
         assertProgramContains(TRACE, test1);

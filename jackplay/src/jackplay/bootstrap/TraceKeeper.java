@@ -77,7 +77,7 @@ public class TraceKeeper {
 
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
         try {
-            Trace entry = new Trace(MethodReturns, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodExit, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returningVoid = true;
@@ -88,7 +88,7 @@ public class TraceKeeper {
 
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
         try {
-            Trace entry = new Trace(MethodReturns, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodExit, new PlayGround(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returnedValue = objectToString(result);

@@ -38,6 +38,6 @@ class Trace {
 
 enum Site {
     MethodEntrance,
-    MethodReturns,
+    MethodExit,
     MethodThrowsException
 }
