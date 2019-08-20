@@ -21,7 +21,7 @@ public class TracingPerformer implements Performer {
 
         method.addLocalVariable("_jackplay_elapsed$", CtClass.longType);
         method.addLocalVariable("_jackplay_uuid$", cp.get("java.lang.String"));
-        method.insertBefore(traceMethodEntry(method));
+        method.insertBefore(traceMethodEntrance(method));
 
         CtClass throwableType = cp.get("java.lang.Throwable");
         method.addCatch(traceMethodThrowingException(method), throwableType);
@@ -43,7 +43,7 @@ public class TracingPerformer implements Performer {
 
     private static String ELAPSED_TIME_START = "_jackplay_elapsed$ = System.currentTimeMillis();";
     private static String DECLARE_UUID = "_jackplay_uuid$ = java.util.UUID.randomUUID().toString();";
-    private static String traceMethodEntry(CtMethod m) {
+    private static String traceMethodEntrance(CtMethod m) {
         return String.format("%1$s ; %2$s; jackplay.bootstrap.TraceKeeper.enterMethod(\"%3$s\", $args, _jackplay_uuid$);",
                              ELAPSED_TIME_START, DECLARE_UUID, m.getLongName());
     }

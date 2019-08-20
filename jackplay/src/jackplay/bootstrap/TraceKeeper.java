@@ -60,7 +60,7 @@ public class TraceKeeper {
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {
         try {
-            Trace entry = new Trace(MethodEntry, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodEntrance, new PlayGround(methodFullName), uuid);
             if (null == args || args.length == 0) {
                 entry.arguments = null;
             } else {
