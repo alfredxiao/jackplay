@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jarjar-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java-hamcrest-2.0.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/junit-4.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/maven-ant-tasks-2.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javassist-3.25.0-GA-jackplay.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,6 +1,6 @@
 package jackplay.play;
 
-import jackplay.Logger;
+import jackplay.JackplayLogger;
 import jackplay.bootstrap.Genre;
 import static jackplay.play.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.play.MetadataFailureCause.Unknown;
@@ -21,11 +21,11 @@ public class InfoCenter {
     private final static Comparator<Class> CLASS_COMPARATOR = new ClassComparatorByName();
     private final static Comparator<Method> METHOD_COMPARATOR = new MethodComparatorByName();
     private Instrumentation inst;
-    private ProgramManager pm;
+    private Registry pm;
     private Options options;
     private Map<String, MetadataFailureCause> metadataInaccessibleClasses = new ConcurrentHashMap<>();
 
-    public void init(Instrumentation inst, ProgramManager pm, Options options) {
+    public InfoCenter(Options options, Instrumentation inst, Registry pm) {
         this.inst = inst;
         this.pm = pm;
         this.options = options;
@@ -93,12 +93,12 @@ public class InfoCenter {
             } catch(NoClassDefFoundError ncdf) {
                 if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
                     metadataInaccessibleClasses.put(clazz.getName(), ReferencedClassDefFoundError);
-                    Logger.error("infocenter", ncdf);
+                    JackplayLogger.error("infocenter", ncdf);
                 }
             } catch(Throwable t) {
                 if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
                     metadataInaccessibleClasses.put(clazz.getName(), Unknown);
-                    Logger.error("infocenter", t);
+                    JackplayLogger.error("infocenter", t);
                 }
             }
         }

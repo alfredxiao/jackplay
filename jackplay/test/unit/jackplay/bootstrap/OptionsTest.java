@@ -19,7 +19,7 @@ public class OptionsTest {
 
     @Test
     public void testDefaults() {
-        Options defaultOptions = Options.optionsMergedWithDefaults("");
+        Options defaultOptions = Options.asOptions("");
 
         assertEquals(8181, defaultOptions.port());
         assertEquals("info", defaultOptions.logLevel());
@@ -44,7 +44,7 @@ public class OptionsTest {
 
     @Test
     public void testWhitelist() {
-        Options whitelistOptions = Options.optionsMergedWithDefaults("whitelist=java.net:my.utils");
+        Options whitelistOptions = Options.asOptions("whitelist=java.net:my.utils");
 
         assertThat(whitelistOptions.whitelist().size(), is(2));
         assertTrue(whitelistOptions.whitelist().contains("java.net"));
@@ -65,7 +65,7 @@ public class OptionsTest {
 
     @Test
     public void testBlacklist() {
-        Options blacklistOptions = Options.optionsMergedWithDefaults("blacklist=java.net:my.utils");
+        Options blacklistOptions = Options.asOptions("blacklist=java.net:my.utils");
 
         assertThat(blacklistOptions.blacklist().size(), is(2));
         assertTrue(blacklistOptions.blacklist().contains("java.net"));
@@ -86,17 +86,17 @@ public class OptionsTest {
 
     @Test
     public void testMultipleOptions() {
-        Options options = Options.optionsMergedWithDefaults("whitelist=java.net;port=3355");
+        Options options = Options.asOptions("whitelist=java.net;port=3355");
         assertTrue(options.packageAllowed("java.net"));
         assertEquals(3355, options.port());
     }
 
     @Test
     public void testDefaultTrace() {
-        Options options = Options.optionsMergedWithDefaults("defaultTrace=myapp.Main.loadConfig(String[] args)");
+        Options options = Options.asOptions("defaultTrace=myapp.Main.loadConfig(String[] args)");
         assertEquals("myapp.Main.loadConfig(String[] args)", options.defaultTrace());
 
-        options = Options.optionsMergedWithDefaults("defaultTrace=myapp.Main.loadConfig(String,String)");
+        options = Options.asOptions("defaultTrace=myapp.Main.loadConfig(String,String)");
         assertEquals("myapp.Main.loadConfig(String,String)", options.defaultTrace());
     }
 }

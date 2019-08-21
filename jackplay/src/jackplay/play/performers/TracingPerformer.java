@@ -1,6 +1,6 @@
 package jackplay.play.performers;
 
-import jackplay.Logger;
+import jackplay.JackplayLogger;
 import jackplay.bootstrap.Site;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
@@ -15,7 +15,7 @@ public class TracingPerformer implements Performer {
 
     @Override
     public CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception {
-        Logger.debug("tracingPerformer", "[" + mode + "] starts tracing for method:" + site.methodFullName);
+        JackplayLogger.debug("tracingPerformer", "[" + mode + "] starts tracing for method:" + site.methodFullName);
 
         CtMethod method = this.findMethod(aClass, site);
 
@@ -33,7 +33,7 @@ public class TracingPerformer implements Performer {
             method.insertAfter(traceMethodReturningResult(method));
         }
 
-        Logger.info("tracingPerformer", "finished tracing for method:" + site.methodFullName);
+        JackplayLogger.info("tracingPerformer", "finished tracing for method:" + site.methodFullName);
         return aClass;
 
         // tried to introduce a local variable - TraceKeeper object instead of static invocation

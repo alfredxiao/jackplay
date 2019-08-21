@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="0" hostname="192-168-1-3.tpgi.com.au" name="unit.jackplay.bootstrap.SiteTest" skipped="0" tests="7" time="0.108" timestamp="2019-08-20T13:16:09">
+  <properties>
+    <property name="gopherProxySet" value="false" />
+    <property name="ant.library.dir" value="/usr/local/Cellar/ant/1.10.6/libexec/lib" />
+    <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit" />
+    <property name="ant.file.type" value="file" />
+    <property name="java.specification.version" value="10" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="ant.project.name" value="jackplay" />
+    <property name="sun.cpu.isalist" value="" />
+    <property name="groupId" value="com.github.alfredxiao" />
+    <property name="sun.jnu.encoding" value="UTF-8" />
+    <property name="java.class.path" value="/Users/alfredxiao/development/myprojects/jackplay/jackplay/lib/javassist-3.25.0-GA-jackplay.jar:/Users/alfredxiao/development/myprojects/jackplay/jackplay/lib/java-hamcrest-2.0.0.0.jar:/Users/alfredxiao/development/myprojects/jackplay/jackplay/lib/junit-4.12.jar:/Users/alfredxiao/development/myprojects/jackplay/jackplay/build/classes:/Users/alfredxiao/development/myprojects/jackplay/jackplay/build/test-classes:/usr/local/Cellar/ant/1.10.6/libexec/lib/ant-launcher.jar:/usr/local/Cellar/ant/1.10.6/libexec/lib/ant.jar:/usr/local/Cellar/ant/1.10.6/libexec/lib/ant-junit.jar:/usr/local/Cellar/ant/1.10.6/libexec/lib/ant-junit4.jar" />
+    <property name="java.vm.vendor" value="&quot;Oracle Corporation&quot;" />
+    <property name="bootstrap-jar" value="dist/jackplay-bootstrap-1.0.0.jar" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="user.timezone" value="" />
+    <property name="agent-javadoc-jar" value="dist/jackplay-agent-1.0.0-javadoc.jar" />
+    <property name="os.name" value="Mac OS X" />
+    <property name="java.vm.specification.version" value="10" />
+    <property name="DSTAMP" value="20190820" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="user.country" value="AU" />
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-10.0.2.jdk/Contents/Home/lib" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner unit.jackplay.bootstrap.SiteTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false formatter=org.apache.tools.ant.taskdefs.optional.junit.SummaryJUnitResultFormatter showoutput=false outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=false formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,/Users/alfredxiao/development/myprojects/jackplay/jackplay/build/test-reports/TEST-unit.jackplay.bootstrap.SiteTest.xml formatter=org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter,/Users/alfredxiao/development/myprojects/jackplay/jackplay/build/test-reports/TEST-unit.jackplay.bootstrap.SiteTest.txt crashfile=/Users/alfredxiao/development/myprojects/jackplay/jackplay/junitvmwatcher6091054270556533954.properties propsfile=/Users/alfredxiao/development/myprojects/jackplay/jackplay/junit16311549235405721381.properties" />
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="jdk.debug" value="release" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="user.home" value="/Users/alfredxiao" />
+    <property name="user.language" value="en" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="java.version.date" value="2018-07-17" />
+    <property name="version" value="1.0.0" />
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-10.0.2.jdk/Contents/Home" />
+    <property name="basedir" value="/Users/alfredxiao/development/myprojects/jackplay/jackplay" />
+    <property name="file.separator" value="/" />
+    <property name="java.vm.compressedOopsMode" value="Zero based" />
+    <property name="agent-artifactId" value="jackplay-agent" />
+    <property name="line.separator" value="&#xa;" />
+    <property name="ant.java.version" value="10" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment" />
+    <property name="TSTAMP" value="2316" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="java.runtime.version" value="10.0.2+13" />
+    <property name="user.name" value="alfredxiao" />
+    <property name="ant.file" value="/Users/alfredxiao/development/myprojects/jackplay/jackplay/build.xml" />
+    <property name="agent-sources-jar" value="dist/jackplay-agent-1.0.0-sources.jar" />
+    <property name="path.separator" value=":" />
+    <property name="os.version" value="10.14.6" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="file.encoding" value="UTF-8" />
+    <property name="ant.project.invoked-targets" value="clean,test" />
+    <property name="ossrh-server-id" value="ossrh" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="agent-jar" value="dist/jackplay-agent-1.0.0.jar" />
+    <property name="ant.file.jackplay" value="/Users/alfredxiao/development/myprojects/jackplay/jackplay/build.xml" />
+    <property name="java.vendor.version" value="18.3" />
+    <property name="ant.core.lib" value="/usr/local/Cellar/ant/1.10.6/libexec/lib/ant.jar" />
+    <property name="java.vendor.url.bug" value="http://bugreport.java.com/bugreport/" />
+    <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
+    <property name="java.io.tmpdir" value="/var/folders/nl/8z8zqfws45z7qj57lb57v_z00000gn/T/" />
+    <property name="java.version" value="10.0.2" />
+    <property name="TODAY" value="August 20 2019" />
+    <property name="user.dir" value="/Users/alfredxiao/development/myprojects/jackplay/jackplay" />
+    <property name="os.arch" value="x86_64" />
+    <property name="bootstrap-javadoc-jar" value="dist/jackplay-bootstrap-1.0.0-javadoc.jar" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob" />
+    <property name="ant.home" value="/usr/local/Cellar/ant/1.10.6/libexec" />
+    <property name="ossrh-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
+    <property name="sun.os.patch.level" value="unknown" />
+    <property name="bootstrap-sources-jar" value="dist/jackplay-bootstrap-1.0.0-sources.jar" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.10.6 compiled on May 2 2019" />
+    <property name="java.library.path" value="/Users/alfredxiao/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:." />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="java.vm.version" value="10.0.2+13" />
+    <property name="ossrh-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+    <property name="sun.io.unicode.encoding" value="UnicodeBig" />
+    <property name="java.class.version" value="54.0" />
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="ant.file.type.jackplay" value="file" />
+    <property name="ant.project.default-target" value="dist" />
+  </properties>
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testWithArrayArguments" time="0.001" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testPackage" time="0.001" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testInvalidSpaceCharacter" time="0.005" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testNoPackage" time="0.0" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testInvalidFunctionParens" time="0.0" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testWithArguments" time="0.001" />
+  <testcase classname="unit.jackplay.bootstrap.SiteTest" name="testDollarSign" time="0.0" />
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

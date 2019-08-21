@@ -1,9 +1,9 @@
 package jackplay.play.performers;
 
-import jackplay.Logger;
+import jackplay.JackplayLogger;
 import jackplay.bootstrap.Genre;
 import jackplay.javassist.NotFoundException;
-import jackplay.play.ProgramManager;
+import jackplay.play.Registry;
 import static jackplay.bootstrap.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
@@ -14,14 +14,14 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.*;
 
-public class LeadPerformer implements ClassFileTransformer {
-    ProgramManager pm;
+public class Transformer implements ClassFileTransformer {
+    Registry pm;
     public boolean transformSuccess = true;
     public Throwable transformFailure = null;
 
     final static String STAGING_MODE = "STAGING";
 
-    public void init(ProgramManager pm) {
+    public Transformer(Registry pm) {
         this.pm = pm;
     }
 
@@ -61,7 +61,7 @@ public class LeadPerformer implements ClassFileTransformer {
                     this.transformSuccess = true;
                     return cc.toBytecode();
                 } catch(Exception e) {
-                    Logger.error("leadPerfomer", e);
+                    JackplayLogger.error("leadPerfomer", e);
                     this.transformSuccess = true;
                     return null;
                 } finally {
@@ -69,20 +69,20 @@ public class LeadPerformer implements ClassFileTransformer {
                 }
             }
         } else {
-            Logger.debug("leadPerformer", "found agenda for class:" + className);
+            JackplayLogger.debug("leadPerformer", "found agenda for class:" + className);
             // this class is on the program menu
             byte[] byteCode;
             CtClass cc = null;
 
             try {
-                Logger.debug("leadPerformer", "starts retransform class:" + className);
+                JackplayLogger.debug("leadPerformer", "starts retransform class:" + className);
                 cc = performAsPerAgenda(cp, classBeingRedefined, classfileBuffer, agenda, STAGING_MODE);
-                Logger.debug("leadPerformer", "finished retransform class:" + className);
+                JackplayLogger.debug("leadPerformer", "finished retransform class:" + className);
 
                 byteCode = cc.toBytecode();
                 this.transformSuccess = true;
             } catch(Throwable t) {
-                Logger.error("leadPerfomer", t);
+                JackplayLogger.error("leadPerfomer", t);
                 byteCode = null;
                 this.transformSuccess = false;
                 this.transformFailure = t;

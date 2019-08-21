@@ -50,12 +50,12 @@ public class TraceKeeper {
         return listOfLogs;
     }
 
-    private synchronized static void addTraceLog(Trace entry) {
+    private synchronized static void append(Trace trace) {
         while (traces.size() >= options.traceLogLimit()) {
             traces.remove(traces.size() - 1);
         }
 
-        traces.add(0, entry);
+        traces.add(0, trace);
     }
 
     // this method is called from traced method, at its beginning
@@ -72,7 +72,7 @@ public class TraceKeeper {
                 }
             }
 
-            addTraceLog(trace);
+            append(trace);
         } catch(Throwable ignore) {}
     }
 
@@ -83,7 +83,7 @@ public class TraceKeeper {
             entry.argumentsCount = argsLen;
             entry.returningVoid = true;
 
-            addTraceLog(entry);
+            append(entry);
         } catch(Throwable ignore) {}
     }
 
@@ -94,7 +94,7 @@ public class TraceKeeper {
             entry.argumentsCount = argsLen;
             entry.returnedValue = objectToString(result);
 
-            addTraceLog(entry);
+            append(entry);
         } catch(Throwable ignore) {}
     }
 
@@ -132,7 +132,7 @@ public class TraceKeeper {
 
     public static void throwsException(String methodFullName, int argsLen, Throwable t) {
         try {
-            Trace correspondingEntranceLog = findCorrespondingEntryLog(methodFullName, Thread.currentThread().getId());
+            Trace correspondingEntranceLog = findCorrespondingMethodEntrance(methodFullName, Thread.currentThread().getId());
 
             long elapsed = -1;
             String uuid;
@@ -149,11 +149,11 @@ public class TraceKeeper {
             entry.argumentsCount = argsLen;
             entry.exceptionStackTrace = throwableToString(t);
 
-            addTraceLog(entry);
+            append(entry);
         } catch(Throwable ignore) {}
     }
 
-    private static Trace findCorrespondingEntryLog(String methodFullName, long threadId) {
+    private static Trace findCorrespondingMethodEntrance(String methodFullName, long threadId) {
         try {
             for (Trace entry : traces) {
                 if (entry.threadId == threadId && entry.site.methodFullName.equals(methodFullName)) {

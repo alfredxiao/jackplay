@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.net.httpserver.*;
-import jackplay.Logger;
+import jackplay.JackplayLogger;
 import jackplay.bootstrap.Options;
 import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
@@ -24,7 +24,7 @@ public class BoxOffice extends Thread {
     Map<String, HttpHandler> contextMap;
     private static int BACKLOG = 50;
 
-    public void init(Options options, Jack jack, InfoCenter infoCenter) {
+    public BoxOffice(Options options, Jack jack, InfoCenter infoCenter) {
         this.options = options;
         this.jack = jack;
         this.infoCenter = infoCenter;
@@ -50,7 +50,7 @@ public class BoxOffice extends Thread {
             }
             server.start();
 
-            Logger.info("web-server", "Jackplay web server has now started.");
+            JackplayLogger.info("web-server", "Jackplay web server has now started.");
         } catch(IOException ioe) {
             ioe.printStackTrace(System.err);
         }

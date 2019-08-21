@@ -6,13 +6,13 @@ import java.util.regex.Pattern;
 
 // singleton
 public class Options {
-    final static String OPTION_SEPARATOR = ";";
-    final static char EQUALS_CHAR = '=';
-    final static Map<String, String> DEFAULTS = new HashMap<>();
-    Map<String, String> options;
-    Set<String> blacklist;
-    Set<String> whitelist;
-    private final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private final static String OPTION_SEPARATOR = ";";
+    private final static char EQUALS_CHAR = '=';
+    private final static Map<String, String> DEFAULTS = new HashMap<>();
+    private Map<String, String> options;
+    private Set<String> blacklist;
+    private Set<String> whitelist;
+    private final static String YYYY_MM_DD_HH_MM_SS_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
 
     static {
         DEFAULTS.put("port", "8181");
@@ -35,11 +35,11 @@ public class Options {
         this.options = options;
     }
 
-    public static Options optionsMergedWithDefaults(String args) {
-        return new Options(addDefaults(parseArguments(args)));
+    public static Options asOptions(String args) {
+        return new Options(withDefaults(parseOptions(args)));
     }
 
-    private static Map<String, String> parseArguments(String args) {
+    private static Map<String, String> parseOptions(String args) {
         Map<String, String> options = new HashMap<>();
         if (!isEmpty(args)) {
             String[] parts = args.split(OPTION_SEPARATOR);
@@ -59,7 +59,7 @@ public class Options {
         return options;
     }
 
-    private static Map<String, String> addDefaults(Map<String, String> options) {
+    private static Map<String, String> withDefaults(Map<String, String> options) {
         Map<String, String> merged = new HashMap<>();
         merged.putAll(DEFAULTS);
         merged.putAll(options);
@@ -68,11 +68,11 @@ public class Options {
     }
 
     static String formatDate(Date when) {
-        return SIMPLE_DATE_FORMAT.format(when);
+        return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(when);
     }
 
-    public static String formateNow() {
-        return SIMPLE_DATE_FORMAT.format(new java.util.Date());
+    public static String formatNow() {
+        return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(new java.util.Date());
     }
 
     public int port() {

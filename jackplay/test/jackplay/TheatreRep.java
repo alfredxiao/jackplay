@@ -5,15 +5,11 @@ import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
 
 public class TheatreRep {
-    public static Theatre getTheatre() {
-        return Theatre.theatre;
-    }
-
     public static InfoCenter getInfoCenter() {
-        return getTheatre().infoCenter;
+        return JackplayAgent.infoCenter;
     }
 
     public static Jack getJack() {
-        return getTheatre().jack;
+        return JackplayAgent.jack;
     }
 }

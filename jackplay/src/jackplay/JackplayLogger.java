@@ -4,10 +4,10 @@ import jackplay.bootstrap.Options;
 
 import java.io.*;
 
-public class Logger {
-    static String logLevel = "info";
-    static String logFile = null;
-    static final long FILE_SIZE_LIMIT = 100 * 1024 * 1024;  // 100M as maximum log file size
+public class JackplayLogger {
+    private static String logLevel = "info";
+    private static String logFile = null;
+    private static final long FILE_SIZE_LIMIT = 100 * 1024 * 1024;  // 100M as maximum log file size
 
     private final static String TEMPLATE = "jackplay[%2$s][%1$s][%3$s]: %4$s";
 
@@ -51,7 +51,7 @@ public class Logger {
     }
 
     private static String now() {
-        return Options.formateNow();
+        return Options.formatNow();
     }
 
     private static String messagify(Object msg) {
