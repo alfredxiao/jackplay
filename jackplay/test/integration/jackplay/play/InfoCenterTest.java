@@ -4,13 +4,12 @@ import fortest.myapp.MyBaseClass;
 import fortest.myapp.MyClass;
 import fortest.myapp.MyClassLoader;
 import jackplay.TheatreRep;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.play.InfoCenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,15 +28,15 @@ public class InfoCenterTest {
 
     @Test
     public void shouldFindMatchingMethod() {
-        Method myfunction1 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)"));
+        Method myfunction1 = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.test1(int,java.lang.String)"));
         assertNotNull(myfunction1);
         assertEquals("test1", myfunction1.getName());
 
-        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
         assertNotNull(myfunction2);
         assertEquals("test2", myfunction2.getName());
 
-        Method myfunction3 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])"));
+        Method myfunction3 = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])"));
         assertNotNull(myfunction3);
         assertEquals("test3", myfunction3.getName());
     }
@@ -53,9 +52,9 @@ public class InfoCenterTest {
 
     @Test
     public void shouldRecogniseExistenceOfMethodBody() {
-        Method myAbstract = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.myAbstract()"));
-        Method myNative = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.myNative()"));
-        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
+        Method myAbstract = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.myAbstract()"));
+        Method myNative = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.myNative()"));
+        Method myfunction2 = infoCenter.findMatchingMethod(MyBaseClass.class, new Site("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)"));
 
         assertFalse(infoCenter.hasMethodBody(myAbstract));
         assertFalse(infoCenter.hasMethodBody(myNative));
@@ -69,13 +68,13 @@ public class InfoCenterTest {
         List<Class> privateInnerClasses = infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyPrivateInnerClass");
         assertEquals(1, privateInnerClasses.size());
 
-        Method test1 = infoCenter.findMatchingMethod(privateInnerClasses.get(0), new PlayGround("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
+        Method test1 = infoCenter.findMatchingMethod(privateInnerClasses.get(0), new Site("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
         assertNotNull(test1);
 
         List<Class> privateStaticInnerClasses = infoCenter.findLoadedModifiableClasses("fortest.myapp.MyClass$MyPrivateStaticInnerClass");
         assertEquals(1, privateStaticInnerClasses.size());
 
-        Method test2 = infoCenter.findMatchingMethod(privateStaticInnerClasses.get(0), new PlayGround("fortest.myapp.MyClass$MyPrivateStaticInnerClass.test3()"));
+        Method test2 = infoCenter.findMatchingMethod(privateStaticInnerClasses.get(0), new Site("fortest.myapp.MyClass$MyPrivateStaticInnerClass.test3()"));
         assertNotNull(test2);
     }
 
@@ -101,7 +100,7 @@ public class InfoCenterTest {
         List<Class> customLoadedClasses = infoCenter.findLoadedModifiableClasses("fortest.dynaloaded.CustomLoadedClass");
         assertEquals(1, customLoadedClasses.size());
 
-        Method test1 = infoCenter.findMatchingMethod(customLoadedClasses.get(0), new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
+        Method test1 = infoCenter.findMatchingMethod(customLoadedClasses.get(0), new Site("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
         assertNotNull(test1);
     }
 }

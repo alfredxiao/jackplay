@@ -6,7 +6,7 @@ import static jackplay.play.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.play.MetadataFailureCause.Unknown;
 
 import jackplay.bootstrap.Options;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.play.performers.Performer;
 
 import java.lang.instrument.Instrumentation;
@@ -52,7 +52,7 @@ public class InfoCenter {
                 .filter(clz -> clz.getName().equals(className)).collect(Collectors.toList());
     }
 
-    public Method findMatchingMethod(Class clazz, PlayGround pg) {
+    public Method findMatchingMethod(Class clazz, Site pg) {
         if (clazz.getName().equals(pg.classFullName)) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(pg.methodShortName)
@@ -116,7 +116,7 @@ public class InfoCenter {
         for (Method m : methods) {
             if (!hasMethodBody(m)) continue;
 
-            PlayGround pg = new PlayGround(getMethodFullName(m));
+            Site pg = new Site(getMethodFullName(m));
             loadedMethods.put(pg.methodShortNameWithSignature, getFriendlyClassName(m.getReturnType()));
         }
 

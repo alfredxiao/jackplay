@@ -1,15 +1,15 @@
 package unit.jackplay.bootstrap;
 
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PlayGroundTest {
+public class SiteTest {
 
     @Test
     public void testNoPackage() {
-        PlayGround noPackage = new PlayGround("MyClass.myFunction(int)");
+        Site noPackage = new Site("MyClass.myFunction(int)");
 
         assertEquals("MyClass", noPackage.classFullName);
         assertEquals("", noPackage.packageName);
@@ -22,7 +22,7 @@ public class PlayGroundTest {
 
     @Test
     public void testPackage() {
-        PlayGround withPackage = new PlayGround("mypackage.utils.MyClass.myFunction()");
+        Site withPackage = new Site("mypackage.utils.MyClass.myFunction()");
 
         assertEquals("mypackage.utils.MyClass", withPackage.classFullName);
         assertEquals("mypackage.utils", withPackage.packageName);
@@ -33,7 +33,7 @@ public class PlayGroundTest {
 
     @Test
     public void testDollarSign() {
-        PlayGround withDollarSign = new PlayGround("mypackage.utils.My$Class.myFunction()");
+        Site withDollarSign = new Site("mypackage.utils.My$Class.myFunction()");
 
         assertEquals("mypackage.utils.My$Class", withDollarSign.classFullName);
         assertEquals("mypackage.utils", withDollarSign.packageName);
@@ -44,7 +44,7 @@ public class PlayGroundTest {
 
     @Test
     public void testWithArguments() {
-        PlayGround withArguments = new PlayGround("mypackage.utils.My$Class.myFunction(java.lang.String,int)");
+        Site withArguments = new Site("mypackage.utils.My$Class.myFunction(java.lang.String,int)");
 
         assertEquals("mypackage.utils.My$Class", withArguments.classFullName);
         assertEquals("mypackage.utils", withArguments.packageName);
@@ -59,7 +59,7 @@ public class PlayGroundTest {
 
     @Test
     public void testWithArrayArguments() {
-        PlayGround withArrayArguments = new PlayGround("mypackage.utils.My$Class.myFunction(java.lang.String[])");
+        Site withArrayArguments = new Site("mypackage.utils.My$Class.myFunction(java.lang.String[])");
 
         assertEquals("mypackage.utils.My$Class", withArrayArguments.classFullName);
         assertEquals("mypackage.utils", withArrayArguments.packageName);
@@ -73,11 +73,11 @@ public class PlayGroundTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidSpaceCharacter() {
-        PlayGround pg = new PlayGround("mypackage.MyClass.test( )");
+        Site pg = new Site("mypackage.MyClass.test( )");
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidFunctionParens() {
-        PlayGround pg = new PlayGround("mypackage.MyClass.test(]");
+        Site pg = new Site("mypackage.MyClass.test(]");
     }
 }

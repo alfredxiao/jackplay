@@ -2,7 +2,7 @@ package soak;
 
 import jackplay.Logger;
 import jackplay.TheatreRep;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.play.Jack;
 import fortest.myapp.MyBaseClass;
@@ -13,12 +13,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class JackSoakCommon {
     static Jack jack = TheatreRep.getJack();
-    static PlayGround test1 = new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
-    static PlayGround test2 = new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
-    static PlayGround test3 = new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
-    static PlayGround test4 = new PlayGround("fortest.myapp.MyBaseClass.test4()");
-    static PlayGround test5 = new PlayGround("fortest.myapp.MyBaseClass.test5(java.lang.String)");
-    static PlayGround lateLoading = new PlayGround("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
+    static Site test1 = new Site("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
+    static Site test2 = new Site("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
+    static Site test3 = new Site("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    static Site test4 = new Site("fortest.myapp.MyBaseClass.test4()");
+    static Site test5 = new Site("fortest.myapp.MyBaseClass.test5(java.lang.String)");
+    static Site lateLoading = new Site("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
     static MyClass myObj = new MyClass();
     static int runCount = 0;
     static boolean stoppable = false;

@@ -1,7 +1,7 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.play.Jack;
 import jackplay.bootstrap.Genre;
 
@@ -36,19 +36,19 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private void redefine(HttpExchange http, Map<String, String> params) throws Exception {
-        jack.redefine(new PlayGround(params.get("longMethodName")), params.get("src"));
+        jack.redefine(new Site(params.get("longMethodName")), params.get("src"));
         CommonHandling.serveBody(http, 200, "Method is redefined");
     }
 
     private void addTrace(HttpExchange http, Map<String, String> params) throws Exception {
-        jack.trace(new PlayGround(params.get("methodFullName")));
+        jack.trace(new Site(params.get("methodFullName")));
         CommonHandling.serveBody(http, 200, "Method trace is added");
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
         Genre g = Genre.valueOf(params.get("genre"));
         String methodFullName = params.get("methodFullName");
-        jack.undoPlay(g, new PlayGround(methodFullName));
+        jack.undoPlay(g, new Site(methodFullName));
         CommonHandling.serveBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 

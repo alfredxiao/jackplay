@@ -2,16 +2,17 @@ package jackplay.bootstrap;
 
 import java.util.Date;
 
+// A Trace is data collected in a Spot on a Site where tracing happens
 class Trace {
     Date when;
     long whenAsTimeMs;
 
     // mandatory for all entries
+    Spot spot;
     Site site;
-    PlayGround pg;
     long threadId;
     String threadName;
-    String uuid;
+    String id;
 
     // for method entrance
     String[] arguments;
@@ -25,19 +26,13 @@ class Trace {
 
     String exceptionStackTrace;      // exception only
 
-    Trace(Site site, PlayGround pg, String uuid) {
+    Trace(Spot spot, Site site, String id) {
         this.when = new Date();
         this.whenAsTimeMs = System.currentTimeMillis();
+        this.spot = spot;
         this.site = site;
-        this.pg = pg;
         this.threadId = Thread.currentThread().getId();
         this.threadName = Thread.currentThread().getName();
-        this.uuid = uuid;
+        this.id = id;
     }
-}
-
-enum Site {
-    MethodEntrance,
-    MethodExit,
-    MethodTermination
 }

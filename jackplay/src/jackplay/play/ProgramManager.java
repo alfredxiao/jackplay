@@ -2,8 +2,9 @@ package jackplay.play;
 
 import jackplay.Logger;
 import jackplay.bootstrap.Genre;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import static jackplay.bootstrap.Genre.*;
+
 import jackplay.play.performers.RedefinePerformer;
 import jackplay.play.performers.TracingPerformer;
 import jackplay.play.performers.Performer;
@@ -22,7 +23,7 @@ public class ProgramManager {
         this.prepareGenre(REDEFINE);
     }
 
-    public synchronized boolean addAgenda(Genre genre, PlayGround pg, String newBody) {
+    public synchronized boolean addAgenda(Genre genre, Site pg, String newBody) {
         if (TRACE == genre && this.existsAgenda(genre, pg)) {
             Logger.debug("program-manager", "not create new agenda as it already exists:" + pg.methodFullName);
             return false;
@@ -32,7 +33,7 @@ public class ProgramManager {
         }
     }
 
-    public synchronized boolean removeAgenda(Genre genre, PlayGround pg) {
+    public synchronized boolean removeAgenda(Genre genre, Site pg) {
         if (!this.existsAgenda(genre, pg)) {
             return false;
         } else {
@@ -41,7 +42,7 @@ public class ProgramManager {
         }
     }
 
-    private void createNewAgenda(Genre genre, PlayGround pg, String newBody) {
+    private void createNewAgenda(Genre genre, Site pg, String newBody) {
         prepareClass(genre, pg.classFullName);
 
         Performer performer = createPerformer(pg, genre, newBody);
@@ -52,7 +53,7 @@ public class ProgramManager {
         Logger.info("program-manager", "created new agenda:" + genre + ", " + pg.methodFullName);
     }
 
-    private void deleteExistingAgenda(Genre genre, PlayGround pg) {
+    private void deleteExistingAgenda(Genre genre, Site pg) {
         if (program.get(genre).containsKey(pg.classFullName)) {
 
             program.get(genre).get(pg.classFullName).remove(pg.methodFullName);
@@ -64,7 +65,7 @@ public class ProgramManager {
         }
     }
 
-    private boolean existsAgenda(Genre genre, PlayGround pg) {
+    private boolean existsAgenda(Genre genre, Site pg) {
         try {
             return program.get(genre).get(pg.classFullName).containsKey(pg.methodFullName);
         } catch(NullPointerException npe) {
@@ -82,7 +83,7 @@ public class ProgramManager {
         if (!program.get(genre).containsKey(className)) program.get(genre).put(className, new ConcurrentHashMap<String, jackplay.play.performers.Performer>());
     }
 
-    private Performer createPerformer(PlayGround pg, Genre genre, String methodSource) {
+    private Performer createPerformer(Site pg, Genre genre, String methodSource) {
         switch (genre) {
             case TRACE:
                 return new TracingPerformer(pg);
@@ -110,7 +111,7 @@ public class ProgramManager {
             String trimmed = mfn.trim();
             if (trimmed.length() == 0) continue;
 
-            this.addAgenda(TRACE, new PlayGround(mfn), null);
+            this.addAgenda(TRACE, new Site(mfn), null);
         }
     }
 

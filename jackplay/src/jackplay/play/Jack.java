@@ -5,7 +5,7 @@ import jackplay.bootstrap.Genre;
 import static jackplay.bootstrap.Genre.*;
 
 import jackplay.bootstrap.Options;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.play.performers.LeadPerformer;
 import jackplay.play.performers.Performer;
 import jackplay.play.performers.RedefinePerformer;
@@ -55,7 +55,7 @@ public class Jack {
         return lastDot < 0 ? "" : className.substring(0, lastDot);
     }
 
-    public void handleRetransformationError(Throwable t, Class clazz, Genre genre, PlayGround pg, String previousBody) throws PlayException {
+    public void handleRetransformationError(Throwable t, Class clazz, Genre genre, Site pg, String previousBody) throws PlayException {
         // if an agenda causes problem, we do our best by removing it and
         // re-transform with this agenda removed - in other words, undo it
 
@@ -88,7 +88,7 @@ public class Jack {
                 + pg.classFullName + ": " + t.getMessage());
     }
 
-    private synchronized void play(Genre genre, PlayGround pg, String newBody) throws PlayException {
+    private synchronized void play(Genre genre, Site pg, String newBody) throws PlayException {
         String previousBody = null;
         if (genre == REDEFINE) {
             RedefinePerformer performer = (RedefinePerformer) pm.existingPerformer(genre, pg.classFullName, pg.methodFullName);
@@ -126,7 +126,7 @@ public class Jack {
         }
     }
 
-    public synchronized void undoPlay(Genre genre, PlayGround pg) throws PlayException {
+    public synchronized void undoPlay(Genre genre, Site pg) throws PlayException {
         if (pm.removeAgenda(genre, pg)) {
             List<Class> loadedMatchedClasses = infoCenter.findLoadedModifiableClasses(pg.classFullName);
             for (Class clazz : loadedMatchedClasses) {
@@ -140,19 +140,19 @@ public class Jack {
         }
     }
 
-    public void trace(PlayGround pg) throws PlayException {
+    public void trace(Site pg) throws PlayException {
         this.play(TRACE, pg, null);
     }
 
-    public void undoTrace(PlayGround pg) throws PlayException {
+    public void undoTrace(Site pg) throws PlayException {
         this.undoPlay(TRACE, pg);
     }
 
-    public void redefine(PlayGround pg, String newBody) throws PlayException {
+    public void redefine(Site pg, String newBody) throws PlayException {
         this.play(REDEFINE, pg, newBody);
     }
 
-    public void undoRedefine(PlayGround pg) throws PlayException {
+    public void undoRedefine(Site pg) throws PlayException {
         this.undoPlay(REDEFINE, pg);
     }
 
@@ -160,7 +160,7 @@ public class Jack {
         Map<Genre, Map<String, Performer>> plays = pm.agendaForClass(className);
         if (plays != null && !plays.isEmpty()) {
             for (String methodFullName : plays.get(genre).keySet()) {
-                this.undoPlay(genre, new PlayGround(methodFullName));
+                this.undoPlay(genre, new Site(methodFullName));
             }
         }
     }

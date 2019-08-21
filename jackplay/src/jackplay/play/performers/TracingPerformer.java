@@ -1,23 +1,23 @@
 package jackplay.play.performers;
 
 import jackplay.Logger;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;
 
 public class TracingPerformer implements Performer {
-    private final PlayGround playGround;
+    private final Site site;
 
-    public TracingPerformer(PlayGround playGround) {
-        this.playGround = playGround;
+    public TracingPerformer(Site site) {
+        this.site = site;
     }
 
     @Override
     public CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception {
-        Logger.debug("tracingPerformer", "[" + mode + "] starts tracing for method:" + playGround.methodFullName);
+        Logger.debug("tracingPerformer", "[" + mode + "] starts tracing for method:" + site.methodFullName);
 
-        CtMethod method = this.findMethod(aClass, playGround);
+        CtMethod method = this.findMethod(aClass, site);
 
         method.addLocalVariable("_jackplay_elapsed$", CtClass.longType);
         method.addLocalVariable("_jackplay_uuid$", cp.get("java.lang.String"));
@@ -33,7 +33,7 @@ public class TracingPerformer implements Performer {
             method.insertAfter(traceMethodReturningResult(method));
         }
 
-        Logger.info("tracingPerformer", "finished tracing for method:" + playGround.methodFullName);
+        Logger.info("tracingPerformer", "finished tracing for method:" + site.methodFullName);
         return aClass;
 
         // tried to introduce a local variable - TraceKeeper object instead of static invocation
@@ -44,7 +44,7 @@ public class TracingPerformer implements Performer {
     private static String ELAPSED_TIME_START = "_jackplay_elapsed$ = System.currentTimeMillis();";
     private static String DECLARE_UUID = "_jackplay_uuid$ = java.util.UUID.randomUUID().toString();";
     private static String traceMethodEntrance(CtMethod m) {
-        return String.format("%1$s ; %2$s; jackplay.bootstrap.TraceKeeper.enterMethod(\"%3$s\", $args, _jackplay_uuid$);",
+        return String.format("%1$s ; %2$s; jackplay.bootstrap.TraceKeeper.entersMethod(\"%3$s\", $args, _jackplay_uuid$);",
                              ELAPSED_TIME_START, DECLARE_UUID, m.getLongName());
     }
 

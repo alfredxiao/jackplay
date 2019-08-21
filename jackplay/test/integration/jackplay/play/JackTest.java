@@ -8,7 +8,7 @@ import jackplay.TheatreRep;
 import static jackplay.bootstrap.Genre.*;
 
 import jackplay.bootstrap.Genre;
-import jackplay.bootstrap.PlayGround;
+import jackplay.bootstrap.Site;
 import jackplay.bootstrap.TraceKeeper;
 import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
@@ -26,10 +26,10 @@ public class JackTest {
     Jack jack = TheatreRep.getJack();
     InfoCenter infoCenter = TheatreRep.getInfoCenter();
 
-    PlayGround test1 = new PlayGround("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
-    PlayGround test2 = new PlayGround("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
-    PlayGround test3 = new PlayGround("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
-    PlayGround lateLoading = new PlayGround("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
+    Site test1 = new Site("fortest.myapp.MyBaseClass.test1(int,java.lang.String)");
+    Site test2 = new Site("fortest.myapp.MyBaseClass.test2(java.lang.Object,java.util.List)");
+    Site test3 = new Site("fortest.myapp.MyBaseClass.test3(java.lang.Object[],int[][])");
+    Site lateLoading = new Site("fortest.myapp.MyLateLoadingClass.lateLoadingFunction(java.lang.String)");
 
     MyClass myObj;
 
@@ -54,7 +54,7 @@ public class JackTest {
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
         Map<String, ?> traceLogOfMethodExit = logsAfter.get(0);
-        assertEquals("MethodExit", traceLogOfMethodExit.get("site"));
+        assertEquals("MethodExit", traceLogOfMethodExit.get("spot"));
         assertNull(traceLogOfMethodExit.get("arguments"));
         assertEquals(2, traceLogOfMethodExit.get("argumentsCount"));
         assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodExit.get("classFullName"));
@@ -63,7 +63,7 @@ public class JackTest {
         assertEquals(Thread.currentThread().getName(), traceLogOfMethodExit.get("threadName"));
 
         Map<String, ?> traceLogOfMethodEntrance = logsAfter.get(1);
-        assertEquals("MethodEntrance", traceLogOfMethodEntrance.get("site"));
+        assertEquals("MethodEntrance", traceLogOfMethodEntrance.get("spot"));
         assertTrue(traceLogOfMethodEntrance.get("arguments").getClass().isArray());
         assertEquals(2, ((String[]) traceLogOfMethodEntrance.get("arguments")).length);
         assertEquals("123", ((String[]) traceLogOfMethodEntrance.get("arguments"))[0]);
@@ -91,7 +91,7 @@ public class JackTest {
         return total;
     }
 
-    private void assertProgramContains(Genre g, PlayGround pg) {
+    private void assertProgramContains(Genre g, Site pg) {
         Map<String, Map<String, Performer>> gMap = infoCenter.getCurrentProgram().get(g);
 
         boolean contains = false;
@@ -123,7 +123,7 @@ public class JackTest {
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
         Map<String, ?> traceLogOfMethodTermination = logsAfter.get(0);
-        assertEquals("MethodTermination", traceLogOfMethodTermination.get("site"));
+        assertEquals("MethodTermination", traceLogOfMethodTermination.get("spot"));
         assertNull(traceLogOfMethodTermination.get("arguments"));
         assertEquals(2, traceLogOfMethodTermination.get("argumentsCount"));
         assertEquals("fortest.myapp.MyBaseClass", traceLogOfMethodTermination.get("classFullName"));
@@ -470,7 +470,7 @@ public class JackTest {
     public void canTracePrivateInnerClass() throws Exception {
         MyClass.load();
         List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
-        jack.trace(new PlayGround("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
+        jack.trace(new Site("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
         myObj.invokeInnerClassMethods();
         List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
 
@@ -483,7 +483,7 @@ public class JackTest {
         Class clz = loader.findClass("CustomLoadedClass");
 
         List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
-        jack.trace(new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
+        jack.trace(new Site("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
 
         Object obj = clz.newInstance();
         clz.getDeclaredMethods()[0].invoke(obj, "A");
@@ -498,7 +498,7 @@ public class JackTest {
         MyClassLoader loader = new MyClassLoader();
         Class clz = loader.findClass("CustomLoadedClass");
 
-        jack.redefine(new PlayGround("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"), "{ return \"AA\";}");
+        jack.redefine(new Site("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"), "{ return \"AA\";}");
 
         Object obj = clz.newInstance();
         assertEquals("AA", clz.getDeclaredMethods()[0].invoke(obj, "1111"));

@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * PlayGround describes the target entity being traced. So far, the target entity must be a method.
  */
-public class PlayGround {
+public class Site {
     public final String packageName;                    // com.abc
     public final String classFullName;                  // com.abc.MyService
     public final String methodFullName;                 // com.abc.MyService.myfunction(java.lang.String,int)
@@ -21,7 +21,7 @@ public class PlayGround {
 
     final static String MESSAGE_INVALID_FORMAT = "invalid format, correct format is className.methodName()";
 
-    public PlayGround(String methodFullName) {
+    public Site(String methodFullName) {
         if (null == methodFullName
                 || methodFullName.length() < 5
                 || !methodFullName.endsWith(")")
@@ -64,9 +64,9 @@ public class PlayGround {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PlayGround playGround = (PlayGround) o;
-        return Objects.equals(classFullName, playGround.classFullName) &&
-                Objects.equals(methodFullName, playGround.methodFullName);
+        Site site = (Site) o;
+        return Objects.equals(classFullName, site.classFullName) &&
+                Objects.equals(methodFullName, site.methodFullName);
     }
 
     @Override
@@ -83,4 +83,10 @@ public class PlayGround {
                 ", methodShortName='" + methodShortName + '\'' +
                 '}';
     }
+}
+
+enum Spot {
+    MethodEntrance,
+    MethodExit,
+    MethodTermination
 }

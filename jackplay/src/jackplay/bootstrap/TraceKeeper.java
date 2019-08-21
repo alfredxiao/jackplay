@@ -1,6 +1,6 @@
 package jackplay.bootstrap;
 
-import static jackplay.bootstrap.Site.*;
+import static jackplay.bootstrap.Spot.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,10 +30,10 @@ public class TraceKeeper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("when", Options.formatDate(trace.when));
-                map.put("site", trace.site.toString());
-                map.put("classFullName", trace.pg.classFullName);
-                map.put("methodShortName", trace.pg.methodShortName);
-                map.put("uuid", trace.uuid);
+                map.put("spot", trace.spot.toString());
+                map.put("classFullName", trace.site.classFullName);
+                map.put("methodShortName", trace.site.methodShortName);
+                map.put("id", trace.id);
                 map.put("threadId", trace.threadId);
                 map.put("threadName", trace.threadName);
                 map.put("arguments", trace.arguments);
@@ -58,26 +58,27 @@ public class TraceKeeper {
         traces.add(0, entry);
     }
 
-    public static void enterMethod(String methodFullName, Object[] args, String uuid) {
+    // this method is called from traced method, at its beginning
+    public static void entersMethod(String methodFullName, Object[] args, String id) {
         try {
-            Trace entry = new Trace(MethodEntrance, new PlayGround(methodFullName), uuid);
+            Trace trace = new Trace(MethodEntrance, new Site(methodFullName), id);
             if (null == args || args.length == 0) {
-                entry.arguments = null;
+                trace.arguments = null;
             } else {
-                entry.arguments = new String[args.length];
-                entry.argumentsCount = args.length;
+                trace.arguments = new String[args.length];
+                trace.argumentsCount = args.length;
                 for (int i = 0; i < args.length; i++) {
-                    entry.arguments[i] = objectToString(args[i]);
+                    trace.arguments[i] = objectToString(args[i]);
                 }
             }
 
-            addTraceLog(entry);
+            addTraceLog(trace);
         } catch(Throwable ignore) {}
     }
 
     public static void returnsVoid(String methodFullName, int argsLen, String uuid, long elapsed) {
         try {
-            Trace entry = new Trace(MethodExit, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodExit, new Site(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returningVoid = true;
@@ -88,7 +89,7 @@ public class TraceKeeper {
 
     public static void returnsResult(String methodFullName, int argsLen, Object result, String uuid, long elapsed) {
         try {
-            Trace entry = new Trace(MethodExit, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodExit, new Site(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.returnedValue = objectToString(result);
@@ -137,13 +138,13 @@ public class TraceKeeper {
             String uuid;
             if (correspondingEntranceLog != null) {
                 elapsed = System.currentTimeMillis() - correspondingEntranceLog.whenAsTimeMs;
-                uuid = correspondingEntranceLog.uuid;
+                uuid = correspondingEntranceLog.id;
             } else {
                 // this is for the client/browser's purpose
                 uuid = "corresponding_uuid_lost_" + java.util.UUID.randomUUID().toString();
             }
 
-            Trace entry = new Trace(MethodTermination, new PlayGround(methodFullName), uuid);
+            Trace entry = new Trace(MethodTermination, new Site(methodFullName), uuid);
             entry.elapsed = elapsed;
             entry.argumentsCount = argsLen;
             entry.exceptionStackTrace = throwableToString(t);
@@ -155,7 +156,7 @@ public class TraceKeeper {
     private static Trace findCorrespondingEntryLog(String methodFullName, long threadId) {
         try {
             for (Trace entry : traces) {
-                if (entry.threadId == threadId && entry.pg.methodFullName.equals(methodFullName)) {
+                if (entry.threadId == threadId && entry.site.methodFullName.equals(methodFullName)) {
                     return entry;
                 }
             }
