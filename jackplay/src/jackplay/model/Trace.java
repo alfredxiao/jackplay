@@ -2,7 +2,9 @@ package jackplay.model;
 
 import java.util.Date;
 
-// A Trace is data collected in a Spot on a Site where tracing happens
+/**
+ * A <code>Trace</code> is a data record collected in a Spot on a Site where tracing happens
+ */
 class Trace {
     Date when;
     long whenAsTimeMs;

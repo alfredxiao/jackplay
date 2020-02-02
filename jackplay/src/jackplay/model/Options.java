@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
-// singleton
+/**
+ * <code>Options</code> holds option parameters used to configure the Jackplay agent.
+ */
 public class Options {
     private final static String OPTION_SEPARATOR = ";";
     private final static char EQUALS_CHAR = '=';
