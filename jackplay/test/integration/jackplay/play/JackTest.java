@@ -9,7 +9,7 @@ import static jackplay.model.Category.*;
 
 import jackplay.model.Category;
 import jackplay.model.Site;
-import jackplay.model.TraceKeeper;
+import jackplay.core.Keeper;
 import jackplay.core.InfoCenter;
 import jackplay.core.Jack;
 import jackplay.core.PlayException;
@@ -36,7 +36,7 @@ public class JackTest {
     @Before
     public void setup() throws PlayException {
         jack.undoAll();
-        TraceKeeper.clearLogHistory();
+        Keeper.clearLogHistory();
         Class myAbstractClass = MyBaseClass.class;
         Class myClass = MyClass.class;
         myObj = new MyClass();
@@ -44,12 +44,12 @@ public class JackTest {
 
     @Test
     public void canAddTraceAndProduceTraceLog() throws PlayException {
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsBefore = Keeper.getTraces();
         jack.trace(test1);
         String returnValue = myObj.test1(123, "ABC");
         assertEquals("123.ABC", returnValue);
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsAfter = Keeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
@@ -107,7 +107,7 @@ public class JackTest {
 
     @Test
     public void canTraceException() throws PlayException {
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsBefore = Keeper.getTraces();
         jack.trace(test2);
         Exception thrown = null;
         try {
@@ -118,7 +118,7 @@ public class JackTest {
 
         assertTrue(thrown instanceof NullPointerException);
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsAfter = Keeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
 
@@ -152,7 +152,7 @@ public class JackTest {
     }
 
     private int getTraceLogSize() {
-        return TraceKeeper.getTraces().size();
+        return Keeper.getTraces().size();
     }
 
     @Test
@@ -469,10 +469,10 @@ public class JackTest {
     @Test
     public void canTracePrivateInnerClass() throws Exception {
         MyClass.load();
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsBefore = Keeper.getTraces();
         jack.trace(new Site("fortest.myapp.MyClass$MyPrivateInnerClass.test1()"));
         myObj.invokeInnerClassMethods();
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsAfter = Keeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
     }
@@ -482,13 +482,13 @@ public class JackTest {
         MyClassLoader loader = new MyClassLoader();
         Class clz = loader.findClass("CustomLoadedClass");
 
-        List<Map<String, Object>> logsBefore = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsBefore = Keeper.getTraces();
         jack.trace(new Site("fortest.dynaloaded.CustomLoadedClass.test1(java.lang.String)"));
 
         Object obj = clz.newInstance();
         clz.getDeclaredMethods()[0].invoke(obj, "A");
 
-        List<Map<String, Object>> logsAfter = TraceKeeper.getTraces();
+        List<Map<String, Object>> logsAfter = Keeper.getTraces();
 
         assertEquals(2, logsAfter.size() - logsBefore.size());
     }

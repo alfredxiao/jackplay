@@ -2,7 +2,7 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.core.InfoCenter;
-import jackplay.model.TraceKeeper;
+import jackplay.core.Keeper;
 
 import java.util.Map;
 
@@ -18,14 +18,14 @@ public class InfoHandler extends BaseHandler {
         switch (getUriPath(uri)) {
             case "/info/traceLogs":
                 CommonHandling.willReturnJson(http);
-                CommonHandling.serveBody(http, 200, JSON.objectToJson(TraceKeeper.getTraces()));
+                CommonHandling.serveBody(http, 200, JSON.objectToJson(Keeper.getTraces()));
                 break;
             case "/info/loadedMethods":
                 CommonHandling.willReturnJson(http);
                 CommonHandling.serveBody(http, 200, JSON.objectToJson(infoCenter.allModifiableMethods()));
                 break;
             case "/info/clearTraceLogs":
-                TraceKeeper.clearLogHistory();
+                Keeper.clearLogHistory();
                 CommonHandling.serveBody(http, 200, "OK");
                 break;
             case "/info/settings":

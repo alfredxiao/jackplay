@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-// Registry manages trace requests
+/**
+ * <code>Registry</code> manages tracing requests.
+ */
 public class Registry {
     private Map<Category, Map<String, Map<String, Performer>>> registry;
 

@@ -36,7 +36,7 @@ public class TracingPerformer implements Performer {
         JackplayLogger.info("tracingPerformer", "finished tracing for method:" + site.methodFullName);
         return aClass;
 
-        // tried to introduce a local variable - TraceKeeper object instead of static invocation
+        // tried to introduce a local variable - Keeper object instead of static invocation
         // too tricky to work around limitation around try/catch/finally
         // ref: https://issues.jboss.org/browse/JASSIST-232
     }
@@ -44,22 +44,22 @@ public class TracingPerformer implements Performer {
     private static String ELAPSED_TIME_START = "_jackplay_elapsed$ = System.currentTimeMillis();";
     private static String DECLARE_UUID = "_jackplay_uuid$ = java.util.UUID.randomUUID().toString();";
     private static String traceMethodEntrance(CtMethod m) {
-        return String.format("%1$s ; %2$s; jackplay.bootstrap.TraceKeeper.entersMethod(\"%3$s\", $args, _jackplay_uuid$);",
+        return String.format("%1$s ; %2$s; jackplay.core.Keeper.entersMethod(\"%3$s\", $args, _jackplay_uuid$);",
                              ELAPSED_TIME_START, DECLARE_UUID, m.getLongName());
     }
 
     private static String ELAPSED_TIME_END = "_jackplay_elapsed$ = System.currentTimeMillis() - _jackplay_elapsed$;";
     private static String traceMethodReturningVoid(CtMethod m) {
-        return String.format("%1$s ; jackplay.bootstrap.TraceKeeper.returnsVoid(\"%2$s\", $args.length, _jackplay_uuid$, _jackplay_elapsed$);",
+        return String.format("%1$s ; jackplay.core.Keeper.returnsVoid(\"%2$s\", $args.length, _jackplay_uuid$, _jackplay_elapsed$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
     private static String traceMethodReturningResult(CtMethod m) {
-        return String.format("%1$s ; jackplay.bootstrap.TraceKeeper.returnsResult(\"%2$s\", $args.length, $_, _jackplay_uuid$, _jackplay_elapsed$);",
+        return String.format("%1$s ; jackplay.core.Keeper.returnsResult(\"%2$s\", $args.length, $_, _jackplay_uuid$, _jackplay_elapsed$);",
                 ELAPSED_TIME_END, m.getLongName());
     }
 
     private static String traceMethodThrowingException(CtMethod m) {
-        return String.format("{ jackplay.bootstrap.TraceKeeper.throwsException(\"%1$s\", $args.length, $e); throw $e; }",
+        return String.format("{ jackplay.core.Keeper.throwsException(\"%1$s\", $args.length, $e); throw $e; }",
                              m.getLongName());
     }
 }

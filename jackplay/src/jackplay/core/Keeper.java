@@ -1,4 +1,8 @@
-package jackplay.model;
+package jackplay.core;
+
+import jackplay.model.Options;
+import jackplay.model.Site;
+import jackplay.model.Trace;
 
 import static jackplay.model.Point.*;
 
@@ -7,11 +11,18 @@ import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class TraceKeeper {
+/**
+ * The <code>Keeper</code> is responsible for constructing and keeping trace records.
+ *
+ * <p>Trace records are created when injected/modified code invokes method on <code>Keeper</code> on specific
+ * trace site and point. For example, on a <code>MethodEntrance</code> point, <code>entersMethod</code> is invoked,
+ * hence a <code>Trace</code> record is created and kept by <code>Keeper</code></p>
+ */
+public class Keeper {
     private static List<Trace> traces = new LinkedList<>();
     private static Options options;
 
-    private TraceKeeper() {}
+    private Keeper() {}
 
     private synchronized static List<Trace> copyTraceLogs() {
         List<Trace> copyList = new ArrayList<>(traces.size());
@@ -21,7 +32,7 @@ public class TraceKeeper {
     }
 
     public static List<Map<String, Object>> getTraces() {
-        Iterator<Trace> it = TraceKeeper.copyTraceLogs().iterator();
+        Iterator<Trace> it = Keeper.copyTraceLogs().iterator();
         List<Map<String, Object>> listOfLogs = new ArrayList<>();
 
         while (it.hasNext()) {

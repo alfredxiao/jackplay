@@ -69,7 +69,7 @@ public class Options {
         return merged;
     }
 
-    static String formatDate(Date when) {
+    public static String formatDate(Date when) {
         return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(when);
     }
 

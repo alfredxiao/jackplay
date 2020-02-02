@@ -5,30 +5,30 @@ import java.util.Date;
 /**
  * A <code>Trace</code> is a data record collected in a Spot on a Site where tracing happens
  */
-class Trace {
-    Date when;
-    long whenAsTimeMs;
+public class Trace {
+    public Date when;
+    public long whenAsTimeMs;
 
     // mandatory for all entries
-    Point point;
-    Site site;
-    long threadId;
-    String threadName;
-    String id;
+    public Point point;
+    public Site site;
+    public long threadId;
+    public String threadName;
+    public String id;
 
     // for method entrance
-    String[] arguments;
+    public String[] arguments;
 
     // for method return or exception
-    long elapsed = -1;
-    int argumentsCount;
+    public long elapsed = -1;
+    public int argumentsCount;
 
-    String returnedValue;            // return only
-    boolean returningVoid = false;   // return only
+    public String returnedValue;            // return only
+    public boolean returningVoid = false;   // return only
 
-    String exceptionStackTrace;      // exception only
+    public String exceptionStackTrace;      // exception only
 
-    Trace(Point point, Site site, String id) {
+    public Trace(Point point, Site site, String id) {
         this.when = new Date();
         this.whenAsTimeMs = System.currentTimeMillis();
         this.point = point;

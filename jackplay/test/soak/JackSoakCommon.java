@@ -3,7 +3,7 @@ package soak;
 import jackplay.JackplayLogger;
 import jackplay.TheatreRep;
 import jackplay.model.Site;
-import jackplay.model.TraceKeeper;
+import jackplay.core.Keeper;
 import jackplay.core.Jack;
 import fortest.myapp.MyBaseClass;
 import fortest.myapp.MyClass;
@@ -58,7 +58,7 @@ public class JackSoakCommon {
 
     static void prepareRunning() throws Exception {
         JackSoakCommon.jack.undoAll();
-        TraceKeeper.clearLogHistory();
+        Keeper.clearLogHistory();
         Class myAbstractClass = MyBaseClass.class;
         Class myClass = MyClass.class;
     }

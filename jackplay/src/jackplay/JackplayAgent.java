@@ -1,7 +1,7 @@
 package jackplay;
 
 import jackplay.model.Options;
-import jackplay.model.TraceKeeper;
+import jackplay.core.Keeper;
 import jackplay.core.*;
 import jackplay.core.performers.Transformer;
 import jackplay.web.BoxOffice;
@@ -16,7 +16,7 @@ public class JackplayAgent {
     public static void premain(String agentArgs, Instrumentation inst) {
         Options options = Options.asOptions(agentArgs);
         JackplayLogger.init(options);
-        TraceKeeper.init(options);
+        Keeper.init(options);
 
         info("jack-agent", "running JackPlay with arguments:" + (agentArgs == null ? "there are no args, fallback to defaults." : agentArgs));
         debug("jack-agent", "Instrumentation.isRetransformClassesSupported():" + inst.isRetransformClassesSupported());
