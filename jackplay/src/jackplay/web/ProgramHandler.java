@@ -1,9 +1,9 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
-import jackplay.bootstrap.Site;
+import jackplay.model.Site;
 import jackplay.play.Jack;
-import jackplay.bootstrap.Genre;
+import jackplay.model.Genre;
 
 
 import java.util.Map;

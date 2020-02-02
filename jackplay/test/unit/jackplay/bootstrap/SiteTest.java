@@ -1,6 +1,6 @@
 package unit.jackplay.bootstrap;
 
-import jackplay.bootstrap.Site;
+import jackplay.model.Site;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

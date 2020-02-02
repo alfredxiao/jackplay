@@ -1,10 +1,10 @@
 package jackplay.play.performers;
 
 import jackplay.JackplayLogger;
-import jackplay.bootstrap.Genre;
+import jackplay.model.Genre;
 import jackplay.javassist.NotFoundException;
 import jackplay.play.Registry;
-import static jackplay.bootstrap.Genre.*;
+import static jackplay.model.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 

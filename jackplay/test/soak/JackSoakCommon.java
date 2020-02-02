@@ -2,8 +2,8 @@ package soak;
 
 import jackplay.JackplayLogger;
 import jackplay.TheatreRep;
-import jackplay.bootstrap.Site;
-import jackplay.bootstrap.TraceKeeper;
+import jackplay.model.Site;
+import jackplay.model.TraceKeeper;
 import jackplay.play.Jack;
 import fortest.myapp.MyBaseClass;
 import fortest.myapp.MyClass;

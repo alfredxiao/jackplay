@@ -5,11 +5,11 @@ import fortest.myapp.MyClass;
 import fortest.myapp.MyClassLoader;
 import fortest.myapp.MyLateLoadingClass;
 import jackplay.TheatreRep;
-import static jackplay.bootstrap.Genre.*;
+import static jackplay.model.Genre.*;
 
-import jackplay.bootstrap.Genre;
-import jackplay.bootstrap.Site;
-import jackplay.bootstrap.TraceKeeper;
+import jackplay.model.Genre;
+import jackplay.model.Site;
+import jackplay.model.TraceKeeper;
 import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
 import jackplay.play.PlayException;

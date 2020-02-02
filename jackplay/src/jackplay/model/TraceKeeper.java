@@ -1,6 +1,6 @@
-package jackplay.bootstrap;
+package jackplay.model;
 
-import static jackplay.bootstrap.Spot.*;
+import static jackplay.model.Point.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,7 +30,7 @@ public class TraceKeeper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("when", Options.formatDate(trace.when));
-                map.put("spot", trace.spot.toString());
+                map.put("spot", trace.point.toString());
                 map.put("classFullName", trace.site.classFullName);
                 map.put("methodShortName", trace.site.methodShortName);
                 map.put("id", trace.id);

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import com.sun.net.httpserver.*;
 import jackplay.JackplayLogger;
-import jackplay.bootstrap.Options;
+import jackplay.model.Options;
 import jackplay.play.InfoCenter;
 import jackplay.play.Jack;
 

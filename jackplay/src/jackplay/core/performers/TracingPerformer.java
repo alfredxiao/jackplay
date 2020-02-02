@@ -1,7 +1,7 @@
 package jackplay.play.performers;
 
 import jackplay.JackplayLogger;
-import jackplay.bootstrap.Site;
+import jackplay.model.Site;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.CtMethod;

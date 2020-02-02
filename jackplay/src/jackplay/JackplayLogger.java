@@ -1,6 +1,6 @@
 package jackplay;
 
-import jackplay.bootstrap.Options;
+import jackplay.model.Options;
 
 import java.io.*;
 

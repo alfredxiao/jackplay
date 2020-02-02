@@ -1,4 +1,4 @@
-package jackplay.bootstrap;
+package jackplay.model;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

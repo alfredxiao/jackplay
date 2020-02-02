@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.hamcrest.core.Is.*;
 
-import jackplay.bootstrap.Options;
+import jackplay.model.Options;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

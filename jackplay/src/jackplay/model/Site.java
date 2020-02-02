@@ -1,11 +1,16 @@
-package jackplay.bootstrap;
+package jackplay.model;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * PlayGround describes the target entity being traced. So far, the target entity must be a method.
+ * A <code>Site</code> represents a target entity being traced.
+ *
+ * <p>So far, we trace methods only.</p>
+ *
+ * <p>Within a <code>Site</code>, there are few points that it can be traced, e.g. method entry and method exit. These
+ * are represented as @see <code>Point</code></p>
  */
 public class Site {
     public final String packageName;                    // com.abc
@@ -85,7 +90,7 @@ public class Site {
     }
 }
 
-enum Spot {
+enum Point {
     MethodEntrance,
     MethodExit,
     MethodTermination

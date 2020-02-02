@@ -1,7 +1,7 @@
 package jackplay;
 
-import jackplay.bootstrap.Options;
-import jackplay.bootstrap.TraceKeeper;
+import jackplay.model.Options;
+import jackplay.model.TraceKeeper;
 import jackplay.play.*;
 import jackplay.play.performers.Transformer;
 import jackplay.web.BoxOffice;

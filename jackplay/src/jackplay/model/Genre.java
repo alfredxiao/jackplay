@@ -1,4 +1,4 @@
-package jackplay.bootstrap;
+package jackplay.model;
 
 public enum Genre {
     TRACE,

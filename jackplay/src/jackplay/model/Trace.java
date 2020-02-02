@@ -1,4 +1,4 @@
-package jackplay.bootstrap;
+package jackplay.model;
 
 import java.util.Date;
 
@@ -8,7 +8,7 @@ class Trace {
     long whenAsTimeMs;
 
     // mandatory for all entries
-    Spot spot;
+    Point point;
     Site site;
     long threadId;
     String threadName;
@@ -26,10 +26,10 @@ class Trace {
 
     String exceptionStackTrace;      // exception only
 
-    Trace(Spot spot, Site site, String id) {
+    Trace(Point point, Site site, String id) {
         this.when = new Date();
         this.whenAsTimeMs = System.currentTimeMillis();
-        this.spot = spot;
+        this.point = point;
         this.site = site;
         this.threadId = Thread.currentThread().getId();
         this.threadName = Thread.currentThread().getName();

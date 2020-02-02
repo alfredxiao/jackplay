@@ -1,12 +1,12 @@
 package jackplay.play;
 
 import jackplay.JackplayLogger;
-import jackplay.bootstrap.Genre;
+import jackplay.model.Genre;
 import static jackplay.play.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.play.MetadataFailureCause.Unknown;
 
-import jackplay.bootstrap.Options;
-import jackplay.bootstrap.Site;
+import jackplay.model.Options;
+import jackplay.model.Site;
 import jackplay.play.performers.Performer;
 
 import java.lang.instrument.Instrumentation;

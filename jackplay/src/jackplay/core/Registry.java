@@ -1,10 +1,10 @@
 package jackplay.play;
 
 import jackplay.JackplayLogger;
-import jackplay.bootstrap.Genre;
-import jackplay.bootstrap.Options;
-import jackplay.bootstrap.Site;
-import static jackplay.bootstrap.Genre.*;
+import jackplay.model.Genre;
+import jackplay.model.Options;
+import jackplay.model.Site;
+import static jackplay.model.Genre.*;
 
 import jackplay.play.performers.RedefinePerformer;
 import jackplay.play.performers.TracingPerformer;

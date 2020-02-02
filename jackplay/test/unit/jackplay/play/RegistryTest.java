@@ -1,9 +1,9 @@
 package unit.jackplay.play;
 
-import static jackplay.bootstrap.Genre.*;
+import static jackplay.model.Genre.*;
 
-import jackplay.bootstrap.Options;
-import jackplay.bootstrap.Site;
+import jackplay.model.Options;
+import jackplay.model.Site;
 import jackplay.play.Registry;
 import jackplay.play.performers.RedefinePerformer;
 import org.junit.Test;
