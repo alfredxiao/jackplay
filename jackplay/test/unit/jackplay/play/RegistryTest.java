@@ -1,6 +1,6 @@
 package unit.jackplay.play;
 
-import static jackplay.model.Genre.*;
+import static jackplay.model.Category.*;
 
 import jackplay.model.Options;
 import jackplay.model.Site;

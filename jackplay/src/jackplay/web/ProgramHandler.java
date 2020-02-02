@@ -3,7 +3,7 @@ package jackplay.web;
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.model.Site;
 import jackplay.core.Jack;
-import jackplay.model.Genre;
+import jackplay.model.Category;
 
 
 import java.util.Map;
@@ -46,21 +46,21 @@ public class ProgramHandler extends BaseHandler {
     }
 
     private void undoMethod(HttpExchange http, Map<String, String> params) throws Exception {
-        Genre g = Genre.valueOf(params.get("genre"));
+        Category g = Category.valueOf(params.get("genre"));
         String methodFullName = params.get("methodFullName");
         jack.undoPlay(g, new Site(methodFullName));
         CommonHandling.serveBody(http, 200, getGenreDescriptor(g) + " method is now undone - " + methodFullName);
     }
 
     private void undoClass(HttpExchange http, Map<String, String> params) throws Exception {
-        Genre g = Genre.valueOf(params.get("genre"));
+        Category g = Category.valueOf(params.get("genre"));
         String className = params.get("classFullName");
         jack.undoClass(g, className);
         CommonHandling.serveBody(http, 200, getGenreDescriptor(g) + " class is now undone - " + className);
     }
 
-    private static String getGenreDescriptor(Genre genre) {
-        if (genre == Genre.TRACE) {
+    private static String getGenreDescriptor(Category category) {
+        if (category == Category.TRACE) {
             return "Traced";
         } else {
             return "Redefined";

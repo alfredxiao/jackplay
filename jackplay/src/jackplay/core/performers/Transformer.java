@@ -1,10 +1,10 @@
 package jackplay.core.performers;
 
 import jackplay.JackplayLogger;
-import jackplay.model.Genre;
+import jackplay.model.Category;
 import jackplay.javassist.NotFoundException;
 import jackplay.core.Registry;
-import static jackplay.model.Genre.*;
+import static jackplay.model.Category.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;
 
@@ -37,7 +37,7 @@ public class Transformer implements ClassFileTransformer {
         return beingPlayed;
     }
 
-    private boolean isAgendaEmpty(Map<Genre, Map<String, Performer>> agenda) {
+    private boolean isAgendaEmpty(Map<Category, Map<String, Performer>> agenda) {
         return agenda == null || ((agenda.get(TRACE) == null || agenda.get(TRACE).isEmpty())
                 && (agenda.get(REDEFINE) == null || agenda.get(REDEFINE).isEmpty()));
     }
@@ -46,7 +46,7 @@ public class Transformer implements ClassFileTransformer {
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
         String className = classNameWithSlash.replace('/', '.');
-        Map<Genre, Map<String, Performer>> agenda = pm.agendaForClass(className);
+        Map<Category, Map<String, Performer>> agenda = pm.agendaForClass(className);
 
         ClassPool cp = new ClassPool(true);
 
@@ -94,7 +94,7 @@ public class Transformer implements ClassFileTransformer {
         }
     }
 
-    private CtClass performAsPerAgenda(ClassPool cp, Class clazz, byte[] bytes, Map<Genre, Map<String, Performer>> agenda, String mode) throws Exception {
+    private CtClass performAsPerAgenda(ClassPool cp, Class clazz, byte[] bytes, Map<Category, Map<String, Performer>> agenda, String mode) throws Exception {
         CtClass cc = getCtClass(cp, clazz, bytes);
 
         cc = performAgenda(cp, agenda.get(REDEFINE), cc, mode);

@@ -1,7 +1,7 @@
 package jackplay.core;
 
 import jackplay.JackplayLogger;
-import jackplay.model.Genre;
+import jackplay.model.Category;
 import static jackplay.core.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.core.MetadataFailureCause.Unknown;
 
@@ -186,7 +186,7 @@ public class InfoCenter {
                 && !clazz.isArray();
     }
 
-    public Map<Genre, Map<String, Map<String, Performer>>> getCurrentProgram() {
+    public Map<Category, Map<String, Map<String, Performer>>> getCurrentProgram() {
         return pm.copyOfCurrentProgram();
     }
 

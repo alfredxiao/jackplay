@@ -5,9 +5,9 @@ import fortest.myapp.MyClass;
 import fortest.myapp.MyClassLoader;
 import fortest.myapp.MyLateLoadingClass;
 import jackplay.TheatreRep;
-import static jackplay.model.Genre.*;
+import static jackplay.model.Category.*;
 
-import jackplay.model.Genre;
+import jackplay.model.Category;
 import jackplay.model.Site;
 import jackplay.model.TraceKeeper;
 import jackplay.core.InfoCenter;
@@ -80,7 +80,7 @@ public class JackTest {
 
     private int assertProgramSize(int size) {
         int total = 0;
-        for (Genre g : infoCenter.getCurrentProgram().keySet()) {
+        for (Category g : infoCenter.getCurrentProgram().keySet()) {
             Map<String, Map<String, Performer>> gMap = infoCenter.getCurrentProgram().get(g);
             for (String cls : gMap.keySet()) {
                 Map<String, Performer> clsMap = gMap.get(cls);
@@ -91,7 +91,7 @@ public class JackTest {
         return total;
     }
 
-    private void assertProgramContains(Genre g, Site pg) {
+    private void assertProgramContains(Category g, Site pg) {
         Map<String, Map<String, Performer>> gMap = infoCenter.getCurrentProgram().get(g);
 
         boolean contains = false;
