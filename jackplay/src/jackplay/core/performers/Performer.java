@@ -1,11 +1,11 @@
-package jackplay.play.performers;
+package jackplay.core.performers;
 
 
 import jackplay.model.Site;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtMethod;
-import jackplay.play.PlayException;
+import jackplay.core.PlayException;
 
 import static jackplay.javassist.bytecode.AccessFlag.ABSTRACT;
 import static jackplay.javassist.bytecode.AccessFlag.NATIVE;

@@ -1,9 +1,9 @@
-package jackplay.play.performers;
+package jackplay.core.performers;
 
 import jackplay.JackplayLogger;
 import jackplay.model.Genre;
 import jackplay.javassist.NotFoundException;
-import jackplay.play.Registry;
+import jackplay.core.Registry;
 import static jackplay.model.Genre.*;
 import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtClass;

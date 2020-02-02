@@ -2,8 +2,8 @@ package jackplay;
 
 import jackplay.model.Options;
 import jackplay.model.TraceKeeper;
-import jackplay.play.*;
-import jackplay.play.performers.Transformer;
+import jackplay.core.*;
+import jackplay.core.performers.Transformer;
 import jackplay.web.BoxOffice;
 import static jackplay.JackplayLogger.*;
 

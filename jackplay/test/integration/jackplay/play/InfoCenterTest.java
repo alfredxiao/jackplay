@@ -5,7 +5,7 @@ import fortest.myapp.MyClass;
 import fortest.myapp.MyClassLoader;
 import jackplay.TheatreRep;
 import jackplay.model.Site;
-import jackplay.play.InfoCenter;
+import jackplay.core.InfoCenter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

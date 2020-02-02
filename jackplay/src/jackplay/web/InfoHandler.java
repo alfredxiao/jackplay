@@ -1,7 +1,7 @@
 package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
-import jackplay.play.InfoCenter;
+import jackplay.core.InfoCenter;
 import jackplay.model.TraceKeeper;
 
 import java.util.Map;

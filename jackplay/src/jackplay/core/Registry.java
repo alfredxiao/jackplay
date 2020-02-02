@@ -1,4 +1,4 @@
-package jackplay.play;
+package jackplay.core;
 
 import jackplay.JackplayLogger;
 import jackplay.model.Genre;
@@ -6,9 +6,9 @@ import jackplay.model.Options;
 import jackplay.model.Site;
 import static jackplay.model.Genre.*;
 
-import jackplay.play.performers.RedefinePerformer;
-import jackplay.play.performers.TracingPerformer;
-import jackplay.play.performers.Performer;
+import jackplay.core.performers.RedefinePerformer;
+import jackplay.core.performers.TracingPerformer;
+import jackplay.core.performers.Performer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +73,7 @@ public class Registry {
     }
 
     private void prepareClass(Genre genre, String className) {
-        if (!registry.get(genre).containsKey(className)) registry.get(genre).put(className, new ConcurrentHashMap<String, jackplay.play.performers.Performer>());
+        if (!registry.get(genre).containsKey(className)) registry.get(genre).put(className, new ConcurrentHashMap<String, jackplay.core.performers.Performer>());
     }
 
     private Performer createPerformer(Site pg, Genre genre, String methodSource) {

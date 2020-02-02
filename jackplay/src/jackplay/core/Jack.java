@@ -1,4 +1,4 @@
-package jackplay.play;
+package jackplay.core;
 
 import jackplay.JackplayLogger;
 import jackplay.model.Genre;
@@ -6,9 +6,9 @@ import static jackplay.model.Genre.*;
 
 import jackplay.model.Options;
 import jackplay.model.Site;
-import jackplay.play.performers.Transformer;
-import jackplay.play.performers.Performer;
-import jackplay.play.performers.RedefinePerformer;
+import jackplay.core.performers.Transformer;
+import jackplay.core.performers.Performer;
+import jackplay.core.performers.RedefinePerformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;

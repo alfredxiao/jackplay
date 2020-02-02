@@ -2,7 +2,7 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import jackplay.model.Site;
-import jackplay.play.Jack;
+import jackplay.core.Jack;
 import jackplay.model.Genre;
 
 

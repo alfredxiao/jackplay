@@ -1,4 +1,4 @@
-package jackplay.play.performers;
+package jackplay.core.performers;
 
 import jackplay.JackplayLogger;
 import jackplay.model.Site;
@@ -7,7 +7,7 @@ import jackplay.javassist.ClassPool;
 import jackplay.javassist.CtMethod;
 
 
-public class RedefinePerformer implements jackplay.play.performers.Performer {
+public class RedefinePerformer implements jackplay.core.performers.Performer {
     private final Site site;
     private final String newBody;
 

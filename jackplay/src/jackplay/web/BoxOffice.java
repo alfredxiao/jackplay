@@ -11,8 +11,8 @@ import java.util.Map;
 import com.sun.net.httpserver.*;
 import jackplay.JackplayLogger;
 import jackplay.model.Options;
-import jackplay.play.InfoCenter;
-import jackplay.play.Jack;
+import jackplay.core.InfoCenter;
+import jackplay.core.Jack;
 
 import javax.net.ssl.*;
 

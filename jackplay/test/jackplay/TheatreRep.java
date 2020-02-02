@@ -1,8 +1,8 @@
 package jackplay;
 
 
-import jackplay.play.InfoCenter;
-import jackplay.play.Jack;
+import jackplay.core.InfoCenter;
+import jackplay.core.Jack;
 
 public class TheatreRep {
     public static InfoCenter getInfoCenter() {

@@ -4,7 +4,7 @@ import jackplay.JackplayLogger;
 import jackplay.TheatreRep;
 import jackplay.model.Site;
 import jackplay.model.TraceKeeper;
-import jackplay.play.Jack;
+import jackplay.core.Jack;
 import fortest.myapp.MyBaseClass;
 import fortest.myapp.MyClass;
 import fortest.myapp.MyLateLoadingClass;

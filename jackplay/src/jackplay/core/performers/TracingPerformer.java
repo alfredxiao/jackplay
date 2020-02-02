@@ -1,4 +1,4 @@
-package jackplay.play.performers;
+package jackplay.core.performers;
 
 import jackplay.JackplayLogger;
 import jackplay.model.Site;

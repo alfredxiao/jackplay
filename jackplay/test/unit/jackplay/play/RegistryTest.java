@@ -4,8 +4,8 @@ import static jackplay.model.Genre.*;
 
 import jackplay.model.Options;
 import jackplay.model.Site;
-import jackplay.play.Registry;
-import jackplay.play.performers.RedefinePerformer;
+import jackplay.core.Registry;
+import jackplay.core.performers.RedefinePerformer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
