@@ -1,6 +1,6 @@
 package jackplay.core.performers;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.model.Site;
 import jackplay.javassist.CtClass;
 import jackplay.javassist.ClassPool;
@@ -18,12 +18,12 @@ public class RedefinePerformer implements jackplay.core.performers.Performer {
 
     @Override
     public CtClass perform(ClassPool cp, CtClass aClass, String mode) throws Exception {
-        JackplayLogger.debug("redefinePerformer", "[" + mode + "] starts redefining method:" + site.methodFullName);
+        Logger.debug("redefinePerformer", "[" + mode + "] starts redefining method:" + site.methodFullName);
 
         CtMethod method = this.findMethod(aClass, site);
 
         method.setBody(newBody);
-        JackplayLogger.info("redefinePerformer", "finished redefining method:" + site.methodFullName);
+        Logger.info("redefinePerformer", "finished redefining method:" + site.methodFullName);
 
         return aClass;
     }

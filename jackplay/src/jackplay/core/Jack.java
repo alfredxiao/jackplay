@@ -1,6 +1,6 @@
 package jackplay.core;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.model.Category;
 import static jackplay.model.Category.*;
 
@@ -59,7 +59,7 @@ public class Jack {
         // if an agenda causes problem, we do our best by removing it and
         // re-transform with this agenda removed - in other words, undo it
 
-        JackplayLogger.error("jack", t);
+        Logger.error("jack", t);
         pm.unregister(category, pg);
 
         if (previousBody != null) {
@@ -67,19 +67,19 @@ public class Jack {
         }
 
         try {
-            JackplayLogger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
+            Logger.debug("jack", "attempting to undo retransformation for class:" + pg.classFullName);
             inst.retransformClasses(clazz);
         } catch(Exception betterEffort) {
-            JackplayLogger.error("jack", betterEffort);
+            Logger.error("jack", betterEffort);
             if (category == REDEFINE && previousBody != null) {
                 // this means even the previously working method redefinition does not work,
                 // we have to remove it completely, unfortunately
                 pm.unregister(REDEFINE, pg);
                 try {
-                    JackplayLogger.debug("jack", "attempting to restore retransformation for class:" + pg.classFullName);
+                    Logger.debug("jack", "attempting to restore retransformation for class:" + pg.classFullName);
                     inst.retransformClasses(clazz);
                 } catch(Exception bestEffort) {
-                    JackplayLogger.error("jack", bestEffort);
+                    Logger.error("jack", bestEffort);
                 }
             }
         }
@@ -106,11 +106,11 @@ public class Jack {
                         transformer.transformSuccess = false;
                         transformer.transformFailure = null;
 
-                        JackplayLogger.debug("jack", "starts retransforming class:" + pg.classFullName);
+                        Logger.debug("jack", "starts retransforming class:" + pg.classFullName);
                         inst.retransformClasses(clazz);
 
                         if (transformer.transformSuccess) {
-                            JackplayLogger.info("jack", "finished retransforming class:" + pg.classFullName);
+                            Logger.info("jack", "finished retransforming class:" + pg.classFullName);
                         } else {
                             handleRetransformationError(transformer.transformFailure, clazz, category, pg, previousBody);
                         }
@@ -121,7 +121,7 @@ public class Jack {
             }
 
             if (!matched) {
-                JackplayLogger.info("jack", "agenda " + category + ", " + pg.methodFullName + " added but not played yet");
+                Logger.info("jack", "agenda " + category + ", " + pg.methodFullName + " added but not played yet");
             }
         }
     }

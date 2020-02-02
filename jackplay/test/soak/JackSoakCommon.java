@@ -1,6 +1,6 @@
 package soak;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.TheatreRep;
 import jackplay.model.Site;
 import jackplay.core.Keeper;
@@ -53,7 +53,7 @@ public class JackSoakCommon {
         late.lateLoadingFunction("ha");
 
         runCount ++;
-        JackplayLogger.info(who, "runCount:" + runCount);
+        Logger.info(who, "runCount:" + runCount);
     }
 
     static void prepareRunning() throws Exception {

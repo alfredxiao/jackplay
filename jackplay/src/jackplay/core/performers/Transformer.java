@@ -1,6 +1,6 @@
 package jackplay.core.performers;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.model.Category;
 import jackplay.javassist.NotFoundException;
 import jackplay.core.Registry;
@@ -61,7 +61,7 @@ public class Transformer implements ClassFileTransformer {
                     this.transformSuccess = true;
                     return cc.toBytecode();
                 } catch(Exception e) {
-                    JackplayLogger.error("leadPerfomer", e);
+                    Logger.error("leadPerfomer", e);
                     this.transformSuccess = true;
                     return null;
                 } finally {
@@ -69,20 +69,20 @@ public class Transformer implements ClassFileTransformer {
                 }
             }
         } else {
-            JackplayLogger.debug("leadPerformer", "found agenda for class:" + className);
+            Logger.debug("leadPerformer", "found agenda for class:" + className);
             // this class is on the program menu
             byte[] byteCode;
             CtClass cc = null;
 
             try {
-                JackplayLogger.debug("leadPerformer", "starts retransform class:" + className);
+                Logger.debug("leadPerformer", "starts retransform class:" + className);
                 cc = performAsPerAgenda(cp, classBeingRedefined, classfileBuffer, agenda, STAGING_MODE);
-                JackplayLogger.debug("leadPerformer", "finished retransform class:" + className);
+                Logger.debug("leadPerformer", "finished retransform class:" + className);
 
                 byteCode = cc.toBytecode();
                 this.transformSuccess = true;
             } catch(Throwable t) {
-                JackplayLogger.error("leadPerfomer", t);
+                Logger.error("leadPerfomer", t);
                 byteCode = null;
                 this.transformSuccess = false;
                 this.transformFailure = t;

@@ -1,6 +1,6 @@
 package jackplay.core;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.model.Category;
 import jackplay.model.Options;
 import jackplay.model.Site;
@@ -38,7 +38,7 @@ public class Registry {
         // todo, use method shortname + argslist instead of method full name
         registry.get(category).get(site.classFullName).put(site.methodFullName, performer);
 
-        JackplayLogger.info("registry", "has registered:" + category + ", " + site.methodFullName);
+        Logger.info("registry", "has registered:" + category + ", " + site.methodFullName);
         return true;
     }
 
@@ -50,7 +50,7 @@ public class Registry {
         if (registry.get(category).containsKey(site.classFullName)) {
 
             registry.get(category).get(site.classFullName).remove(site.methodFullName);
-            JackplayLogger.info("program-manager", "deleted existing agenda:" + category + ", " + site.methodFullName);
+            Logger.info("program-manager", "deleted existing agenda:" + category + ", " + site.methodFullName);
 
             if (registry.get(category).get(site.classFullName).isEmpty()) {
                 registry.get(category).remove(site.classFullName);

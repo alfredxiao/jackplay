@@ -6,10 +6,10 @@ import jackplay.core.Jack;
 
 public class TheatreRep {
     public static InfoCenter getInfoCenter() {
-        return JackplayAgent.infoCenter;
+        return Agent.infoCenter;
     }
 
     public static Jack getJack() {
-        return JackplayAgent.jack;
+        return Agent.jack;
     }
 }

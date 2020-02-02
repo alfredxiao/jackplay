@@ -4,7 +4,7 @@ import jackplay.model.Options;
 
 import java.io.*;
 
-public class JackplayLogger {
+public class Logger {
     private static String logLevel = "info";
     private static String logFile = null;
     private static final long FILE_SIZE_LIMIT = 100 * 1024 * 1024;  // 100M as maximum log file size

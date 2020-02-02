@@ -5,17 +5,17 @@ import jackplay.core.Keeper;
 import jackplay.core.*;
 import jackplay.core.performers.Transformer;
 import jackplay.web.BoxOffice;
-import static jackplay.JackplayLogger.*;
+import static jackplay.Logger.*;
 
 import java.lang.instrument.*;
 
-public class JackplayAgent {
+public class Agent {
     static Jack jack;
     static InfoCenter infoCenter;
 
     public static void premain(String agentArgs, Instrumentation inst) {
         Options options = Options.asOptions(agentArgs);
-        JackplayLogger.init(options);
+        Logger.init(options);
         Keeper.init(options);
 
         info("jack-agent", "running JackPlay with arguments:" + (agentArgs == null ? "there are no args, fallback to defaults." : agentArgs));

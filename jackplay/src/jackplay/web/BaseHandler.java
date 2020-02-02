@@ -2,7 +2,7 @@ package jackplay.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public abstract class BaseHandler implements HttpHandler {
             Map<String, String> params = extractParams(http);
             this.process(http, uri, params);
         } catch (Throwable t) {
-            JackplayLogger.error("baseHandler", t);
+            Logger.error("baseHandler", t);
             CommonHandling.serveBody(http, 500,
                                            (t.getMessage() == null ? t.getClass().getName() : t.getMessage()));
         }

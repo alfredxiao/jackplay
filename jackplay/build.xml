@@ -185,7 +185,7 @@
       </fileset>
       <fileset dir="resources"/>
       <manifest>
-        <attribute name="Premain-Class" value="jackplay.JackplayAgent"/>
+        <attribute name="Premain-Class" value="jackplay.Agent"/>
         <attribute name="Can-Redefine-Classes" value="false"/>
         <attribute name="Can-Retransform-Classes" value="true"/>
       </manifest>

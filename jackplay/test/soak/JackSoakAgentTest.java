@@ -1,6 +1,6 @@
 package soak;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import org.junit.Test;
 
 public class JackSoakAgentTest {
@@ -55,7 +55,7 @@ public class JackSoakAgentTest {
             JackSoakCommon.jack.undoRedefine(JackSoakCommon.test1);
             restAndCount();
 
-            JackplayLogger.info("soak-agent", "retransformationCount:" + retransformationCount);
+            Logger.info("soak-agent", "retransformationCount:" + retransformationCount);
         }
 
         JackSoakCommon.stopRunning();

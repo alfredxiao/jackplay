@@ -1,6 +1,6 @@
 package jackplay.core;
 
-import jackplay.JackplayLogger;
+import jackplay.Logger;
 import jackplay.model.Category;
 import static jackplay.core.MetadataFailureCause.ReferencedClassDefFoundError;
 import static jackplay.core.MetadataFailureCause.Unknown;
@@ -93,12 +93,12 @@ public class InfoCenter {
             } catch(NoClassDefFoundError ncdf) {
                 if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
                     metadataInaccessibleClasses.put(clazz.getName(), ReferencedClassDefFoundError);
-                    JackplayLogger.error("infocenter", ncdf);
+                    Logger.error("infocenter", ncdf);
                 }
             } catch(Throwable t) {
                 if (!metadataInaccessibleClasses.containsKey(clazz.getName())) {
                     metadataInaccessibleClasses.put(clazz.getName(), Unknown);
-                    JackplayLogger.error("infocenter", t);
+                    Logger.error("infocenter", t);
                 }
             }
         }
