@@ -1,8 +1,0 @@
-Testsuite: unit.jackplay.bootstrap.OptionsTest
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.099 sec
-
-Testcase: testWhitelist took 0.003 sec
-Testcase: testDefaultTrace took 0 sec
-Testcase: testMultipleOptions took 0 sec
-Testcase: testDefaults took 0 sec
-Testcase: testBlacklist took 0 sec

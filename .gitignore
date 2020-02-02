@@ -2,5 +2,6 @@
 *.iml
 demo-clojure/target
 jackplay/dist
+jackplay/build
 .idea
 .DS_Store

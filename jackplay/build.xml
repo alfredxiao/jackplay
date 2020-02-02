@@ -6,14 +6,10 @@
 
   <!-- define Maven coordinates -->
   <property name="groupId" value="com.github.alfredxiao" />
-  <property name="bootstrap-artifactId" value="jackplay-bootstrap" />
   <property name="agent-artifactId" value="jackplay-agent" />
   <property name="version" value="1.0.0" />
 
   <!-- define artifacts' name, which follows the convention of Maven -->
-  <property name="bootstrap-jar" value="dist/${bootstrap-artifactId}-${version}.jar" />
-  <property name="bootstrap-javadoc-jar" value="dist/${bootstrap-artifactId}-${version}-javadoc.jar" />
-  <property name="bootstrap-sources-jar" value="dist/${bootstrap-artifactId}-${version}-sources.jar" />
   <property name="agent-jar" value="dist/${agent-artifactId}-${version}.jar" />
   <property name="agent-javadoc-jar" value="dist/${agent-artifactId}-${version}-javadoc.jar" />
   <property name="agent-sources-jar" value="dist/${agent-artifactId}-${version}-sources.jar" />
@@ -137,7 +133,6 @@
 
   <target name="soak-app" depends="compile,dist">
     <junit printsummary="yes" haltonfailure="no">
-      <jvmarg value="-Xbootclasspath/a:dist/jackplay-bootstrap-latest.jar"/>
       <jvmarg value="-javaagent:dist/jackplay-agent-latest.jar=logLevel=debug,port=8173"/>
 
       <classpath refid="project.classpath" />
@@ -164,19 +159,9 @@
 
   <target name="javadoc-jar">
     <!-- build the javadoc jar -->
-    <javadoc destdir="dist/javadoc/bootstrap" >
-      <packageset dir="src" defaultexcludes="yes">
-        <include name="jackplay/bootstrap/**"/>
-      </packageset>
-    </javadoc>
-    <jar jarfile="${bootstrap-javadoc-jar}">
-      <fileset dir="dist/javadoc/bootstrap" />
-    </jar>
-
     <javadoc destdir="dist/javadoc/agent" >
       <classpath refid="project.classpath"/>
       <packageset dir="src" defaultexcludes="yes">
-        <exclude name="jackplay/bootstrap/**"/>
       </packageset>
     </javadoc>
     <jar jarfile="${agent-javadoc-jar}">
@@ -186,16 +171,7 @@
 
   <target name="sources-jar">
     <!-- build the sources jar -->
-    <jar jarfile="${bootstrap-sources-jar}">
-      <fileset dir="src">
-        <filename name="jackplay/bootstrap/**/*.java"/>
-      </fileset>
-    </jar>
     <jar jarfile="${agent-sources-jar}">
-      <fileset dir="src">
-        <exclude name="jackplay/bootstrap" />
-        <exclude name="jackplay/bootstrap/**/*.java" />
-      </fileset>
       <fileset dir="resources" />
     </jar>
   </target>
