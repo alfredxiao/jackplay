@@ -149,6 +149,9 @@ If you have ever run into any situation as mentioned above, you would benefit fr
  - It is recommended to use *latest* **Chrome** to access the web UI.
  - Supports JDK 8 (not JDK 7 yet)
 
+# NOTE
+ - This codebase is not in active maintenance, but I have nade the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
+
 # License
 
   [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
