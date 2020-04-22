@@ -5,6 +5,9 @@
 
   If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
 
+# NOTE
+ - This codebase is not in active maintenance, but I have nade the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
+
 # Latest Version
   ```com.github.alfredxiao/jackplay-bootstrap 0.10.0```
 
@@ -148,9 +151,6 @@ If you have ever run into any situation as mentioned above, you would benefit fr
  - When redefining a method, you can only use Java language. And you better avoid using advanced Java features like Lambda, Generics, etc. For details, see [javassist page](https://jboss-javassist.github.io/javassist/tutorial/tutorial2.html#limit).
  - It is recommended to use *latest* **Chrome** to access the web UI.
  - Supports JDK 8 (not JDK 7 yet)
-
-# NOTE
- - This codebase is not in active maintenance, but I have nade the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
 
 # License
 
