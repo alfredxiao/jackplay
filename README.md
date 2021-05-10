@@ -19,8 +19,8 @@
  - Trace method execution no matter there is exception thrown or not
  - Can turn on or off a method being traced or redefined
  - Can blacklist or whitelist specified packages
- - No need to change application code
- - No need to restart a JVM
+ - **No need** to modify application code
+ - **No need** to restart your service/application
  - Runs an embedded lightweight HTTP server to serve the control panel in web UI
 
 # Q and A
