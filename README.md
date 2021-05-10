@@ -3,7 +3,7 @@
 
   It allows you to **trace** method execution in a JVM such that you know exactly the ins and outs coming through your method. It also allows you to **redefine** a method in a JVM **live**! All these comes without any need to change your application code.
 
-  If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
+  If you still wonder what it is for, imagine that you are told that your program does not work in TEST which is a deployed environment. What would you do to troubleshoot? You might be thinking to find out what does a downstream service returns to your service/application, what does your database returns to a query, etc. you then want to add some logging statements and redeploy your program with your code changes such that you can see those results from logs. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
 
 # NOTE
  - This codebase is not in active maintenance, but I have made the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
