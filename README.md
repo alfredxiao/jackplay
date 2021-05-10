@@ -6,7 +6,7 @@
   If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
 
 # NOTE
- - This codebase is not in active maintenance, but I have nade the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
+ - This codebase is not in active maintenance, but I have made the master branch work under JDK 11 as well as JDK 8 (at least you can clone the source, build it yourself). If you find it not working or you want to make it work under other major JDK versions, and you run into issues, please let me know, happy to assist. I can be reached at alfred.xiao@outlook.com.
 
 # Latest Version
   ```com.github.alfredxiao/jackplay-bootstrap 0.10.0```
@@ -27,7 +27,7 @@
 
 ## Why do I need Jackplay?
 1. Developers are not sure where to put log statements and what to log - before running into a problem in an deployed environment.
-2. Sometimes we want to apply a quite trivial change to the code to verify something.
+2. Sometimes we want to apply a quite trivial change to the code to verify something in a quick manner.
 3. We are lazy people and do not want to go through the dev/test/deploy cycle again and again, especially in a testing setting.
 4. Sometimes we need to trace into a library but it is a challenge since you cannot change its source code.
 
