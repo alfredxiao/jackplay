@@ -2,6 +2,9 @@ package jackplay.bootstrap;
 
 import static jackplay.bootstrap.TracePoint.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
@@ -28,20 +31,7 @@ public class TraceKeeper {
             try {
                 TraceLog traceLog = it.next();
 
-                Map<String, Object> map = new HashMap<>();
-                map.put("when", Options.formatDate(traceLog.when));
-                map.put("tracePoint", traceLog.tracePoint.toString());
-                map.put("classFullName", traceLog.pg.classFullName);
-                map.put("methodShortName", traceLog.pg.methodShortName);
-                map.put("uuid", traceLog.uuid);
-                map.put("threadId", traceLog.threadId);
-                map.put("threadName", traceLog.threadName);
-                map.put("arguments", traceLog.arguments);
-                map.put("returnedValue", traceLog.returnedValue);
-                map.put("returningVoid", traceLog.returningVoid);
-                map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
-                map.put("elapsed", traceLog.elapsed);
-                map.put("argumentsCount", traceLog.argumentsCount);
+                Map<String, Object> map = traceLogToMap(traceLog);
 
                 listOfLogs.add(map);
             } catch(ConcurrentModificationException ignore) {}
@@ -50,12 +40,48 @@ public class TraceKeeper {
         return listOfLogs;
     }
 
-    private synchronized static void addTraceLog(TraceLog entry) {
-        while (traceLogs.size() >= options.traceLogLimit()) {
-            traceLogs.remove(traceLogs.size() - 1);
+    private static Map<String, Object> traceLogToMap(TraceLog traceLog) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("when", Options.formatDate(traceLog.when));
+        map.put("tracePoint", traceLog.tracePoint.toString());
+        map.put("classFullName", traceLog.pg.classFullName);
+        map.put("methodShortName", traceLog.pg.methodShortName);
+        map.put("uuid", traceLog.uuid);
+        map.put("threadId", traceLog.threadId);
+        map.put("threadName", traceLog.threadName);
+        map.put("arguments", traceLog.arguments);
+        map.put("returnedValue", traceLog.returnedValue);
+        map.put("returningVoid", traceLog.returningVoid);
+        map.put("exceptionStackTrace", traceLog.exceptionStackTrace);
+        map.put("elapsed", traceLog.elapsed);
+        map.put("argumentsCount", traceLog.argumentsCount);
+        return map;
+    }
+
+    private static void addTraceLog(TraceLog entry) {
+        synchronized (TraceKeeper.class) {
+            while (traceLogs.size() >= options.traceLogLimit()) {
+                traceLogs.remove(traceLogs.size() - 1);
+            }
+
+            traceLogs.add(0, entry);
         }
 
-        traceLogs.add(0, entry);
+        if (options.traceLogFile() != null) {
+            appendTraceLog(entry);
+        }
+    }
+
+    private static void appendTraceLog(TraceLog entry) {
+        try {
+            FileWriter fw = new FileWriter(options.traceLogFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(JSON.objectToJson(traceLogToMap(entry)));
+            bw.newLine();
+            bw.close();
+        } catch(IOException e) {
+            System.err.println("jackplay: Error when appending trace log, " + e.getMessage());
+        }
     }
 
     public static void enterMethod(String methodFullName, Object[] args, String uuid) {

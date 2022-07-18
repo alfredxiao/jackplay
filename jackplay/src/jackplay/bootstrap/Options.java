@@ -118,6 +118,9 @@ public class Options {
     public String logFile() {
         return options.get("logFile");
     }
+    public String traceLogFile() {
+        return options.get("traceLogFile");
+    }
 
     public int traceStringLength() {
         return Integer.parseInt(options.get("traceStringLength"));

@@ -1,4 +1,4 @@
-package jackplay.web;
+package jackplay.bootstrap;
 
 import java.util.Arrays;
 import java.util.List;

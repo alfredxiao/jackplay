@@ -6,9 +6,9 @@
   If you still wonder what it is for, image you are told your program does not work in a deployed environment, what would you do? You might wonder what does the service wrapper returns, what does the data access layer returns, you then want to add some logging statements and redeploy your program with your code changes. There you go, **Jackplay gives you *out-of-the-box* and *on-demand* logging functionality without code change or redeployment**.
 
 # Latest Version
-  ```com.github.alfredxiao/jackplay-bootstrap 0.9.11```
+  ```com.github.alfredxiao/jackplay-bootstrap 0.11.0```
 
-  ```com.github.alfredxiao/jackplay-agent 0.9.11```
+  ```com.github.alfredxiao/jackplay-agent 0.11.0```
 
   Can be found via [Maven Repository] (http://search.maven.org/#search%7Cga%7C1%7Cjackplay)
 # Features
@@ -74,6 +74,7 @@ If you have ever run into any situation as mentioned above, you would benefit fr
 |*autoSuggestLimit*| specifies the limit of items auto suggestion displays | 100 | |
 |*defaultTrace*    | colon separated full method names that we want Jackplay to trace by default, this is a perfect place for tracing application initialization behaviour like configuration loading, etc. | | ```myapp.Main.loadConfig(String[] args)``` |
 |*logFile*         | file path to write Jackplay logs to. Note if file size grows over 100M, it will be truncated | | ```./jackplay.log``` |
+|*tracelogFile*    | file path to write Jackplay traces to. | | ```./trace.log``` |
 |*blacklist*       | colon separated packages to not allow tracing or redefining, java.lang is always blacklisted | | ```java.net:myapp.utils``` |
 |*whitelist*       | colon separated packages to allow tracing or redefining, once you provide a whitelist, other packages are prevented from being able to be traced or redefined | | |
 |*https*           | whether to use https                                                      | false   |              |
